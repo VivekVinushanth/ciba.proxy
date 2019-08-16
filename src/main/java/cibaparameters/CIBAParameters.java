@@ -59,8 +59,15 @@ public class CIBAParameters {
     private  long expires_in = 3600;
     private long interval=2;
 
+    public String getCallBackURL() {
+        return callBackURL;
+    }
 
+    public void setCallBackURL(String callBackURL) {
+        this.callBackURL = callBackURL;
+    }
 
+    private String callBackURL = "http://localhost:8080/CallBackEndpoint" ;
 
     private  String grant_type = "urn:openid:params:grant-type:ciba";
 

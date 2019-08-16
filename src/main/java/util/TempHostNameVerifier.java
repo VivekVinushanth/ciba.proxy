@@ -1,4 +1,4 @@
-package validator;
+package util;
 
 import com.sun.net.ssl.X509TrustManager;
 

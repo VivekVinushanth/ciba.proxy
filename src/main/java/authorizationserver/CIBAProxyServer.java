@@ -1,7 +1,9 @@
 package authorizationserver;
 import ciba.proxy.server.servicelayer.ServerRequestHandler;
+import ciba.proxy.server.servicelayer.ServerResponseHandler;
 import ciba.proxy.server.servicelayer.ServerUserRegistrationHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jwt.JWTClaimsSet;
 import dao.DaoFactory;
 import errorfiles.InternalServerError;
 import handlers.*;
@@ -45,19 +47,22 @@ public class CIBAProxyServer implements AuthorizationServer {
         * Adding serverrequest handler to observers of cache
        */
         CIBAAuthRequestHandler cibaauthrequesthandler = CIBAAuthRequestHandler.getInstance();
-        this.register(cibaauthrequesthandler);
+        this.register(cibaauthrequesthandler); //registering to Proxy server and to observe on auth requests coming
 
         TokenRequestHandler tokenrequesthandler = TokenRequestHandler.getInstance();
-        this.register(tokenrequesthandler);
+        this.register(tokenrequesthandler); //registering to Proxy server and to observe on token requests coming
 
         RegisterHandler registerHandler = RegisterHandler.getInstance();
-        this.register(registerHandler);
+        this.register(registerHandler); //registering to Proxy server and to observe on client app registration requests coming
 
         UserRegisterHandler userRegisterHandler = UserRegisterHandler.getInstance();
-        this.register(userRegisterHandler);
+        this.register(userRegisterHandler); //registering to Proxy server and to observe on user registration requests coming
 
-        ServerRequestHandler serverRequestHandler = ServerRequestHandler.getInstance();
-        serverRequestHandler.register();
+        ServerResponseHandler serverResponseHandler = ServerResponseHandler.getInstance();
+        this.register(serverResponseHandler); //registering to Proxy server and to observe on grant codes coming
+
+        ServerRequestHandler serverRequestHandler= ServerRequestHandler.getInstance();
+                serverRequestHandler.registerto(); //registering to Authentication request store
 
 
 
@@ -132,7 +137,7 @@ public class CIBAProxyServer implements AuthorizationServer {
     @RequestMapping("/RegistrationEndPoint")
     public String acceptRegistrationRequest(@RequestParam(defaultValue = "" , value = "name") String name,
                                      @RequestParam(defaultValue = "" , value = "password") String password,
-                                     @RequestParam(defaultValue = "" , value = "mode") String mode){
+                                     @RequestParam(defaultValue = "" , value = "mode") String mode) {
 
         LOGGER.info("CIBA Client App registration request hits the CIBA Registration Endpoint.");
 
@@ -141,7 +146,7 @@ public class CIBAProxyServer implements AuthorizationServer {
                 for (Handlers handler : handlers) {
                     if (handler instanceof RegisterHandler) {
 
-                        String result = this.notifyHandler(handler, name , password, mode).toString();
+                        String result = this.notifyHandler(handler, name, password, mode).toString();
                         return result;
 
                     }
@@ -149,7 +154,7 @@ public class CIBAProxyServer implements AuthorizationServer {
             }
 
             LOGGER.warning("No Token request handlers added to the system.");
-            throw  new InternalServerError("No handlers registered");
+            throw new InternalServerError("No handlers registered");
         } catch (InternalServerError internalServerError) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
         }
@@ -179,13 +184,113 @@ public class CIBAProxyServer implements AuthorizationServer {
                 }
             }
 
-            LOGGER.warning("No Token request handlers added to the system.");
+            LOGGER.warning("No User Registration handlers added to the system.");
             throw  new InternalServerError("No handlers registered");
         } catch (InternalServerError internalServerError) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
         }
 
     }
+
+    /**
+     *Endpoint which serves as Callbackurl.
+     */
+    @RequestMapping("/CallBackEndpoint")
+    public void acceptUserRegistration(@RequestParam(defaultValue = "" , value = "code") String code,
+                                       @RequestParam(defaultValue = "" , value = "session_state") String session_state,
+                                       @RequestParam(defaultValue = "" , value = "state") String state)
+    {
+
+        // TODO: 8/15/19 since both code and tokens are received here right the logic for it.
+
+        LOGGER.info("Grant code is being received at this Callback Endpoint.");
+
+        try {
+            if (!handlers.isEmpty()) {
+
+                for (Handlers handler : handlers) {
+                    if (handler instanceof ServerResponseHandler) {
+                       // if (response.get("code").toString() != null && response.get("session_state") != null) {
+                        if(! session_state.isEmpty() && !code.isEmpty() ){
+                            System.out.println("Hnadlers not empty");
+                            JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                                    .claim("code", code)
+                                    .claim("session_state", session_state)
+                                    .claim("state",state)
+                                    .build();
+
+
+                            JSONObject response = claims.toJSONObject();
+                            //System.out.println("here - session"+String.valueOf(response.get("session_state")));
+                            notifyCodeHandler(handler, response, state);
+
+
+                        }/* else if (response.get("access_token").toString() != null && response.get("id_token") != null) {
+                            notifyTokenHandler(handler, response, state);
+
+                        }*/ else{
+                            throw new InternalServerError("Parameters missing");
+                        }
+                    }
+                }
+
+                }
+            LOGGER.warning("No Token request handlers added to the system.");
+                throw new InternalServerError("No handlers registered");
+
+            } catch(InternalServerError internalServerError){
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+
+
+        }
+    }
+
+
+
+
+    private void notifyCodeHandler(Handlers handler, JSONObject response, String identifier) {
+
+        try {
+            if (handler instanceof ServerResponseHandler) {
+
+                ServerResponseHandler serverResponseHandler = (ServerResponseHandler) handler;
+
+
+                    LOGGER.info("Server Request Handler is notified about reception of grant code");
+                    serverResponseHandler.receivecode(response,identifier);
+
+
+            } else {
+                throw new InternalServerError("No CallBack handlers found");
+            }
+        } catch (InternalServerError internalServerError) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        }
+    }
+
+    private void notifyTokenHandler(Handlers handler, JSONObject response, String identifier) {
+
+        try {
+            if (handler instanceof ServerResponseHandler) {
+
+                ServerResponseHandler serverResponseHandler = (ServerResponseHandler) handler;
+
+
+                LOGGER.info("Server Response Handler is notified about reception of token");
+                serverResponseHandler.receivetoken(response,identifier);
+
+
+            } else {
+                throw new InternalServerError("No CallBack handlers found");
+            }
+        } catch (InternalServerError internalServerError) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        }
+    }
+
+
+
+
 
     /**
      *  Add interested observers.

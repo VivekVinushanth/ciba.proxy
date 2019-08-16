@@ -2,12 +2,23 @@ package ciba.proxy.server.servicelayer;
 
 import authorizationserver.CIBAProxyServer;
 import cache.TokenRequestCache;
+import cibaparameters.CIBAParameters;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jwt.JWTClaimsSet;
 import dao.DaoFactory;
 import handlers.Handlers;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
+import org.springframework.web.client.RestTemplate;
 import transactionartifacts.CIBAauthRequest;
 import util.CodeGenerator;
+import util.RestTemplateFactory;
+
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -122,7 +133,7 @@ public class ServerRequestHandler implements Handlers {
         }
 
 
-        //create identifier for auth_req_id
+        //create identifier for  and store
         private String storeInDB (String authreqid){
             String identifier = CodeGenerator.getInstance().getRandomID();
             identifierstore.put(identifier, authreqid);
@@ -131,12 +142,35 @@ public class ServerRequestHandler implements Handlers {
             return identifier;
         }
 
-        //Initiate request to server
+        //Initiate token request to server
         private void initiateRequest(String  cibarequest,String identifier){
+        System.out.println("Initiating server auth2 code grant");
             //Start sending request to IS server and listen upon
 
             // TODO: 8/8/19 but now will manualy do something for now
-            ServerResponseHandler.getInstance().InitiateFakeResponse(identifier);
+           // ServerResponseHandler.getInstance().InitiateFakeResponse(identifier);
+
+            try {
+                RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
+                String result = restTemplate.getForObject("https://localhost:9443/oauth2/authorize?scope=openid&response_type=code&state="+identifier+"&redirect_uri="+CIBAParameters.getInstance().getCallBackURL()+"&client_id=PEHhH_VlNfxBO_y_a9EjiK8kX7sa&sectoken=YWRtaW5Ad3NvMi5jb206YWRtaW4=&prompt=none",String.class);
+
+                // typecasting obj to JSONObject
+
+
+                if (result != null){
+                    LOGGER.info("Code received at the Endpoint. Need processing the code flow");
+                   // System.out.println("uri"+CIBAParameters.getInstance().getCallBackURL());
+                    //System.out.println(result);
+
+                }
+
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            }
         }
 
         public String getAuthReqId(String identifier){
@@ -144,11 +178,12 @@ public class ServerRequestHandler implements Handlers {
 
         }
 
-        public void register(){
+        public void registerto(){
 
             DaoFactory.getInstance().getConnector("InMemoryCache").registerToAuthRequestCache(this);
 
         }
+
 
 
 
