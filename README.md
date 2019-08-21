@@ -3,7 +3,7 @@ Being developed to extend IS of WSO2 to support Client Initiated Backchannel Aut
 A POC for demonstration that CIBA can be applicable to real world scenarios.
 
 
-Reason for Implementation
+## Reason for Implementation
 * In all of the flows initiated by the RP[Relying Party-client App] in regard to  OpenID Connect Authentication flow, the end-user interaction from the consumption device is required and are based on HTTP redirection mechanisms. 
 
 * But there has become a necessity where the RP needs to be the initiator of the user authentication flow and end-user interaction from the consumption device is not needed.
@@ -11,7 +11,9 @@ Reason for Implementation
 * That is, required to decouple consumption device[RP] from Authentication.CIBA decouples the Consumption device [Say POS] from Authentication device [eg: Phone]. 
 
 
-Flow as per the spec:
+## Flow as per the spec:
+
+![flow](https://drive.google.com/file/d/1rRe8vZXgYrZs5Ak3paLA-138YmxeTdWS/view?usp=sharing)
 * This specification does not change the semantics of the OpenID Connect Authentication flow. 
 * It introduces a new endpoint to which the authentication request is posted. 
 * It introduces a new asynchronous method for authentication result notification or delivery. 
@@ -32,7 +34,7 @@ Flow as per the spec:
 * So, we will not be implementing Push mode.
 
 
-For Poll:
+## For Poll:
 
 10. And IS communicates with Authentication Device for credentials and consent.
 11. Consumption device polls for Token at CIBA Proxy Server
@@ -41,14 +43,14 @@ For Poll:
 14. Token then passes from CIBA proxy server to Consumption device 
 15. Service Provision
 
-Design
+## Design
 
 We planned to deploy CIBA Proxy Server as an extension to Identity Server 
 * To withstand scalability  issues due to polling
 * Considering the future prospective of IS turning into micro-service architecture.
 * This implementation will incorporate CIBA Proxy Server as an extension to Authorization Server.
 
-Further Readup:
+### Further Readup:
 * Spec: https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html
 * External Blog : https://blog.usejournal.com/lets-break-up-dear-decouple-ourselves-88159a86aba
 * External Blog : https://medium.com/@vivekc.16/people-you-dont-expect-to-operate-from-area-51-93646a58f485
