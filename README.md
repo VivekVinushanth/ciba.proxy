@@ -13,7 +13,7 @@ A POC for demonstration that CIBA can be applicable to real world scenarios.
 
 ## Flow as per the spec:
 
-![flow](https://miro.medium.com/max/1000/1*TI-naKx-GpL-TPrc5Q7kyQ.png)
+![flow](https://miro.medium.com/max/1000/1*hIH7HdHg6P9eaRby1zA1Gg.png)
 * This specification does not change the semantics of the OpenID Connect Authentication flow. 
 * It introduces a new endpoint to which the authentication request is posted. 
 * It introduces a new asynchronous method for authentication result notification or delivery. 
