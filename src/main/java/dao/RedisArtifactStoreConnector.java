@@ -1,31 +1,27 @@
 package dao;
 
-import handlers.Handlers;
 import transactionartifacts.CIBAauthRequest;
 import transactionartifacts.CIBAauthResponse;
 import transactionartifacts.TokenRequest;
 import transactionartifacts.TokenResponse;
 
-/**
- * This class supports JDBC storage.
- * */
-public class JdbcConnector implements DbConnectors {
+public class RedisArtifactStoreConnector implements ArtifactStoreConnectors {
 
-    private static JdbcConnector jdbcConnectorInstance = new JdbcConnector();
+    private static RedisArtifactStoreConnector redisArtifactStoreConnectorInstance = new RedisArtifactStoreConnector();
 
-    public static JdbcConnector getInstance() {
-        if (jdbcConnectorInstance == null) {
+    public static RedisArtifactStoreConnector getInstance() {
+        if (redisArtifactStoreConnectorInstance == null) {
 
-            synchronized (JdbcConnector.class) {
+            synchronized (RedisArtifactStoreConnector.class) {
 
-                if (jdbcConnectorInstance == null) {
+                if (redisArtifactStoreConnectorInstance == null) {
 
                     /* instance will be created at request time */
-                    jdbcConnectorInstance = new JdbcConnector();
+                    redisArtifactStoreConnectorInstance = new RedisArtifactStoreConnector();
                 }
             }
         }
-        return jdbcConnectorInstance;
+        return redisArtifactStoreConnectorInstance;
     }
 
     @Override

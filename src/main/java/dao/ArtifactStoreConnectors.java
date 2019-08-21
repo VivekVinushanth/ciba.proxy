@@ -7,7 +7,7 @@ import transactionartifacts.CIBAauthResponse;
 import transactionartifacts.TokenRequest;
 import transactionartifacts.TokenResponse;
 
- public interface DbConnectors {
+ public interface ArtifactStoreConnectors {
       void addAuthRequest(String auth_req_id, Object authrequest);
       void addAuthResponse(String auth_req_id, Object authresponse);
       void addTokenRequest(String auth_req_id, Object tokenrequest);

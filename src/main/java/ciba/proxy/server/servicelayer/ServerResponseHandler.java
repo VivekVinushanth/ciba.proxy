@@ -1,7 +1,6 @@
 package ciba.proxy.server.servicelayer;
 
 import cibaparameters.CIBAParameters;
-import com.nimbusds.jwt.JWTClaimsSet;
 import dao.DaoFactory;
 import handlers.Handlers;
 import net.minidev.json.JSONObject;
@@ -125,7 +124,7 @@ public class ServerResponseHandler implements Handlers {
 
 /*
     public void register(){
-        DaoFactory.getInstance().getConnector("InMemoryCache").registerToAuthRequestCache(this);
+        DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToAuthRequestCache(this);
     }*/
 
     public TokenResponse validate(JSONObject token) {
@@ -134,7 +133,7 @@ public class ServerResponseHandler implements Handlers {
 
     public void addtoStore(TokenResponse tokenResponse,String identifier) {
 
-            DaoFactory.getInstance().getConnector("InMemoryCache").addTokenResponse(ServerRequestHandler.
+            DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").addTokenResponse(ServerRequestHandler.
                             getInstance().getAuthReqId(identifier), tokenResponse);
 
                 LOGGER.info("Token Response Received");

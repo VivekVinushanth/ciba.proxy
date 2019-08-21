@@ -2,12 +2,9 @@ package handlers;
 
 import cibaparameters.CIBAParameters;
 import dao.DaoFactory;
-import errorfiles.BadRequest;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jwt.JWTClaimsSet;
-import net.minidev.json.JSONObject;
 import transactionartifacts.CIBAauthResponse;
-import util.CodeGenerator;
 
 import java.time.ZonedDateTime;
 import java.util.logging.Logger;
@@ -74,10 +71,10 @@ public class CIBAAuthResponseHandler implements Handlers {
         this.storeAuthResponse(auth_req_id, cibAauthResponse);
 
          long currenttime = ZonedDateTime.now().toInstant().toEpochMilli();
-        daoFactory.getConnector("InMemoryCache").addExpiresTime(auth_req_id, cibaparameters.getExpires_in() * 1000);
-        daoFactory.getConnector("InMemoryCache").addInterval(auth_req_id, cibaparameters.getInterval() * 1000);
-        daoFactory.getConnector("InMemoryCache").addIssuedTime(auth_req_id, currenttime);
-        daoFactory.getConnector("InMemoryCache").addLastPollTime(auth_req_id, currenttime);
+        daoFactory.getArtifactStoreConnector("InMemoryCache").addExpiresTime(auth_req_id, cibaparameters.getExpires_in() * 1000);
+        daoFactory.getArtifactStoreConnector("InMemoryCache").addInterval(auth_req_id, cibaparameters.getInterval() * 1000);
+        daoFactory.getArtifactStoreConnector("InMemoryCache").addIssuedTime(auth_req_id, currenttime);
+        daoFactory.getArtifactStoreConnector("InMemoryCache").addLastPollTime(auth_req_id, currenttime);
 
 
         LOGGER.info("CIBA Authentication Response payload created and forwarded");
@@ -110,7 +107,7 @@ public class CIBAAuthResponseHandler implements Handlers {
    * */
    public void storeAuthResponse(String auth_req_id, CIBAauthResponse cibAauthResponse) {
 
-       daoFactory.getConnector("InMemoryCache").addAuthResponse(auth_req_id, cibAauthResponse);
+       daoFactory.getArtifactStoreConnector("InMemoryCache").addAuthResponse(auth_req_id, cibAauthResponse);
       LOGGER.info("CIBA Authentication Response stored.");
        
    }

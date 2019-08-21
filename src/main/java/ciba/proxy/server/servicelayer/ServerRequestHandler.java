@@ -1,21 +1,16 @@
 package ciba.proxy.server.servicelayer;
 
-import authorizationserver.CIBAProxyServer;
-import cache.TokenRequestCache;
 import cibaparameters.CIBAParameters;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jwt.JWTClaimsSet;
+import configuration.ConfigurationFile;
 import dao.DaoFactory;
 import handlers.Handlers;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
 import org.springframework.web.client.RestTemplate;
 import transactionartifacts.CIBAauthRequest;
 import util.CodeGenerator;
 import util.RestTemplateFactory;
 
-import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -27,7 +22,7 @@ public class ServerRequestHandler implements Handlers {
     private static final Logger LOGGER = Logger.getLogger(ServerRequestHandler.class.getName());
 
     private ServerRequestHandler() {
-       // DaoFactory.getInstance().getConnector("InMemoryCache").registerToAuthRequestCache(this);
+       // DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToAuthRequestCache(this);
         //this.run();
 
     }
@@ -60,7 +55,7 @@ public class ServerRequestHandler implements Handlers {
     }
 
    /* public void register(){
-        DaoFactory.getInstance().getConnector("InMemoryCache").registerToTokenRequestCache(this);
+        DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToTokenRequestCache(this);
 
         }
 */
@@ -152,7 +147,10 @@ public class ServerRequestHandler implements Handlers {
 
             try {
                 RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
-                String result = restTemplate.getForObject("https://localhost:9443/oauth2/authorize?scope=openid&response_type=code&state="+identifier+"&redirect_uri="+CIBAParameters.getInstance().getCallBackURL()+"&client_id=PEHhH_VlNfxBO_y_a9EjiK8kX7sa&sectoken=YWRtaW5Ad3NvMi5jb206YWRtaW4=&prompt=none",String.class);
+                String result = restTemplate.getForObject(CIBAParameters.getInstance().getAUTHORIZE_ENDPOINT()+"?scope=openid&" +
+                        "response_type=code&state="+identifier+"&redirect_uri="+CIBAParameters.getInstance().
+                        getCallBackURL()+"&client_id="+ ConfigurationFile.getInstance().getCLIENT_ID()+
+                        "&sectoken="+ ConfigurationFile.getInstance().getSEC_TOKEN()+"=&prompt=none",String.class);
 
                 // typecasting obj to JSONObject
 
@@ -180,7 +178,7 @@ public class ServerRequestHandler implements Handlers {
 
         public void registerto(){
 
-            DaoFactory.getInstance().getConnector("InMemoryCache").registerToAuthRequestCache(this);
+            DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToAuthRequestCache(this);
 
         }
 

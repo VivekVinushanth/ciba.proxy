@@ -3,7 +3,7 @@ package validator;
 
 import cibaparameters.CIBAParameters;
 import dao.DaoFactory;
-import dao.DbConnectors;
+import dao.ArtifactStoreConnectors;
 import errorfiles.BadRequest;
 import errorfiles.UnAuthorizedRequest;
 import handlers.TokenResponseHandler;
@@ -45,7 +45,7 @@ private DaoFactory daoFactory = DaoFactory.getInstance();
 
     public TokenRequest validateTokenRequest(String auth_req_id, String grant_type) {
         TokenRequest tokenRequest = new TokenRequest();
-            DbConnectors dbConnectors = daoFactory.getConnector("InMemoryCache");
+            ArtifactStoreConnectors artifactStoreConnectors = daoFactory.getArtifactStoreConnector("InMemoryCache");
 
         CIBAParameters cibaparameters = CIBAParameters.getInstance();
 
@@ -59,17 +59,17 @@ private DaoFactory daoFactory = DaoFactory.getInstance();
                 throw new BadRequest("Improper grant_type");
 
             } else {
-               // System.out.println(dbConnectors.getAuthResponse(auth_req_id).getAuth_req_id());
+               // System.out.println(artifactStoreConnectors.getAuthResponse(auth_req_id).getAuth_req_id());
                 //check whether provided auth_req_id is valid and provided by the system and has relevant auth response
                try {
-                   if (!(dbConnectors.getAuthResponse(auth_req_id) == null) &&
+                   if (!(artifactStoreConnectors.getAuthResponse(auth_req_id) == null) &&
                         (grant_type.equals(cibaparameters.getGrant_type()))) {
-                     System.out.println(dbConnectors.getAuthResponse(auth_req_id).getAuth_req_id());
-                       long expiryduration = dbConnectors.getExpiresTime(auth_req_id);
-                       long issuedtime = dbConnectors.getIssuedTime(auth_req_id);
+                     System.out.println(artifactStoreConnectors.getAuthResponse(auth_req_id).getAuth_req_id());
+                       long expiryduration = artifactStoreConnectors.getExpiresTime(auth_req_id);
+                       long issuedtime = artifactStoreConnectors.getIssuedTime(auth_req_id);
                        long currenttime = ZonedDateTime.now().toInstant().toEpochMilli();
-                       long interval = dbConnectors.getInterval(auth_req_id);
-                       long lastpolltime = dbConnectors.getLastPollTime(auth_req_id);
+                       long interval = artifactStoreConnectors.getInterval(auth_req_id);
+                       long lastpolltime = artifactStoreConnectors.getLastPollTime(auth_req_id);
 
                        try {
                            //checking for token expiry
@@ -79,8 +79,8 @@ private DaoFactory daoFactory = DaoFactory.getInstance();
 
                                //checking for frequency of poll
                            } else if (currenttime - lastpolltime < interval) {
-                               dbConnectors.removeInterval(auth_req_id);
-                               dbConnectors.addInterval(auth_req_id, 5000);
+                               artifactStoreConnectors.removeInterval(auth_req_id);
+                               artifactStoreConnectors.addInterval(auth_req_id, 5000);
                                tokenRequest = null;
                                throw new BadRequest("Slow Down");
 
@@ -90,10 +90,10 @@ private DaoFactory daoFactory = DaoFactory.getInstance();
                                    tokenRequest.setAuth_req_id(auth_req_id);
 
                                    //storing token request
-                                  dbConnectors.addTokenRequest(auth_req_id, tokenRequest);
+                                  artifactStoreConnectors.addTokenRequest(auth_req_id, tokenRequest);
                                    //TokenResponseHandler.getInstance().createTokenResponse();
-                                   dbConnectors.removeLastPollTime(auth_req_id);
-                                   dbConnectors.addLastPollTime(auth_req_id,currenttime);
+                                   artifactStoreConnectors.removeLastPollTime(auth_req_id);
+                                   artifactStoreConnectors.addLastPollTime(auth_req_id,currenttime);
 
                                } else {
                                    tokenRequest = null;

@@ -2,9 +2,7 @@ package handlers;
 
 
 import authorizationserver.CIBAProxyServer;
-import dao.CacheConnector;
 import dao.DaoFactory;
-import dao.DbConnectors;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -14,11 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import transactionartifacts.CIBAauthRequest;
-import transactionartifacts.CIBAauthResponse;
 import util.CodeGenerator;
 import validator.AuthRequestValidator;
 
-import javax.xml.ws.http.HTTPException;
 import java.util.logging.Logger;
 
 //import org.apache.commons.codec.binary.Base64;
@@ -140,7 +136,7 @@ public class CIBAAuthRequestHandler implements Handlers {
      * */
     public void storeAuthRequest(String auth_req_id, CIBAauthRequest cibAauthRequest) {
 
-       daoFactory.getConnector("InMemoryCache").addAuthRequest(auth_req_id, cibAauthRequest);
+       daoFactory.getArtifactStoreConnector("InMemoryCache").addAuthRequest(auth_req_id, cibAauthRequest);
       LOGGER.info("Authentication request stored in InMemory");
     }
 }

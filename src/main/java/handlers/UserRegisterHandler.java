@@ -1,16 +1,11 @@
 package handlers;
 
 import ciba.proxy.server.servicelayer.ServerUserRegistrationHandler;
-import com.nimbusds.jose.Payload;
-import com.nimbusds.jwt.JWTClaimsSet;
 import dao.DaoFactory;
 import errorfiles.BadRequest;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import transactionartifacts.User;
-import util.CodeGenerator;
 
 import java.util.logging.Logger;
 
@@ -44,9 +39,9 @@ public class UserRegisterHandler implements Handlers {
     }
 
     public void store(String id, User user){
-        daoFactory.getStorageConnector().addUser(id,user);
+        daoFactory.getUserStoreConnector("InMemoryCache").addUser(id,user);
 
-        System.out.println(  "User " +daoFactory.getStorageConnector().getUser(id).getUserName());
+        System.out.println(  "User " +daoFactory.getUserStoreConnector("InMemoryCache").getUser(id).getUserName());
 
     }
 

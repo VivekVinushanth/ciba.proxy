@@ -4,6 +4,7 @@ import ciba.proxy.server.servicelayer.ServerResponseHandler;
 import ciba.proxy.server.servicelayer.ServerUserRegistrationHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.JWTClaimsSet;
+import configuration.ConfigHandler;
 import dao.DaoFactory;
 import errorfiles.InternalServerError;
 import handlers.*;
@@ -67,6 +68,10 @@ public class CIBAProxyServer implements AuthorizationServer {
 
 
         LOGGER.config("Authentication Request Handler & Token Request Handler Added");
+
+
+        ConfigHandler.getInstance().setConfiguration("PayHere");
+        LOGGER.config("Configuring Proxy for the Client of PayHere Application ");
 
     }
 

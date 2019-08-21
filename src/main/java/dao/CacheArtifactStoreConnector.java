@@ -1,7 +1,6 @@
 package dao;
 
 import cache.CibaProxyCache;
-import handlers.Handlers;
 import transactionartifacts.CIBAauthRequest;
 import transactionartifacts.CIBAauthResponse;
 import transactionartifacts.TokenRequest;
@@ -10,32 +9,30 @@ import transactionartifacts.TokenResponse;
 /**
  * This class supports Cache -in memory storage.
  * */
-public class CacheConnector  implements DbConnectors {
+public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
 
     CibaProxyCache cibaProxyCache;
 
-    private CacheConnector() {
+    private CacheArtifactStoreConnector() {
         cibaProxyCache = CibaProxyCache.getCibaProxyCacheInstance();
     }
 
-    private static CacheConnector cacheConnectorInstance = new CacheConnector();
+    private static CacheArtifactStoreConnector cacheArtifactStoreConnectorInstance = new CacheArtifactStoreConnector();
 
-    public static CacheConnector getInstance() {
-        if (cacheConnectorInstance == null) {
+    public static CacheArtifactStoreConnector getInstance() {
+        if (cacheArtifactStoreConnectorInstance == null) {
 
-            synchronized (CacheConnector.class) {
+            synchronized (CacheArtifactStoreConnector.class) {
 
-                if (cacheConnectorInstance == null) {
+                if (cacheArtifactStoreConnectorInstance == null) {
 
                     /* instance will be created at request time */
-                    cacheConnectorInstance = new CacheConnector();
+                    cacheArtifactStoreConnectorInstance = new CacheArtifactStoreConnector();
                 }
             }
         }
-        return cacheConnectorInstance;
+        return cacheArtifactStoreConnectorInstance;
     }
-
-
 
 
 

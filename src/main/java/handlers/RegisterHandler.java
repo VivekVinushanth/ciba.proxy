@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import sun.awt.SunHints;
 import transactionartifacts.Client;
 import util.CodeGenerator;
 import util.SecretKeyPairGenerator;
@@ -107,8 +106,8 @@ public class RegisterHandler implements Handlers {
 
     private void store(String client_id, Client client) {
 
-        DaoFactory.getInstance().getStorageConnector().addClient(client_id,client);
-        System.out.println("Name of Client " +DaoFactory.getInstance().getStorageConnector().getClient(client_id).getClientName());
+        DaoFactory.getInstance().getClientStoreConnector("InMemoryCache").addClient(client_id,client);
+        System.out.println("Name of Client " +DaoFactory.getInstance().getClientStoreConnector("InMemoryCache").getClient(client_id).getClientName());
         LOGGER.info("Client store into the client store.");
     }
 

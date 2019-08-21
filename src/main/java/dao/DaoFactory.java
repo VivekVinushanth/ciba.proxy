@@ -32,25 +32,58 @@ public class DaoFactory {
    /**
     *  This returns preferd connectors as the user does.
     *  */
-    public DbConnectors getConnector(String name) {
+    public ArtifactStoreConnectors getArtifactStoreConnector(String name) {
 
         if (name.equalsIgnoreCase("InMemoryCache")) {
-            return CacheConnector.getInstance();
-            //return new CacheConnector();
+            return CacheArtifactStoreConnector.getInstance();
+            //return new CacheArtifactStoreConnector();
         }
 
-        if (name.equalsIgnoreCase("RedisCache")) {
-            return RedisConnector.getInstance();
+        if (name.equalsIgnoreCase("Redis")) {
+            return RedisArtifactStoreConnector.getInstance();
         }
 
-        if (name.equals("JDBCcache")) {
-            return JdbcConnector.getInstance();
+        if (name.equals("JDBC")) {
+            return JdbcArtifactStoreConnector.getInstance();
         }
         return null;
     }
 
-    public StoreConnector getStorageConnector(){
-        return CibaStorageConnector.getInstance();
+    public UserStoreConnector getUserStoreConnector(String name){
+
+        if (name.equalsIgnoreCase("InMemoryCache")) {
+            return CibaUserStoreCacheConnector.getInstance();
+            //return new CacheStorageConnector();
+        }
+
+        if (name.equalsIgnoreCase("Redis")) {
+            return CibaUserStoreRedisConnector.getInstance();
+        }
+
+        if (name.equals("JDBC")) {
+            return CibaUserStoreJdbcConnector.getInstance();
+        }
+        return null;
     }
+
+
+
+    public ClientStoreConnector getClientStoreConnector(String name){
+
+        if (name.equalsIgnoreCase("InMemoryCache")) {
+            return CibaClientStoreCacheConnector.getInstance();
+            //return new CacheStorageConnector();
+        }
+
+        if (name.equalsIgnoreCase("Redis")) {
+            return CibaClientStoreRedisConnector.getInstance();
+        }
+
+        if (name.equals("JDBC")) {
+            return CibaClientStoreJdbcConnector.getInstance();
+        }
+        return null;
+    }
+
 
 }

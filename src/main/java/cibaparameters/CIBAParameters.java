@@ -72,7 +72,15 @@ public class CIBAParameters {
     private  String grant_type = "urn:openid:params:grant-type:ciba";
 
 
+    public String getAUTHORIZE_ENDPOINT() {
+        return AUTHORIZE_ENDPOINT;
+    }
 
+    public void setAUTHORIZE_ENDPOINT(String AUTHORIZE_ENDPOINT) {
+        this.AUTHORIZE_ENDPOINT = AUTHORIZE_ENDPOINT;
+    }
+
+    private String AUTHORIZE_ENDPOINT = "https://localhost:9443/oauth2/authorize";
 
     /**
      *  Token response parameters.
