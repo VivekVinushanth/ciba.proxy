@@ -50,6 +50,17 @@ We planned to deploy CIBA Proxy Server as an extension to Identity Server
 * Considering the future prospective of IS turning into micro-service architecture.
 * This implementation will incorporate CIBA Proxy Server as an extension to Authorization Server.
 
+## TryOut
+* Fork the Repository
+* Clone it to your local machine
+* Create Database of your need [MySQL] and update Database name in the configurationFile
+* Download WSO2 IS. Start the server.login using user : admin and password:admin.
+* Create a service provider and configure the config file handler with relevant clientapp[service provider] name, clientID and ClientSecret.
+* Can Send requests from Postman or any demo app.
+* Or Else deploy DEMO APP provided[runs in localhost -with xampp server] and send requests from there.
+* Build the project using maven - "mvn clean install"
+
+
 ### Further Readup:
 * Spec: https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html
 * External Blog : https://blog.usejournal.com/lets-break-up-dear-decouple-ourselves-88159a86aba
