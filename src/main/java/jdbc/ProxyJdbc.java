@@ -1,6 +1,8 @@
-package cache;
+package jdbc;
 
-public interface ProxyStore {
+public interface ProxyJdbc{
+
+
     public void add(String key, Object value);
 
     public void remove(String key);
@@ -10,4 +12,7 @@ public interface ProxyStore {
     public void clear();
 
     public long size();
+
+    public void register(Object object);
+
 }

@@ -78,6 +78,7 @@ public class AuthRequestCache implements ProxyCache {
 
     @Override
     public void clear() {
+        //To be implemented if needed
 
     }
 

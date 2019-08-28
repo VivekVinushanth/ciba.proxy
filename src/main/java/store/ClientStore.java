@@ -1,5 +1,6 @@
-package cache;
+package store;
 
+import cache.IntervalCache;
 import transactionartifacts.Client;
 
 import java.util.HashMap;

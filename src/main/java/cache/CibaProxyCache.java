@@ -1,12 +1,7 @@
 package cache;
 
-import ciba.proxy.server.servicelayer.ServerRequestHandler;
 import handlers.Handlers;
-import transactionartifacts.Artifacts;
-import transactionartifacts.CIBAauthRequest;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CibaProxyCache {
 

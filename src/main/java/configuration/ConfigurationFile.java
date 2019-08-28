@@ -33,6 +33,35 @@ public class ConfigurationFile {
     private  String CLIENT_SECRET;
     private  String SEC_TOKEN;
     private String AUTHORIZATION_USER;
+    private final String STORE_CONNECTOR_TYPE = "JDBC"; // TODO: 8/28/19 important place for shifting the dao object 
+    private final String DB_USER_NAME="root";
+    private final String DB_PASSWORD ="";
+
+    public String getDATABASE() {
+        return DATABASE;
+    }
+
+    private final String DATABASE= "ArtifactStore";
+
+
+    public String getDB_USER_NAME() {
+        return DB_USER_NAME;
+    }
+
+    public String getDB_PASSWORD() {
+        return DB_PASSWORD;
+    }
+
+
+    /**
+     * Use this to get different type of connectors.
+     * */
+    public String getSTORE_CONNECTOR_TYPE() {
+        return STORE_CONNECTOR_TYPE;
+    }
+
+
+
 
     public String getAUTHORIZATION_USER() {
         return AUTHORIZATION_USER;

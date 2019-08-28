@@ -1,6 +1,7 @@
 package handlers;
 
 import cibaparameters.CIBAParameters;
+import configuration.ConfigurationFile;
 import dao.DaoFactory;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -71,10 +72,17 @@ public class CIBAAuthResponseHandler implements Handlers {
         this.storeAuthResponse(auth_req_id, cibAauthResponse);
 
          long currenttime = ZonedDateTime.now().toInstant().toEpochMilli();
-        daoFactory.getArtifactStoreConnector("InMemoryCache").addExpiresTime(auth_req_id, cibaparameters.getExpires_in() * 1000);
+       /* daoFactory.getArtifactStoreConnector("InMemoryCache").addExpiresTime(auth_req_id, cibaparameters.getExpires_in() * 1000);
         daoFactory.getArtifactStoreConnector("InMemoryCache").addInterval(auth_req_id, cibaparameters.getInterval() * 1000);
         daoFactory.getArtifactStoreConnector("InMemoryCache").addIssuedTime(auth_req_id, currenttime);
         daoFactory.getArtifactStoreConnector("InMemoryCache").addLastPollTime(auth_req_id, currenttime);
+
+*/
+
+        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addExpiresTime(auth_req_id, cibaparameters.getExpires_in() * 1000);
+        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addInterval(auth_req_id, cibaparameters.getInterval() * 1000);
+        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addIssuedTime(auth_req_id, currenttime);
+        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addLastPollTime(auth_req_id, currenttime);
 
 
         LOGGER.info("CIBA Authentication Response payload created and forwarded");
@@ -107,8 +115,10 @@ public class CIBAAuthResponseHandler implements Handlers {
    * */
    public void storeAuthResponse(String auth_req_id, CIBAauthResponse cibAauthResponse) {
 
-       daoFactory.getArtifactStoreConnector("InMemoryCache").addAuthResponse(auth_req_id, cibAauthResponse);
-      LOGGER.info("CIBA Authentication Response stored.");
+       daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addAuthResponse(auth_req_id,cibAauthResponse);
+       //daoFactory.getArtifactStoreConnector("InMemoryCache").addAuthResponse(auth_req_id, cibAauthResponse);
+      LOGGER.info("CIBA Authentication Response stored in Auth Response Store.");
+      System.out.println("Working in perfection"+daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).getAuthResponse(auth_req_id).getExpires_in());
        
    }
 }

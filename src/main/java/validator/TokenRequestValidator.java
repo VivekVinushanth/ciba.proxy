@@ -2,6 +2,7 @@ package validator;
 
 
 import cibaparameters.CIBAParameters;
+import configuration.ConfigurationFile;
 import dao.DaoFactory;
 import dao.ArtifactStoreConnectors;
 import errorfiles.BadRequest;
@@ -45,7 +46,7 @@ private DaoFactory daoFactory = DaoFactory.getInstance();
 
     public TokenRequest validateTokenRequest(String auth_req_id, String grant_type) {
         TokenRequest tokenRequest = new TokenRequest();
-            ArtifactStoreConnectors artifactStoreConnectors = daoFactory.getArtifactStoreConnector("InMemoryCache");
+            ArtifactStoreConnectors artifactStoreConnectors = daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE());
 
         CIBAParameters cibaparameters = CIBAParameters.getInstance();
 

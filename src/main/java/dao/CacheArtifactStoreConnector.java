@@ -229,46 +229,46 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
     }
 
     @Override
-    public void registerToAuthRequestCache(Object authRequestHandler) {
+    public void registerToAuthRequestObservers(Object authRequestHandler) {
         cibaProxyCache.getAuthRequestCache().register(authRequestHandler);
 
     }
 
     @Override
-    public void registerToAuthResponseCache(Object authResponseHandler) {
+    public void registerToAuthResponseObservers(Object authResponseHandler) {
         cibaProxyCache.getAuthResponseCache().register(authResponseHandler);
 
     }
 
     @Override
-    public void registerToTokenResponseCache(Object tokenRequestHandler) {
+    public void registerToTokenRequestObservers(Object tokenRequestHandler) {
         cibaProxyCache.getTokenRequestCache().register(tokenRequestHandler);
-
-    }
-
-    @Override
-    public void registerToTokenRequestCache(Object tokenResponseHandler) {
-
     }
 
 
     @Override
-    public void registerToExpiryTimeCache(Object expiryHandler) {
+    public void registerToTokenResponseObservers(Object tokenResponseHandler) {
+        cibaProxyCache.getTokenResponseCache().register(tokenResponseHandler);
+    }
+
+
+    @Override
+    public void registerToExpiryTimeObservers(Object expiryHandler) {
         cibaProxyCache.getExpiresInCache().register(expiryHandler);
     }
 
     @Override
-    public void registerToLastPollCache(Object pollHandler) {
+    public void registerToLastPollObservers(Object pollHandler) {
         cibaProxyCache.getLastPollCache().register(pollHandler);
     }
 
     @Override
-    public void registerToIssuedTimeCache(Object issuedTimeHandler) {
+    public void registerToIssuedTimeObservers(Object issuedTimeHandler) {
         cibaProxyCache.getIssuedTimeCache().register(issuedTimeHandler);
     }
 
     @Override
-    public void registerToIntervalCache(Object intervalHandler) {
+    public void registerToIntervalObservers(Object intervalHandler) {
         cibaProxyCache.getIntervalCache().register(intervalHandler);
     }
 }

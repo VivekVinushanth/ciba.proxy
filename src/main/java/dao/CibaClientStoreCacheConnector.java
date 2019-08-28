@@ -1,6 +1,6 @@
 package dao;
 
-import cache.ClientStore;
+import store.ClientStore;
 import errorfiles.BadRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

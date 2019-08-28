@@ -145,42 +145,42 @@ public class RedisArtifactStoreConnector implements ArtifactStoreConnectors {
     }
 
     @Override
-    public void registerToAuthRequestCache(Object authRequestHandler) {
+    public void registerToAuthRequestObservers(Object authRequestHandler) {
 
     }
 
     @Override
-    public void registerToAuthResponseCache(Object authResponseHandler) {
+    public void registerToAuthResponseObservers(Object authResponseHandler) {
 
     }
 
     @Override
-    public void registerToTokenResponseCache(Object tokenRequestHandler) {
+    public void registerToTokenRequestObservers(Object tokenRequestHandler) {
 
     }
 
     @Override
-    public void registerToTokenRequestCache(Object tokenResponseHandler) {
+    public void registerToTokenResponseObservers(Object tokenRequestHandler) {
 
     }
 
     @Override
-    public void registerToExpiryTimeCache(Object expiryHandler) {
+    public void registerToExpiryTimeObservers(Object expiryHandler) {
 
     }
 
     @Override
-    public void registerToLastPollCache(Object pollHandler) {
+    public void registerToLastPollObservers(Object pollHandler) {
 
     }
 
     @Override
-    public void registerToIssuedTimeCache(Object issuedTimeHandler) {
+    public void registerToIssuedTimeObservers(Object issuedTimeHandler) {
 
     }
 
     @Override
-    public void registerToIntervalCache(Object intervalHandler) {
+    public void registerToIntervalObservers(Object intervalHandler) {
 
     }
 }

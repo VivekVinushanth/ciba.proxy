@@ -2,6 +2,7 @@ package handlers;
 
 
 import authorizationserver.CIBAProxyServer;
+import configuration.ConfigurationFile;
 import dao.DaoFactory;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -136,7 +137,8 @@ public class CIBAAuthRequestHandler implements Handlers {
      * */
     public void storeAuthRequest(String auth_req_id, CIBAauthRequest cibAauthRequest) {
 
-       daoFactory.getArtifactStoreConnector("InMemoryCache").addAuthRequest(auth_req_id, cibAauthRequest);
-      LOGGER.info("Authentication request stored in InMemory");
+      // daoFactory.getArtifactStoreConnector("InMemoryCache").addAuthRequest(auth_req_id, cibAauthRequest);
+        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addAuthRequest(auth_req_id,cibAauthRequest);
+      LOGGER.info("Authentication request stored in  Authentication Request Database");
     }
 }

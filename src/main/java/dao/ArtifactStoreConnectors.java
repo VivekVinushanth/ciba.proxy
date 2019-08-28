@@ -35,13 +35,14 @@ import transactionartifacts.TokenResponse;
       long  getIssuedTime(String auth_req_id);
       long  getInterval(String auth_req_id);
 
-      void registerToAuthRequestCache(Object authRequestHandler);
-      void registerToAuthResponseCache(Object authResponseHandler);
-      void registerToTokenResponseCache(Object tokenRequestHandler);
-      void registerToTokenRequestCache(Object tokenResponseHandler);
-      void registerToExpiryTimeCache(Object expiryHandler);
-      void registerToLastPollCache(Object pollHandler);
-      void registerToIssuedTimeCache(Object issuedTimeHandler);
-      void registerToIntervalCache(Object intervalHandler);
+      void registerToAuthRequestObservers(Object authRequestHandler);
+      void registerToAuthResponseObservers(Object authResponseHandler);
+      void registerToTokenRequestObservers(Object tokenRequestHandler);
+      void registerToTokenResponseObservers(Object tokenResponseHandler);
+      void registerToExpiryTimeObservers(Object expiryHandler);
+      void registerToLastPollObservers(Object pollHandler);
+      void registerToIssuedTimeObservers(Object issuedTimeHandler);
+      void registerToIntervalObservers(Object intervalHandler);
 
  }
+

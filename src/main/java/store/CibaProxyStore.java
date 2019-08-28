@@ -1,6 +1,4 @@
-package cache;
-
-import transactionartifacts.Client;
+package store;
 
 public class CibaProxyStore {
 private ClientStore clientStore;

@@ -3,6 +3,7 @@ package handlers;
 import cibaparameters.CIBAParameters;
 import com.nimbusds.jose.*;
 
+import configuration.ConfigurationFile;
 import dao.DaoFactory;
 import errorfiles.Forbidden;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -42,10 +43,9 @@ public class TokenResponseHandler implements Handlers {
 
     public Payload createTokenResponse(String auth_req_id) {
         CIBAParameters cibaparameters = CIBAParameters.getInstance();
-        TokenResponse tokenResponse = DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").getTokenResponse(auth_req_id);
+        //TokenResponse tokenResponse = DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").getTokenResponse(auth_req_id);
 
-
-
+TokenResponse tokenResponse =DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id);
         // String clientNotificationToken = cibaparameters.getClient_notification_token();
 
 
@@ -97,7 +97,8 @@ public class TokenResponseHandler implements Handlers {
 
         public boolean checkTokenReceived (String auth_req_id) {
 
-            if (DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").getTokenResponse(auth_req_id) != null) {
+            if (//DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").getTokenResponse(auth_req_id) != null) {
+                   DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id)!=null ){
                 return true;
             }
             LOGGER.info("Token Response still not received");

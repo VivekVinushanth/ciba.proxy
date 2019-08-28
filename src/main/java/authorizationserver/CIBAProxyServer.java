@@ -1,26 +1,18 @@
 package authorizationserver;
 import ciba.proxy.server.servicelayer.ServerRequestHandler;
 import ciba.proxy.server.servicelayer.ServerResponseHandler;
-import ciba.proxy.server.servicelayer.ServerUserRegistrationHandler;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.JWTClaimsSet;
 import configuration.ConfigHandler;
-import dao.DaoFactory;
 import errorfiles.InternalServerError;
 import handlers.*;
 import com.nimbusds.jose.Payload;
 import net.minidev.json.JSONObject;
 import org.springframework.http.*;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import transactionartifacts.User;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
 
 
 /**

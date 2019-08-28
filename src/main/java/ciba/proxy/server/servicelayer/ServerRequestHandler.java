@@ -22,8 +22,6 @@ public class ServerRequestHandler implements Handlers {
     private static final Logger LOGGER = Logger.getLogger(ServerRequestHandler.class.getName());
 
     private ServerRequestHandler() {
-       // DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToAuthRequestCache(this);
-        //this.run();
 
     }
 
@@ -150,9 +148,11 @@ public class ServerRequestHandler implements Handlers {
                 String result = restTemplate.getForObject(CIBAParameters.getInstance().getAUTHORIZE_ENDPOINT()+"?scope=openid&" +
                         "response_type=code&state="+identifier+"&redirect_uri="+CIBAParameters.getInstance().
                         getCallBackURL()+"&client_id="+ ConfigurationFile.getInstance().getCLIENT_ID()+
-                        "&sectoken="+ ConfigurationFile.getInstance().getSEC_TOKEN()+"=&prompt=none",String.class);
+                        "&sectoken="+ ConfigurationFile.getInstance().getSEC_TOKEN()+"&prompt=none",String.class);
 
                 // typecasting obj to JSONObject
+
+                System.out.println("Result is here:"+result);
 
 
                 if (result != null){
@@ -178,8 +178,8 @@ public class ServerRequestHandler implements Handlers {
 
         public void registerto(){
 
-            DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToAuthRequestCache(this);
-
+           // DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToAuthRequestObservers(this);
+            DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).registerToAuthRequestObservers(this);
         }
 
 
