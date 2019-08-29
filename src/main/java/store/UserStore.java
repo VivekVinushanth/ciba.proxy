@@ -1,13 +1,12 @@
 package store;
 
-import cache.IntervalCache;
 import transactionartifacts.User;
 
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class UserStore implements ProxyStore {
-    private static final Logger LOGGER = Logger.getLogger(IntervalCache.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UserStore.class.getName());
 
     private UserStore() {
 

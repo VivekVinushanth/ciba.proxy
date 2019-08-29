@@ -6,6 +6,7 @@ import dao.DaoFactory;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jwt.JWTClaimsSet;
 import transactionartifacts.CIBAauthResponse;
+import transactionartifacts.PollingAtrribute;
 
 import java.time.ZonedDateTime;
 import java.util.logging.Logger;
@@ -78,13 +79,19 @@ public class CIBAAuthResponseHandler implements Handlers {
         daoFactory.getArtifactStoreConnector("InMemoryCache").addLastPollTime(auth_req_id, currenttime);
 
 */
+        PollingAtrribute pollingAtrribute = new PollingAtrribute();
+        pollingAtrribute.setAuth_req_id(auth_req_id);
+        pollingAtrribute.setExpiresIn(cibaparameters.getExpires_in() * 1000);
+        pollingAtrribute.setIssuedTime(currenttime);
+        pollingAtrribute.setLastPolledTime(currenttime);
+        pollingAtrribute.setPollingInterval(cibaparameters.getInterval() * 1000);
 
-        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addExpiresTime(auth_req_id, cibaparameters.getExpires_in() * 1000);
+       /* daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addExpiresTime(auth_req_id, cibaparameters.getExpires_in() * 1000);
         daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addInterval(auth_req_id, cibaparameters.getInterval() * 1000);
         daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addIssuedTime(auth_req_id, currenttime);
         daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addLastPollTime(auth_req_id, currenttime);
-
-
+*/
+daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addPollingAttribute(auth_req_id,pollingAtrribute);
         LOGGER.info("CIBA Authentication Response payload created and forwarded");
 
         LOGGER.info("Expiry_time , Last_Poll_Time , Interval , Issued_Time  stored ");

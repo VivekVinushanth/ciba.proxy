@@ -236,6 +236,9 @@ public  class DbScripts {
 
     private static final String REMOVE_TOKEN_REQUEST_FROM_DB_SCRIPT = "DELETE FROM tokenRequest where auth_req_id = ?";
     private final static String GET_TOKEN_REQUEST_FROM_DB_SCRIPT = "SELECT * FROM tokenRequest where auth_req_id = ? ";
+    private static final String CHECK_FOR_TOKEN_REQUEST_AVAILABILITY = "SELECT COUNT(auth_req_id) from tokenRequest " +
+            "where tokenRequest.auth_req_id = ?";
+
 
     public static String getCREATE_TOKEN_REQUEST_DB_SCRIPT() {
         return CREATE_TOKEN_REQUEST_DB_SCRIPT;
@@ -253,6 +256,9 @@ public  class DbScripts {
         return GET_TOKEN_REQUEST_FROM_DB_SCRIPT;
     }
 
+    public static String getCHECK_FOR_TOKEN_REQUEST_AVAILABILITY() {
+        return CHECK_FOR_TOKEN_REQUEST_AVAILABILITY;
+    }
 
 
     private final static String CREATE_TOKEN_RESPONSE_DB_SCRIPT ="CREATE TABLE IF NOT EXISTS tokenResponse (" +
@@ -284,6 +290,36 @@ public  class DbScripts {
 
     public static String getGET_TOKEN_RESPONSE_FROM_DB_SCRIPT() {
         return GET_TOKEN_RESPONSE_FROM_DB_SCRIPT;
+    }
+
+
+    private final static String CREATE_POLLING_ATTRIBUTE_DB_SCRIPT ="CREATE TABLE IF NOT EXISTS pollingAttribute (" +
+            "auth_req_id VARCHAR(255) NOT NULL,  expiresIn BIGINT NOT NULL," +
+            "pollingTime BIGINT NOT NULL, lastPolled BIGINT NOT NULL," +
+            " issuedTime BIGINT NOT NULL,primary key (auth_req_id));";
+
+
+    private static final String ADD_POLLING_ATTRIBUTE_TO_DB_SCRIPT = "INSERT INTO pollingAttribute" +
+            "(auth_req_id,expiresIn,pollingTime,lastPolled,issuedTime)" +
+            " VALUES (?,?,?,?,?) ";
+
+    private static final String REMOVE_POLLING_ATTRIBUTE_FROM_DB_SCRIPT = "DELETE FROM pollingAttribute where auth_req_id = ?";
+    private final static String GET_POLLING_ATTRIBUTE_FROM_DB_SCRIPT = "SELECT * FROM pollingAttribute where auth_req_id = ? ";
+
+    public static String getCREATE_POLLING_ATTRIBUTE_DB_SCRIPT() {
+        return CREATE_POLLING_ATTRIBUTE_DB_SCRIPT;
+    }
+
+    public static String getADD_POLLING_ATTRIBUTE_TO_DB_SCRIPT() {
+        return ADD_POLLING_ATTRIBUTE_TO_DB_SCRIPT;
+    }
+
+    public static String getREMOVE_POLLING_ATTRIBUTE_FROM_DB_SCRIPT() {
+        return REMOVE_POLLING_ATTRIBUTE_FROM_DB_SCRIPT;
+    }
+
+    public static String getGET_POLLING_ATTRIBUTE_FROM_DB_SCRIPT() {
+        return GET_POLLING_ATTRIBUTE_FROM_DB_SCRIPT;
     }
 }
 

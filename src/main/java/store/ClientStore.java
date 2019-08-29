@@ -1,6 +1,5 @@
 package store;
 
-import cache.IntervalCache;
 import transactionartifacts.Client;
 
 import java.util.HashMap;
@@ -8,7 +7,7 @@ import java.util.logging.Logger;
 
 public class ClientStore implements ProxyStore {
 
-    private static final Logger LOGGER = Logger.getLogger(IntervalCache.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ClientStore.class.getName());
 
     private ClientStore() {
 

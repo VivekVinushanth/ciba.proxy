@@ -9,20 +9,14 @@ public class CibaProxyJdbcStore {
         private AuthResponseDB authResponseDB;
         private TokenRequestDB tokenRequestDB;
         private TokenResponseDB tokenResponseDB;
-        private ExpiresInDB expiresInDB;
-        private IntervalDB intervalDB;
-        private IssuedTimeDB issuedTimeDB;
-        private LastPollDB lastPollDB;
+       private PollingAttributeDB pollingAttributeDB;
 
         private CibaProxyJdbcStore() {
             authRequestDB = AuthRequestDB.getInstance();
             authResponseDB = AuthResponseDB.getInstance();
             tokenRequestDB =  TokenRequestDB.getInstance();
             tokenResponseDB =  TokenResponseDB.getInstance();
-            expiresInDB =  ExpiresInDB.getInstance();
-            intervalDB =  IntervalDB.getInstance();
-            issuedTimeDB =  IssuedTimeDB.getInstance();
-            lastPollDB =  LastPollDB.getInstance();
+           pollingAttributeDB = PollingAttributeDB.getInstance();
 
         }
 
@@ -61,20 +55,8 @@ public class CibaProxyJdbcStore {
             return tokenResponseDB;
         }
 
-        public ExpiresInDB getExpiresInDB() {
-            return expiresInDB;
-        }
-
-        public IntervalDB getIntervalDB() {
-            return intervalDB;
-        }
-
-        public IssuedTimeDB getIssuedTimeDB() {
-            return issuedTimeDB;
-        }
-
-        public LastPollDB getLastPollDB() {
-            return lastPollDB;
+        public PollingAttributeDB getPollingAttributeDB(){
+            return pollingAttributeDB;
         }
 
         public static CibaProxyJdbcStore getcibaProxyJdbcStoreInstance() {

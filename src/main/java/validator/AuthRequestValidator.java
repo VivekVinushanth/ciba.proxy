@@ -1,8 +1,6 @@
 package validator;
 
 import authorizationserver.CIBAProxyServer;
-import cache.LastPollCache;
-import cibaparameters.CIBAParameters;
 import errorfiles.BadRequest;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;

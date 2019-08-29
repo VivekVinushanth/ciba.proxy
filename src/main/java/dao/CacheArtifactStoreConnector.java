@@ -1,10 +1,7 @@
 package dao;
 
 import cache.CibaProxyCache;
-import transactionartifacts.CIBAauthRequest;
-import transactionartifacts.CIBAauthResponse;
-import transactionartifacts.TokenRequest;
-import transactionartifacts.TokenResponse;
+import transactionartifacts.*;
 
 /**
  * This class supports Cache -in memory storage.
@@ -77,37 +74,13 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
         }
     }
 
-
-    /**
-     * Add expiry time of each token object to expiry cache.
-     * */
-    public void addExpiresTime(String auth_req_id, long timestamp) {
-        cibaProxyCache.getExpiresInCache().add(auth_req_id,timestamp);
+    @Override
+    public void addPollingAttribute(String auth_req_id, Object pollingattribute) {
+        if(pollingattribute instanceof PollingAtrribute){
+            cibaProxyCache.getPollingAtrributeCache().add(auth_req_id,pollingattribute);
+        }
     }
 
-
-    /**
-     * Add latest polling time to last-poll cache.
-     * */
-    public void addLastPollTime(String auth_req_id, long lastpolltime) {
-        cibaProxyCache.getLastPollCache().add(auth_req_id, lastpolltime);
-    }
-
-
-    /**
-     * Add issuedtime  to issuedtime cache.
-     * */
-    public void addIssuedTime(String auth_req_id, long issuedtime) {
-        cibaProxyCache.getIssuedTimeCache().add(auth_req_id, issuedtime);
-    }
-
-
-    /**
-     * Add interval to interval cache.
-     * */
-    public void addInterval(String auth_req_id, long interval) {
-        cibaProxyCache.getIntervalCache().add(auth_req_id, interval);
-    }
 
 
     /**
@@ -138,33 +111,11 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
         cibaProxyCache.getTokenResponseCache().remove(auth_req_id);
     }
 
-    /**
-     * Remove expiry time from expiry cache.
-     * */
-    public void removeExpiresTime(String auth_req_id) {
-        cibaProxyCache.getExpiresInCache().remove(auth_req_id);
+    @Override
+    public void removePollingAttribute(String auth_req_id) {
+        cibaProxyCache.getPollingAtrributeCache().remove(auth_req_id);
     }
 
-    /**
-     * Remove last polling time from last-poll cache.
-     * */
-    public void removeLastPollTime(String auth_req_id) {
-        cibaProxyCache.getLastPollCache().remove(auth_req_id);
-    }
-
-    /**
-     * Remove last issued time from issuedtime cache.
-     * */
-    public void removeIssuedTime(String auth_req_id) {
-        cibaProxyCache.getIssuedTimeCache().remove(auth_req_id);
-    }
-
-    /**
-     * Remove interval from interval cache.
-     * */
-    public void removeInterval(String auth_req_id) {
-        cibaProxyCache.getIntervalCache().remove(auth_req_id);
-    }
 
 
     /**
@@ -198,35 +149,12 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
         return TokenResponse.class.cast(cibaProxyCache.getTokenResponseCache().get(auth_req_id));
     }
 
-
-    /**
-     * Get expiry from expirytime cache.
-     * */
-    public long getExpiresTime(String auth_req_id) {
-        return Long.parseLong(String.valueOf(cibaProxyCache.getExpiresInCache().get(auth_req_id)));
+    @Override
+    public PollingAtrribute getPollingAttribute(String auth_req_id) {
+        return PollingAtrribute.class.cast(cibaProxyCache.getPollingAtrributeCache().get(auth_req_id));
     }
 
-    /**
-     * Get lastpolltime from last-poll cache.
-     * */
-    public long getLastPollTime(String auth_req_id) {
-        return Long.parseLong(String.valueOf(cibaProxyCache.getLastPollCache().get(auth_req_id)));
-    }
 
-    /**
-     * Get issuedtime from issuedtime cache.
-     * */
-    public long getIssuedTime(String auth_req_id) {
-        return Long.parseLong(String.valueOf((cibaProxyCache.getIssuedTimeCache().get(auth_req_id))));
-    }
-
-    /**
-     * Get interval from interval cache.
-     * */
-    public long  getInterval(String auth_req_id) {
-        return Long.parseLong(String.valueOf((cibaProxyCache.getIntervalCache().get(auth_req_id))));
-
-    }
 
     @Override
     public void registerToAuthRequestObservers(Object authRequestHandler) {
@@ -251,24 +179,9 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
         cibaProxyCache.getTokenResponseCache().register(tokenResponseHandler);
     }
 
-
     @Override
-    public void registerToExpiryTimeObservers(Object expiryHandler) {
-        cibaProxyCache.getExpiresInCache().register(expiryHandler);
+    public void registerToPollingAttribute(Object pollingatrribute) {
+        //No need of validation or implementation
     }
 
-    @Override
-    public void registerToLastPollObservers(Object pollHandler) {
-        cibaProxyCache.getLastPollCache().register(pollHandler);
-    }
-
-    @Override
-    public void registerToIssuedTimeObservers(Object issuedTimeHandler) {
-        cibaProxyCache.getIssuedTimeCache().register(issuedTimeHandler);
-    }
-
-    @Override
-    public void registerToIntervalObservers(Object intervalHandler) {
-        cibaProxyCache.getIntervalCache().register(intervalHandler);
-    }
 }

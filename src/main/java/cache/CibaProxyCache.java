@@ -1,6 +1,8 @@
 package cache;
 
 import handlers.Handlers;
+import transactionartifacts.PollingAtrribute;
+
 import java.util.ArrayList;
 
 public class CibaProxyCache {
@@ -12,20 +14,14 @@ public class CibaProxyCache {
     private AuthResponseCache authResponseCache;
     private TokenRequestCache tokenRequestCache;
     private TokenResponseCache tokenResponseCache;
-    private ExpiresInCache expiresInCache;
-    private IntervalCache intervalCache;
-    private IssuedTimeCache issuedTimeCache;
-    private LastPollCache lastPollCache;
+    private PollingAttributeCache pollingAtrributeCache;
 
     private CibaProxyCache() {
         authRequestCache = AuthRequestCache.getInstance();
         authResponseCache = AuthResponseCache.getInstance();
         tokenRequestCache =  TokenRequestCache.getInstance();
         tokenResponseCache =  TokenResponseCache.getInstance();
-        expiresInCache =  ExpiresInCache.getInstance();
-        intervalCache =  IntervalCache.getInstance();
-        issuedTimeCache =  IssuedTimeCache.getInstance();
-        lastPollCache =  LastPollCache.getInstance();
+        pollingAtrributeCache = PollingAttributeCache.getInstance();
 
     }
 
@@ -63,22 +59,11 @@ public class CibaProxyCache {
     public TokenResponseCache getTokenResponseCache() {
         return tokenResponseCache;
     }
-
-    public ExpiresInCache getExpiresInCache() {
-        return expiresInCache;
+    public  PollingAttributeCache getPollingAtrributeCache(){
+        return pollingAtrributeCache;
     }
 
-    public IntervalCache getIntervalCache() {
-        return intervalCache;
-    }
 
-    public IssuedTimeCache getIssuedTimeCache() {
-        return issuedTimeCache;
-    }
-
-    public LastPollCache getLastPollCache() {
-        return lastPollCache;
-    }
 
     public static CibaProxyCache getCibaProxyCacheInstance() {
         return cibaProxyCacheInstance;

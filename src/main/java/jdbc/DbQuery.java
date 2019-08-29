@@ -3,10 +3,7 @@ package jdbc;
 import configuration.ConfigurationFile;
 import dao.DbConnection;
 import jdk.nashorn.internal.parser.Token;
-import transactionartifacts.CIBAauthRequest;
-import transactionartifacts.CIBAauthResponse;
-import transactionartifacts.TokenRequest;
-import transactionartifacts.TokenResponse;
+import transactionartifacts.*;
 
 import java.sql.*;
 import java.util.logging.Logger;
@@ -325,338 +322,6 @@ public class DbQuery {
     }
 
 
-    public boolean addExpiresIn(String auth_req_id, Object expires_in) throws Exception {
-        
-        Statement statement = connection.createStatement();
-
-        //use the configured database
-        statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-        //create expires_in table if not exists
-        statement.execute(DbScripts.getCREATE_EXPIRES_IN_DB_SCRIPT());
-
-
-        //add expires_in to store using prepared statements
-        PreparedStatement prepStmt = connection.prepareStatement(DbScripts.getADD_EXPIRES_IN_TO_DB_SCRIPT());
-        prepStmt.setString(1, auth_req_id);
-        prepStmt.setLong(2, (Long) expires_in);
-
-        Boolean result = prepStmt.execute();
-        statement.close();
-        prepStmt.close();
-        
-        return true;
-    }
-
-    public boolean deleteExpiresIn(String auth_req_id) {
-
-        try {
-            
-
-            Statement statement = connection.createStatement();
-
-            //use the configured database
-            statement.executeQuery("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-            PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getREMOVE_EXPIRES_IN_FROM_DB_SCRIPT());
-            preparedStmt.setString(1, auth_req_id);
-
-            // execute the preparedstatement
-            Boolean result = preparedStmt.execute();
-            statement.close();
-            preparedStmt.close();
-            
-            return result;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-        public Object getExpiresIn(String auth_req_id) {
-
-            try {
-                Object expires_in;
-                
-
-                Statement statement = connection.createStatement();
-
-                //use the configured database
-                statement.executeQuery("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-                PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getGET_EXPIRES_IN_FROM_DB_SCRIPT());
-                preparedStmt.setString(1, auth_req_id);
-
-                // execute the prepared statement
-                ResultSet resultSet = preparedStmt.executeQuery();
-
-                while (resultSet.next()) {               // Position the cursor
-
-                   expires_in = resultSet.getLong(2);
-                    return expires_in;
-
-                }
-                statement.close();
-                preparedStmt.close();
-                
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-    }
-
-    public boolean addInterval(String auth_req_id, Object interval) throws Exception {
-        
-        Statement statement = connection.createStatement();
-
-        //use the configured database
-        statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-        //create expires_in table if not exists
-        statement.execute(DbScripts.getCREATE_INTERVAL_DB_SCRIPT());
-
-
-        //add expires_in to store using prepared statements
-        PreparedStatement prepStmt = connection.prepareStatement(DbScripts.getADD_INTERVAL_TO_DB_SCRIPT());
-        prepStmt.setString(1, auth_req_id);
-        prepStmt.setLong(2, (Long) interval);
-
-        Boolean result = prepStmt.execute();
-        statement.close();
-        prepStmt.close();
-        
-        return true;
-    }
-
-    public boolean deleteInterval(String auth_req_id) {
-        try {
-            
-
-            Statement statement = connection.createStatement();
-
-            //use the configured database
-            statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-            PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getREMOVE_INTERVAL_FROM_DB_SCRIPT());
-            preparedStmt.setString(1, auth_req_id);
-
-            // execute the preparedstatement
-            Boolean result = preparedStmt.execute();
-            statement.close();
-            preparedStmt.close();
-            
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
-    public Object getInterval(String auth_req_id) {
-
-        try {
-            Object interval;
-            
-
-            Statement statement = connection.createStatement();
-
-            //use the configured database
-            statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-            PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getGET_INTERVAL_FROM_DB_SCRIPT());
-            preparedStmt.setString(1, auth_req_id);
-
-            // execute the prepared statement
-            ResultSet resultSet = preparedStmt.executeQuery();
-
-            while (resultSet.next()) {               // Position the cursor
-
-                interval = resultSet.getLong(2);
-                
-                return interval;
-
-            }
-            statement.close();
-            preparedStmt.close();
-            
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-
-    public boolean addIssuedTime(String auth_req_id, Object issuedTime) throws Exception {
-        
-        Statement statement = connection.createStatement();
-
-        //use the configured database
-        statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-        //create expires_in table if not exists
-        statement.execute(DbScripts.getCREATE_ISSUEDTIME_DB_SCRIPT());
-
-
-        //add expires_in to store using prepared statements
-        PreparedStatement prepStmt = connection.prepareStatement(DbScripts.getADD_ISSUEDTIME_TO_DB_SCRIPT());
-        prepStmt.setString(1, auth_req_id);
-        prepStmt.setLong(2, (Long) issuedTime);
-
-        Boolean result = prepStmt.execute();
-        statement.close();
-        prepStmt.close();
-        
-        return true;
-    }
-
-    public boolean deleteIssuedTime(String auth_req_id) {
-        try {
-            
-
-            Statement statement = connection.createStatement();
-
-            //use the configured database
-            statement.executeQuery("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-            PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getREMOVE_ISSUEDTIME_FROM_DB_SCRIPT());
-            preparedStmt.setString(1, auth_req_id);
-
-            // execute the preparedstatement
-            Boolean result = preparedStmt.execute();
-            statement.close();
-            preparedStmt.close();
-            
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public Object getIssuedTime(String auth_req_id) {
-        try {
-            Object issued_time;
-            Statement statement = connection.createStatement();
-
-            //use the configured database
-            statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-            PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getGET_ISSUEDTIME_FROM_DB_SCRIPT());
-            preparedStmt.setString(1, auth_req_id);
-
-            // execute the prepared statement
-            ResultSet resultSet = preparedStmt.executeQuery();
-
-            while (resultSet.next()) {               // Position the cursor
-
-                issued_time = resultSet.getLong(2); // TODO: 8/29/19 duplicate-check
-                
-                return issued_time;
-
-            }
-            statement.close();
-            preparedStmt.close();
-            
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-
-
-
-    public boolean addLastPoll(String auth_req_id, Object lastPoll) throws Exception {
-        Statement statement = connection.createStatement();
-        
-        //use the configured database
-        statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-        //create expires_in table if not exists
-        statement.execute(DbScripts.getCREATE_LASTPOLL_DB_SCRIPT());
-
-
-        //add expires_in to store using prepared statements
-        PreparedStatement prepStmt = connection.prepareStatement(DbScripts.getADD_LASTPOLL_TO_DB_SCRIPT());
-        prepStmt.setString(1, auth_req_id);
-        prepStmt.setLong(2, (Long) lastPoll);
-
-        Boolean result = prepStmt.execute();
-        statement.close();
-        prepStmt.close();
-        
-        return true;
-    }
-
-    public boolean deleteLastPoll(String auth_req_id) {
-        try {
-            
-
-            Statement statement = connection.createStatement();
-
-            //use the configured database
-            statement.executeQuery("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-            PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getREMOVE_LASTPOLL_FROM_DB_SCRIPT());
-            preparedStmt.setString(1, auth_req_id);
-
-            // execute the preparedstatement
-            Boolean result = preparedStmt.execute();
-            statement.close();
-            preparedStmt.close();
-            
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public Object getLastPoll(String auth_req_id) {
-        try {
-            Object lastPoll;
-            
-
-            Statement statement = connection.createStatement();
-
-            //use the configured database
-            statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
-
-            PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getGET_LASTPOLL_FROM_DB_SCRIPT());
-            preparedStmt.setString(1, auth_req_id);
-
-            // execute the prepared statement
-            ResultSet resultSet = preparedStmt.executeQuery();
-
-            while (resultSet.next()) {               // Position the cursor
-
-                lastPoll = resultSet.getLong(2);
-                statement.close();
-                preparedStmt.close();
-                
-                return lastPoll;
-
-            }
-            
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
 
 
@@ -675,17 +340,33 @@ public class DbQuery {
 
 
         //add user to store using prepared statements
-           // TODO: 8/28/19 implement for polling
-               PreparedStatement prepStmt = connection.prepareStatement(DbScripts.getADD_TOKEN_REQUEST_TO_DB_SCRIPT());
-               prepStmt.setString(1, auth_req_id);
+           PreparedStatement prepdStmt = connection.prepareStatement(DbScripts.getCHECK_FOR_TOKEN_REQUEST_AVAILABILITY());
+           prepdStmt.setString(1, auth_req_id);
+           ResultSet resultSet = prepdStmt.executeQuery();
+           System.out.println("result set "+resultSet);
+           int count;
+           while (resultSet.next()) {
+               count = (resultSet.getInt(1));
 
-               prepStmt.setString(2, tokenRequest.getGrant_type());
+               if (count >= 1) {
+                   //do nothing
+                   statement.close();
+                   prepdStmt.close();
+                   return true;
+               } else {
+                   PreparedStatement prepStmt = connection.prepareStatement(DbScripts.getADD_TOKEN_REQUEST_TO_DB_SCRIPT());
+                   prepStmt.setString(1, auth_req_id);
 
-               Boolean result1 = prepStmt.execute();
-           statement.close();
-           prepStmt.close();
-           
-               return true;
+                   prepStmt.setString(2, tokenRequest.getGrant_type());
+
+                   Boolean result1 = prepStmt.execute();
+                   statement.close();
+                   prepStmt.close();
+
+                   return true;
+               }
+           }
+
 
 
     } catch (SQLException e) {
@@ -857,5 +538,105 @@ public class DbQuery {
     }
 
 
+    public boolean addPollingAttribute(String auth_req_id, Object pollingattribute1) {
+        try{
+            PollingAtrribute pollingAtrribute = (PollingAtrribute) pollingattribute1;
+
+            Statement statement = connection.createStatement();
+
+            //use the configured database
+            statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
+
+            //create authentication request table if not exists
+            statement.execute(DbScripts.getCREATE_POLLING_ATTRIBUTE_DB_SCRIPT());
+
+
+            //add user to store using prepared statements
+            PreparedStatement prepStmt = connection.prepareStatement(DbScripts.getADD_POLLING_ATTRIBUTE_TO_DB_SCRIPT());
+            prepStmt.setString(1, auth_req_id);
+
+            prepStmt.setLong(2, pollingAtrribute.getExpiresIn());
+            prepStmt.setLong(3, pollingAtrribute.getPollingInterval());
+            prepStmt.setLong(4, pollingAtrribute.getLastPolledTime());
+            prepStmt.setLong(5, pollingAtrribute.getIssuedTime());
+
+
+            Boolean result = prepStmt.execute();
+            statement.close();
+            prepStmt.close();
+
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deletePollingAttribute(String auth_req_id) {
+        try {
+
+
+            Statement statement = connection.createStatement();
+
+            //use the configured database
+            statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
+
+            PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getREMOVE_POLLING_ATTRIBUTE_FROM_DB_SCRIPT());
+            preparedStmt.setString(1, auth_req_id);
+
+            // execute the preparedstatement
+            Boolean result = preparedStmt.execute();
+            statement.close();
+            preparedStmt.close();
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Object getPollingAttribute(String auth_req_id) {
+        PollingAtrribute pollingAtrribute = new PollingAtrribute();
+        try {
+
+
+            Statement statement = connection.createStatement();
+
+            //use the configured database
+            statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
+
+            PreparedStatement preparedStmt = connection.prepareStatement(DbScripts.getGET_POLLING_ATTRIBUTE_FROM_DB_SCRIPT());
+            preparedStmt.setString(1, auth_req_id);
+
+            // execute the prepared statement
+            ResultSet resultSet = preparedStmt.executeQuery();
+
+            while (resultSet.next()) {               // Position the cursor
+                pollingAtrribute.setAuth_req_id(resultSet.getString(1));
+                pollingAtrribute.setExpiresIn(resultSet.getLong(2));
+                pollingAtrribute.setPollingInterval(resultSet.getLong(3));
+                pollingAtrribute.setLastPolledTime(resultSet.getLong(4));
+                pollingAtrribute.setIssuedTime(resultSet.getLong(5));
+
+
+            }
+            statement.close();
+            preparedStmt.close();
+
+            return pollingAtrribute;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        System.out.println("Unfortuantely comes here");
+        return null;
+    }
 }
 

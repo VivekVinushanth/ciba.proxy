@@ -1,10 +1,7 @@
 package dao;
 
 import jdbc.CibaProxyJdbcStore;
-import transactionartifacts.CIBAauthRequest;
-import transactionartifacts.CIBAauthResponse;
-import transactionartifacts.TokenRequest;
-import transactionartifacts.TokenResponse;
+import transactionartifacts.*;
 
 /**
  * This class supports JDBC storage.
@@ -72,37 +69,15 @@ public class JdbcArtifactStoreConnector implements ArtifactStoreConnectors {
         }
     }
 
-
     /**
-     * Add expiry time of each token object to expiry DB.
+     * Add Polling Attribute object to Polling Attribute DB.
      */
-    public void addExpiresTime(String auth_req_id, long timestamp) {
-        cibaProxyJdbcStore.getExpiresInDB().add(auth_req_id, timestamp);
+    public void addPollingAttribute(String auth_req_id, Object pollingattribute) {
+        if(pollingattribute instanceof PollingAtrribute){
+            cibaProxyJdbcStore.getPollingAttributeDB().add(auth_req_id,pollingattribute);
+        }
     }
 
-
-    /**
-     * Add latest polling time to last-poll DB.
-     */
-    public void addLastPollTime(String auth_req_id, long lastpolltime) {
-        cibaProxyJdbcStore.getLastPollDB().add(auth_req_id, lastpolltime);
-    }
-
-
-    /**
-     * Add issuedtime  to issuedtime DB.
-     */
-    public void addIssuedTime(String auth_req_id, long issuedtime) {
-        cibaProxyJdbcStore.getIssuedTimeDB().add(auth_req_id, issuedtime);
-    }
-
-
-    /**
-     * Add interval to interval DB.
-     */
-    public void addInterval(String auth_req_id, long interval) {
-        cibaProxyJdbcStore.getIntervalDB().add(auth_req_id, interval);
-    }
 
 
     /**
@@ -133,32 +108,12 @@ public class JdbcArtifactStoreConnector implements ArtifactStoreConnectors {
         cibaProxyJdbcStore.getTokenResponseDB().remove(auth_req_id);
     }
 
-    /**
-     * Remove expiry time from expiry DB.
-     */
-    public void removeExpiresTime(String auth_req_id) {
-        cibaProxyJdbcStore.getExpiresInDB().remove(auth_req_id);
-    }
 
     /**
-     * Remove last polling time from last-poll DB.
+     * Remove Polling Attribute object from Polling Attribute DB.
      */
-    public void removeLastPollTime(String auth_req_id) {
-        cibaProxyJdbcStore.getLastPollDB().remove(auth_req_id);
-    }
-
-    /**
-     * Remove last issued time from issuedtime DB.
-     */
-    public void removeIssuedTime(String auth_req_id) {
-        cibaProxyJdbcStore.getIssuedTimeDB().remove(auth_req_id);
-    }
-
-    /**
-     * Remove interval from interval DB.
-     */
-    public void removeInterval(String auth_req_id) {
-        cibaProxyJdbcStore.getIntervalDB().remove(auth_req_id);
+    public void removePollingAttribute(String auth_req_id) {
+        cibaProxyJdbcStore.getPollingAttributeDB().remove(auth_req_id);
     }
 
 
@@ -194,75 +149,38 @@ public class JdbcArtifactStoreConnector implements ArtifactStoreConnectors {
     }
 
 
-    /**
-     * Get expiry from expirytime DB.
-     */
-    public long getExpiresTime(String auth_req_id) {
-        return Long.parseLong(String.valueOf(cibaProxyJdbcStore.getExpiresInDB().get(auth_req_id)));
+    public PollingAtrribute getPollingAttribute(String auth_req_id) {
+        return PollingAtrribute.class.cast(cibaProxyJdbcStore.getPollingAttributeDB().get(auth_req_id));
     }
 
-    /**
-     * Get lastpolltime from last-poll DB.
-     */
-    public long getLastPollTime(String auth_req_id) {
-        return Long.parseLong(String.valueOf(cibaProxyJdbcStore.getLastPollDB().get(auth_req_id)));
-    }
 
-    /**
-     * Get issuedtime from issuedtime DB.
-     */
-    public long getIssuedTime(String auth_req_id) {
-        return Long.parseLong(String.valueOf((cibaProxyJdbcStore.getIssuedTimeDB().get(auth_req_id))));
-    }
 
-    /**
-     * Get interval from interval DB.
-     */
-    public long getInterval(String auth_req_id) {
-        return Long.parseLong(String.valueOf((cibaProxyJdbcStore.getIntervalDB().get(auth_req_id))));
 
-    }
 
-    @Override
     public void registerToAuthRequestObservers(Object authRequestHandler) {
         cibaProxyJdbcStore.getAuthRequestDB().register(authRequestHandler);
 
     }
 
-    @Override
+
     public void registerToAuthResponseObservers(Object authResponseHandler) {
         cibaProxyJdbcStore.getAuthResponseDB().register(authResponseHandler);
     }
 
-    @Override
+
     public void registerToTokenRequestObservers(Object tokenRequestHandler) {
         cibaProxyJdbcStore.getTokenRequestDB().register(tokenRequestHandler);
     }
 
-    @Override
+
     public void registerToTokenResponseObservers(Object tokenResponseHandler) {
         cibaProxyJdbcStore.getTokenResponseDB().register(tokenResponseHandler);
     }
 
-    @Override
-    public void registerToExpiryTimeObservers(Object expiryHandler) {
-        cibaProxyJdbcStore.getExpiresInDB().register(expiryHandler);
+    public void registerToPollingAttribute(Object pollingatrribute) {
+       //implement if needed
     }
 
-    @Override
-    public void registerToLastPollObservers(Object pollHandler) {
-        cibaProxyJdbcStore.getLastPollDB().register(pollHandler);
-    }
-
-    @Override
-    public void registerToIssuedTimeObservers(Object issuedTimeHandler) {
-        cibaProxyJdbcStore.getIssuedTimeDB().register(issuedTimeHandler);
-    }
-
-    @Override
-    public void registerToIntervalObservers(Object intervalHandler) {
-        cibaProxyJdbcStore.getIntervalDB().register(intervalHandler);
-    }
 }
 
 

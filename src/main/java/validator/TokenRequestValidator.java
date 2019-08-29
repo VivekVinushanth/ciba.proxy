@@ -10,6 +10,7 @@ import errorfiles.UnAuthorizedRequest;
 import handlers.TokenResponseHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import transactionartifacts.PollingAtrribute;
 import transactionartifacts.TokenRequest;
 
 import java.time.ZonedDateTime;
@@ -65,12 +66,18 @@ private DaoFactory daoFactory = DaoFactory.getInstance();
                try {
                    if (!(artifactStoreConnectors.getAuthResponse(auth_req_id) == null) &&
                         (grant_type.equals(cibaparameters.getGrant_type()))) {
-                     System.out.println(artifactStoreConnectors.getAuthResponse(auth_req_id).getAuth_req_id());
-                       long expiryduration = artifactStoreConnectors.getExpiresTime(auth_req_id);
+                     //System.out.println(artifactStoreConnectors.getAuthResponse(auth_req_id).getAuth_req_id());
+                  /*     long expiryduration = artifactStoreConnectors.getExpiresTime(auth_req_id);
                        long issuedtime = artifactStoreConnectors.getIssuedTime(auth_req_id);
                        long currenttime = ZonedDateTime.now().toInstant().toEpochMilli();
                        long interval = artifactStoreConnectors.getInterval(auth_req_id);
-                       long lastpolltime = artifactStoreConnectors.getLastPollTime(auth_req_id);
+                       long lastpolltime = artifactStoreConnectors.getLastPollTime(auth_req_id);*/
+
+                       long expiryduration = artifactStoreConnectors.getPollingAttribute(auth_req_id).getExpiresIn();
+                       long issuedtime = artifactStoreConnectors.getPollingAttribute(auth_req_id).getIssuedTime();
+                       long currenttime = ZonedDateTime.now().toInstant().toEpochMilli();
+                       long interval = artifactStoreConnectors.getPollingAttribute(auth_req_id).getPollingInterval();
+                       long lastpolltime = artifactStoreConnectors.getPollingAttribute(auth_req_id).getLastPolledTime();
 
                        try {
                            //checking for token expiry
@@ -80,8 +87,19 @@ private DaoFactory daoFactory = DaoFactory.getInstance();
 
                                //checking for frequency of poll
                            } else if (currenttime - lastpolltime < interval) {
-                               artifactStoreConnectors.removeInterval(auth_req_id);
-                               artifactStoreConnectors.addInterval(auth_req_id, 5000);
+
+
+                               artifactStoreConnectors.removePollingAttribute(auth_req_id);
+
+                               PollingAtrribute pollingAtrribute2 =new PollingAtrribute();
+                               pollingAtrribute2.setIssuedTime(issuedtime);
+                               pollingAtrribute2.setLastPolledTime(currenttime);
+                               pollingAtrribute2.setPollingInterval(5000);
+                               pollingAtrribute2.setAuth_req_id(auth_req_id);
+                               pollingAtrribute2.setExpiresIn(expiryduration);
+
+                               artifactStoreConnectors.addPollingAttribute(auth_req_id,pollingAtrribute2);
+                               //updating the polling frequency -deleting and adding new object with updated values
                                tokenRequest = null;
                                throw new BadRequest("Slow Down");
 
@@ -92,9 +110,18 @@ private DaoFactory daoFactory = DaoFactory.getInstance();
 
                                    //storing token request
                                   artifactStoreConnectors.addTokenRequest(auth_req_id, tokenRequest);
-                                   //TokenResponseHandler.getInstance().createTokenResponse();
-                                   artifactStoreConnectors.removeLastPollTime(auth_req_id);
-                                   artifactStoreConnectors.addLastPollTime(auth_req_id,currenttime);
+
+                                   artifactStoreConnectors.removePollingAttribute(auth_req_id);
+
+                                   PollingAtrribute pollingAtrribute3 =new PollingAtrribute();
+                                   pollingAtrribute3.setIssuedTime(issuedtime);
+                                   pollingAtrribute3.setLastPolledTime(currenttime);
+                                   pollingAtrribute3.setPollingInterval(interval);
+                                   pollingAtrribute3.setAuth_req_id(auth_req_id);
+                                   pollingAtrribute3.setExpiresIn(expiryduration);
+
+                                   artifactStoreConnectors.addPollingAttribute(auth_req_id,pollingAtrribute3);
+                                   //updating last polled time
 
                                } else {
                                    tokenRequest = null;
