@@ -7,9 +7,14 @@ import errorfiles.InternalServerError;
 import handlers.*;
 import com.nimbusds.jose.Payload;
 import net.minidev.json.JSONObject;
+import net.minidev.json.parser.ParseException;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -18,6 +23,7 @@ import java.util.logging.Logger;
 /**
  * This class is the actual implementation of CIBA proxy server.
  */
+
 @RestController
 public class CIBAProxyServer implements AuthorizationServer {
 
@@ -33,7 +39,8 @@ public class CIBAProxyServer implements AuthorizationServer {
     private final Object mutex = new Object(); //to serve as a mutex lock in synchronization
 
 
-    public CIBAProxyServer() {
+    public CIBAProxyServer() throws UnsupportedEncodingException, FileNotFoundException {
+
 
        /**
         * Registering CIBA auth request handle, token request handler to handlers arraylist of ciba proxy.
@@ -56,14 +63,8 @@ public class CIBAProxyServer implements AuthorizationServer {
 
         ServerRequestHandler serverRequestHandler= ServerRequestHandler.getInstance();
                 serverRequestHandler.registerto(); //registering to Authentication request store
-
-
-
         LOGGER.config("Authentication Request Handler & Token Request Handler Added");
 
-
-        ConfigHandler.getInstance().setConfiguration("PayHere");
-        LOGGER.config("Configuring Proxy for the Client of PayHere Application ");
 
     }
 
@@ -402,7 +403,10 @@ public class CIBAProxyServer implements AuthorizationServer {
 
     // TODO: 8/5/19 public void communicateToAuthDevice(){}
 
-
+private void configureProxy() throws IOException, ParseException {
+    ConfigHandler.getInstance().configure();
+    LOGGER.config("Configuring Proxy for the Client of Application ");
+}
 
 
 }

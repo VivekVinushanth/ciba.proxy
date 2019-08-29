@@ -12,11 +12,20 @@ import java.sql.*;
 import java.util.logging.Logger;
 
 public class DbQuery {
-
+    Connection connection;
 
     private static final Logger LOGGER = Logger.getLogger(DbQuery.class.getName());
 
     private DbQuery() {
+
+        {
+            try {
+                connection = DbConnection.getConnection();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -41,11 +50,11 @@ public class DbQuery {
 
     }
 
-    public Boolean addAuthRequest(String auth_req_id, Object authRequest) throws Exception {
+    public Boolean addAuthRequest(String auth_req_id, Object authRequest){
 
         try {
             CIBAauthRequest cibAauthRequest = (CIBAauthRequest) authRequest;
-            Connection connection = DbConnection.getConnection();
+            
             Statement statement = connection.createStatement();
 
             //use the configured database
@@ -125,15 +134,20 @@ public class DbQuery {
 
 
             Boolean result = prepStmt.execute();
-            System.out.println("actual result of execution is" + result);
+            //System.out.println("actual result of execution is" + result);
+            statement.close();
+            prepStmt.close();
+            
             return true; //as if there is no false it will result in false and only if error throw exception
 
         } catch (SQLException e) {
+
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
         //System.out.println("unfortunately here ");
+
         return false;
     }
 
@@ -141,7 +155,7 @@ public class DbQuery {
 
 
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -153,7 +167,9 @@ public class DbQuery {
 
             // execute the preparedstatement
             Boolean result = preparedStmt.execute();
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
             return true;
 
         } catch (Exception e) {
@@ -165,7 +181,7 @@ public class DbQuery {
     public Object getAuthRequest(String auth_req_id) {
         CIBAauthRequest cibAauthRequest = new CIBAauthRequest();
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -197,7 +213,9 @@ public class DbQuery {
                 cibAauthRequest.setRequested_expiry(resultSet.getLong(16));
 
             }
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -212,7 +230,7 @@ public class DbQuery {
         try {
 
             CIBAauthResponse cibAauthResponse = (CIBAauthResponse) authResponse;
-            Connection connection = DbConnection.getConnection();
+            
             Statement statement = connection.createStatement();
 
             //use the configured database
@@ -230,7 +248,9 @@ public class DbQuery {
 
 
              result = prepStmt.execute();
-             connection.close();
+            statement.close();
+            prepStmt.close();
+            
              return true;
 
 
@@ -246,7 +266,7 @@ public class DbQuery {
     public Boolean deleteAuthResponse(String auth_req_id){
 
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -258,7 +278,9 @@ public class DbQuery {
 
             // execute the preparedstatement
            Boolean result = preparedStmt.execute();
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
             return true;
 
         } catch (Exception e) {
@@ -271,7 +293,7 @@ public class DbQuery {
     public Object getAuthResponse(String auth_req_id){
         CIBAauthResponse cibAauthResponse = new CIBAauthResponse();
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -291,7 +313,9 @@ public class DbQuery {
                 cibAauthResponse.setInterval(resultSet.getLong(3));
 
             }
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -302,7 +326,7 @@ public class DbQuery {
 
 
     public boolean addExpiresIn(String auth_req_id, Object expires_in) throws Exception {
-        Connection connection = DbConnection.getConnection();
+        
         Statement statement = connection.createStatement();
 
         //use the configured database
@@ -318,14 +342,16 @@ public class DbQuery {
         prepStmt.setLong(2, (Long) expires_in);
 
         Boolean result = prepStmt.execute();
-        connection.close();
+        statement.close();
+        prepStmt.close();
+        
         return true;
     }
 
     public boolean deleteExpiresIn(String auth_req_id) {
 
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -337,7 +363,9 @@ public class DbQuery {
 
             // execute the preparedstatement
             Boolean result = preparedStmt.execute();
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
             return result;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -351,7 +379,7 @@ public class DbQuery {
 
             try {
                 Object expires_in;
-                Connection connection = DbConnection.getConnection();
+                
 
                 Statement statement = connection.createStatement();
 
@@ -370,7 +398,9 @@ public class DbQuery {
                     return expires_in;
 
                 }
-                connection.close();
+                statement.close();
+                preparedStmt.close();
+                
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -379,7 +409,7 @@ public class DbQuery {
     }
 
     public boolean addInterval(String auth_req_id, Object interval) throws Exception {
-        Connection connection = DbConnection.getConnection();
+        
         Statement statement = connection.createStatement();
 
         //use the configured database
@@ -395,13 +425,15 @@ public class DbQuery {
         prepStmt.setLong(2, (Long) interval);
 
         Boolean result = prepStmt.execute();
-        connection.close();
+        statement.close();
+        prepStmt.close();
+        
         return true;
     }
 
     public boolean deleteInterval(String auth_req_id) {
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -413,7 +445,9 @@ public class DbQuery {
 
             // execute the preparedstatement
             Boolean result = preparedStmt.execute();
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -428,7 +462,7 @@ public class DbQuery {
 
         try {
             Object interval;
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -444,10 +478,13 @@ public class DbQuery {
             while (resultSet.next()) {               // Position the cursor
 
                 interval = resultSet.getLong(2);
+                
                 return interval;
 
             }
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -457,7 +494,7 @@ public class DbQuery {
 
 
     public boolean addIssuedTime(String auth_req_id, Object issuedTime) throws Exception {
-        Connection connection = DbConnection.getConnection();
+        
         Statement statement = connection.createStatement();
 
         //use the configured database
@@ -473,13 +510,15 @@ public class DbQuery {
         prepStmt.setLong(2, (Long) issuedTime);
 
         Boolean result = prepStmt.execute();
-        connection.close();
+        statement.close();
+        prepStmt.close();
+        
         return true;
     }
 
     public boolean deleteIssuedTime(String auth_req_id) {
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -491,7 +530,9 @@ public class DbQuery {
 
             // execute the preparedstatement
             Boolean result = preparedStmt.execute();
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -504,8 +545,6 @@ public class DbQuery {
     public Object getIssuedTime(String auth_req_id) {
         try {
             Object issued_time;
-            Connection connection = DbConnection.getConnection();
-
             Statement statement = connection.createStatement();
 
             //use the configured database
@@ -519,11 +558,14 @@ public class DbQuery {
 
             while (resultSet.next()) {               // Position the cursor
 
-                issued_time = resultSet.getLong(2);
+                issued_time = resultSet.getLong(2); // TODO: 8/29/19 duplicate-check
+                
                 return issued_time;
 
             }
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -535,9 +577,8 @@ public class DbQuery {
 
 
     public boolean addLastPoll(String auth_req_id, Object lastPoll) throws Exception {
-        Connection connection = DbConnection.getConnection();
         Statement statement = connection.createStatement();
-
+        
         //use the configured database
         statement.execute("Use " + ConfigurationFile.getInstance().getDATABASE()+";");
 
@@ -551,13 +592,15 @@ public class DbQuery {
         prepStmt.setLong(2, (Long) lastPoll);
 
         Boolean result = prepStmt.execute();
-        connection.close();
+        statement.close();
+        prepStmt.close();
+        
         return true;
     }
 
     public boolean deleteLastPoll(String auth_req_id) {
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -569,7 +612,9 @@ public class DbQuery {
 
             // execute the preparedstatement
             Boolean result = preparedStmt.execute();
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -582,7 +627,7 @@ public class DbQuery {
     public Object getLastPoll(String auth_req_id) {
         try {
             Object lastPoll;
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -598,10 +643,13 @@ public class DbQuery {
             while (resultSet.next()) {               // Position the cursor
 
                 lastPoll = resultSet.getLong(2);
+                statement.close();
+                preparedStmt.close();
+                
                 return lastPoll;
 
             }
-            connection.close();
+            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -616,7 +664,7 @@ public class DbQuery {
     public boolean addTokenRequest(String auth_req_id, Object tokenRequest1)  {
        try{
            TokenRequest tokenRequest = (TokenRequest) tokenRequest1;
-        Connection connection = DbConnection.getConnection();
+        
         Statement statement = connection.createStatement();
 
         //use the configured database
@@ -634,6 +682,9 @@ public class DbQuery {
                prepStmt.setString(2, tokenRequest.getGrant_type());
 
                Boolean result1 = prepStmt.execute();
+           statement.close();
+           prepStmt.close();
+           
                return true;
 
 
@@ -647,7 +698,7 @@ public class DbQuery {
 
     public boolean deleteTokenRequest(String auth_req_id) {
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -659,7 +710,9 @@ public class DbQuery {
 
             // execute the preparedstatement
             Boolean result = preparedStmt.execute();
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
             return true;
 
         } catch (Exception e) {
@@ -671,7 +724,7 @@ public class DbQuery {
     public Object getTokenRequest(String auth_req_id) {
         TokenRequest tokenRequest = new TokenRequest();
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -689,7 +742,9 @@ public class DbQuery {
                 tokenRequest.setGrant_type(resultSet.getString(2));
 
             }
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -705,7 +760,7 @@ public class DbQuery {
 
         try{
             TokenResponse tokenResponse = (TokenResponse) tokenResponse1;
-            Connection connection = DbConnection.getConnection();
+            
             Statement statement = connection.createStatement();
 
             //use the configured database
@@ -726,7 +781,9 @@ public class DbQuery {
             prepStmt.setString(6, tokenResponse.getRefreshToken());
 
             Boolean result = prepStmt.execute();
-
+            statement.close();
+            prepStmt.close();
+            
             return true;
 
         } catch (SQLException e) {
@@ -738,7 +795,7 @@ public class DbQuery {
     }
     public boolean deleteTokenResponse(String auth_req_id) {
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -750,7 +807,9 @@ public class DbQuery {
 
             // execute the preparedstatement
             Boolean result = preparedStmt.execute();
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
             return true;
 
         } catch (Exception e) {
@@ -761,7 +820,7 @@ public class DbQuery {
     public Object getTokenResponse(String auth_req_id) {
         TokenResponse tokenResponse = new TokenResponse();
         try {
-            Connection connection = DbConnection.getConnection();
+            
 
             Statement statement = connection.createStatement();
 
@@ -783,7 +842,9 @@ public class DbQuery {
                 tokenResponse.setRefreshToken(resultSet.getString(6));
 
             }
-            connection.close();
+            statement.close();
+            preparedStmt.close();
+            
             return tokenResponse;
 
 

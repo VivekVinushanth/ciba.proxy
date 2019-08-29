@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 public class ConfigurationFile {
-    private ConfigurationFile() {
+    public ConfigurationFile() {
 
     }
 
@@ -28,40 +28,47 @@ public class ConfigurationFile {
 
     }
 
+
     private  String APP_NAME;
     private  String CLIENT_ID;
     private  String CLIENT_SECRET;
     private  String SEC_TOKEN;
-    private String AUTHORIZATION_USER;
-    private final String STORE_CONNECTOR_TYPE = "JDBC"; // TODO: 8/28/19 important place for shifting the dao object 
-    private final String DB_USER_NAME="root";
-    private final String DB_PASSWORD ="";
+    private  String AUTHORIZATION_USER;
+    private  String AUTHORIZATION_PASSWORD;
+    private  String STORE_CONNECTOR_TYPE; // TODO: 8/28/19 important place for shifting the dao object
+    private  String DB_USER_NAME;
+    private  String DB_PASSWORD ;
+    private  String DATABASE;
 
-    public String getDATABASE() {
-        return DATABASE;
+
+
+    public String getAPP_NAME() {
+        return APP_NAME;
     }
 
-    private final String DATABASE= "ArtifactStore";
-
-
-    public String getDB_USER_NAME() {
-        return DB_USER_NAME;
+    public void setAPP_NAME(String APP_NAME) {
+        this.APP_NAME = APP_NAME;
     }
 
-    public String getDB_PASSWORD() {
-        return DB_PASSWORD;
+    public String getCLIENT_ID() {
+        return CLIENT_ID;
     }
 
-
-    /**
-     * Use this to get different type of connectors.
-     * */
-    public String getSTORE_CONNECTOR_TYPE() {
-        return STORE_CONNECTOR_TYPE;
+    public void setCLIENT_ID(String CLIENT_ID) {
+        this.CLIENT_ID = CLIENT_ID;
     }
 
+    public String getCLIENT_SECRET() {
+        return CLIENT_SECRET;
+    }
 
+    public void setCLIENT_SECRET(String CLIENT_SECRET) {
+        this.CLIENT_SECRET = CLIENT_SECRET;
+    }
 
+    public void setSEC_TOKEN(String SEC_TOKEN) {
+        this.SEC_TOKEN = SEC_TOKEN;
+    }
 
     public String getAUTHORIZATION_USER() {
         return AUTHORIZATION_USER;
@@ -79,7 +86,39 @@ public class ConfigurationFile {
         this.AUTHORIZATION_PASSWORD = AUTHORIZATION_PASSWORD;
     }
 
-    private String AUTHORIZATION_PASSWORD;
+    public String getSTORE_CONNECTOR_TYPE() {
+        return STORE_CONNECTOR_TYPE;
+    }
+
+    public void setSTORE_CONNECTOR_TYPE(String STORE_CONNECTOR_TYPE) {
+        this.STORE_CONNECTOR_TYPE = STORE_CONNECTOR_TYPE;
+    }
+
+    public String getDB_USER_NAME() {
+        return DB_USER_NAME;
+    }
+
+    public void setDB_USER_NAME(String DB_USER_NAME) {
+        this.DB_USER_NAME = DB_USER_NAME;
+    }
+
+    public String getDB_PASSWORD() {
+        return DB_PASSWORD;
+    }
+
+    public void setDB_PASSWORD(String DB_PASSWORD) {
+        this.DB_PASSWORD = DB_PASSWORD;
+    }
+
+    public String getDATABASE() {
+        return DATABASE;
+    }
+
+    public void setDATABASE(String DATABASE) {
+        this.DATABASE = DATABASE;
+    }
+
+
 
     public String getSEC_TOKEN() {
         return SEC_TOKEN;
@@ -88,35 +127,8 @@ public class ConfigurationFile {
     public void setSEC_TOKEN(String AUTHORIZATION_USER ,String AUTHORIZATION_PASSWORD) throws UnsupportedEncodingException {
 
         this.SEC_TOKEN = Base64.getEncoder().encodeToString((AUTHORIZATION_USER+":"+AUTHORIZATION_PASSWORD).getBytes("utf-8"));
-        System.out.println("Sec token here :"+SEC_TOKEN);
+        //System.out.println("Sec token here :"+SEC_TOKEN);
     }
-
-
-    public void setAPP_NAME(String APP_NAME) {
-        this.APP_NAME = APP_NAME;
-    }
-
-    public void setCLIENT_ID(String CLIENT_ID) {
-        this.CLIENT_ID = CLIENT_ID;
-    }
-
-    public void setCLIENT_SECRET(String CLIENT_SECRET) {
-        this.CLIENT_SECRET = CLIENT_SECRET;
-    }
-
-    public String getAPP_NAME() {
-        return APP_NAME;
-    }
-
-    public String getCLIENT_ID() {
-        return CLIENT_ID;
-    }
-
-    public String getCLIENT_SECRET() {
-        return CLIENT_SECRET;
-    }
-
-
 
 
 }

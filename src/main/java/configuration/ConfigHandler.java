@@ -1,9 +1,11 @@
 package configuration;
 
-import dao.DaoFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 
 public class ConfigHandler {
     private ConfigHandler() {
@@ -11,30 +13,6 @@ public class ConfigHandler {
     }
 
     private static ConfigHandler configHandlerInstance = new ConfigHandler();
-
-    public void getConfiguration(String appname){
-        DaoFactory.getInstance().getArtifactStoreConnector("JDBC");
-        // TODO: 8/21/19 Implement connectors to get data from IS store and store to localstore-even can be cache
-        try {
-        ConfigurationFile configurationFile = ConfigurationFile.getInstance();
-        configurationFile.setAPP_NAME(appname);
-        configurationFile.setCLIENT_ID("PEHhH_VlNfxBO_y_a9EjiK8kX7sa");
-        configurationFile.setCLIENT_SECRET("q3EOal32Ewvl33mI1Bzgv80i6IYa");
-        configurationFile.setAUTHORIZATION_USER("admin@wso2.com");
-        configurationFile.setAUTHORIZATION_PASSWORD("admin");
-
-            configurationFile.setSEC_TOKEN(configurationFile.getAUTHORIZATION_USER(),configurationFile.getAUTHORIZATION_PASSWORD());
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setConfiguration(String appname){
-       getConfiguration(appname);
-
-    }
-
-
 
     public static ConfigHandler getInstance() {
         if (configHandlerInstance == null) {
@@ -51,7 +29,46 @@ public class ConfigHandler {
         return configHandlerInstance;
 
 
+
+
+
+
     }
+
+    public  void configure() throws IOException {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+           TempConfig tempConfig1  = mapper.readValue(new File("src/main/resources/config.yaml"), TempConfig.class);
+
+        if (tempConfig1 instanceof TempConfig) {
+            TempConfig tempConfig = (TempConfig) tempConfig1;
+            ConfigurationFile.getInstance().setAPP_NAME(tempConfig.getAppName());
+            ConfigurationFile.getInstance().setCLIENT_ID(tempConfig.getClientId());
+            ConfigurationFile.getInstance().setCLIENT_SECRET(tempConfig.getClientSecret());
+            ConfigurationFile.getInstance().setAUTHORIZATION_USER(tempConfig.getAuthorizationServer());
+            ConfigurationFile.getInstance().setAUTHORIZATION_PASSWORD(tempConfig.getAuthorizationPassword());
+            ConfigurationFile.getInstance().setSTORE_CONNECTOR_TYPE(tempConfig.getStoreConnectorType());
+            ConfigurationFile.getInstance().setDB_USER_NAME(tempConfig.getDbUserName());
+            ConfigurationFile.getInstance().setDB_PASSWORD(tempConfig.getDbUserPassword());
+            ConfigurationFile.getInstance().setDATABASE(tempConfig.getDatabase());
+            this.setConfiguration();
+        }
+}
+
+
+
+    private  void setConfiguration(){
+
+        try {
+            ConfigurationFile.getInstance().setSEC_TOKEN(ConfigurationFile.getInstance().getAUTHORIZATION_USER(),
+                    ConfigurationFile.getInstance().getAUTHORIZATION_PASSWORD());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
 
 
 }
