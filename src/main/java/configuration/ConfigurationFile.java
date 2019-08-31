@@ -39,6 +39,28 @@ public class ConfigurationFile {
     private  String DB_USER_NAME;
     private  String DB_PASSWORD ;
     private  String DATABASE;
+    private  String FLOW_MODE;
+    private  String CLIENT_NOTIFICATION_ENDPOINT;
+
+
+    public String getCLIENT_NOTIFICATION_ENDPOINT() {
+        return CLIENT_NOTIFICATION_ENDPOINT;
+    }
+
+    public void setCLIENT_NOTIFICATION_ENDPOINT(String CLIENT_NOTIFICATION_ENDPOINT) {
+        this.CLIENT_NOTIFICATION_ENDPOINT = CLIENT_NOTIFICATION_ENDPOINT;
+    }
+
+
+
+
+    public String getFLOW_MODE() {
+        return FLOW_MODE;
+    }
+
+    public void setFLOW_MODE(String FLOW_MODE) {
+        this.FLOW_MODE = FLOW_MODE;
+    }
 
 
 

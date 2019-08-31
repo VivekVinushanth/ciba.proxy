@@ -3,16 +3,21 @@ package ciba.proxy.server.servicelayer;
 import cibaparameters.CIBAParameters;
 import configuration.ConfigurationFile;
 import dao.DaoFactory;
+import errorfiles.BadRequest;
+import errorfiles.InternalServerError;
 import handlers.Handlers;
+import handlers.NotificationHandler;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import transactionartifacts.TokenResponse;
 import util.RestTemplateFactory;
 import validator.TokenResponseValidator;
@@ -20,13 +25,17 @@ import validator.TokenResponseValidator;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class ServerResponseHandler implements Handlers {
 
+
+
     private static final Logger LOGGER = Logger.getLogger(ServerResponseHandler.class.getName());
+
     private ServerResponseHandler() {
-       // this.run();
+
     }
 
     private static ServerResponseHandler serverResponseHandlerInstance = new ServerResponseHandler();
@@ -75,14 +84,14 @@ public class ServerResponseHandler implements Handlers {
 
         }*/
 
-        public void getToken(String code,String idenitifier){
-            try {
-                RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
+    public void getToken(String code, String idenitifier) {
+        try {
+            RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
 
-               //headers set
-                HttpHeaders headers = new HttpHeaders();
-                headers.setBasicAuth("PEHhH_VlNfxBO_y_a9EjiK8kX7sa","q3EOal32Ewvl33mI1Bzgv80i6IYa");
-                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            //headers set
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBasicAuth("PEHhH_VlNfxBO_y_a9EjiK8kX7sa", "q3EOal32Ewvl33mI1Bzgv80i6IYa");
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
                /* JWTClaimsSet claims = new JWTClaimsSet.Builder()
                         .claim("grant_type", "authorization_code")
@@ -94,33 +103,32 @@ public class ServerResponseHandler implements Handlers {
 
 */
 
-                MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
-                map.add("grant_type", "authorization_code");
-                map.add("code",code);
-                map.add("redirect_uri", CIBAParameters.getInstance().getCallBackURL());
-                map.add("state",idenitifier);
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+            map.add("grant_type", "authorization_code");
+            map.add("code", code);
+            map.add("redirect_uri", CIBAParameters.getInstance().getCallBackURL());
+            map.add("state", idenitifier);
 
 
-                HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-                String token = restTemplate.postForObject("https://localhost:9443/oauth2/token",request ,String.class);
-                JSONParser parser = new JSONParser();
-                JSONObject json = (JSONObject) parser.parse(token);
-                receivetoken(json,idenitifier);
+            String token = restTemplate.postForObject("https://localhost:9443/oauth2/token", request, String.class);
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(token);
+            receivetoken(json, idenitifier);
 
 
-
-            } catch (KeyStoreException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (KeyManagementException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+    }
 
 
 /*
@@ -132,32 +140,35 @@ public class ServerResponseHandler implements Handlers {
         return TokenResponseValidator.getInstance().validateTokens(token);
     }
 
-    public void addtoStore(TokenResponse tokenResponse,String identifier) {
+    public void addtoStore(TokenResponse tokenResponse, String identifier) {
 
-       /*     DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").addTokenResponse(ServerRequestHandler.
-                            getInstance().getAuthReqId(identifier), tokenResponse);*/
-       DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).
-               addTokenResponse(ServerRequestHandler.getInstance().getAuthReqId(identifier),tokenResponse);
+        DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).
+                addTokenResponse(ServerRequestHandler.getInstance().getAuthReqId(identifier), tokenResponse);
 
-                LOGGER.info("Token Response Received");
-        
+        LOGGER.info("Token Response Received and added to Store.");
+        notify(ServerRequestHandler.getInstance().getAuthReqId(identifier));
 
     }
 
 
-    public void receivetoken(JSONObject token,String identifier) {
-     if (validate(token) != null) {
+    public void receivetoken(JSONObject token, String identifier) {
+        if (validate(token) != null) {
 
-         addtoStore(validate(token), identifier);
-         LOGGER.info("Token Response added to store.");
-     }
+            addtoStore(validate(token), identifier);
+            LOGGER.info("Token Response added to store.");
+        }
     }
 
 
-    public void receivecode(JSONObject codeobject,String identifier) {
+    public void receivecode(JSONObject codeobject, String identifier) {
         String code = codeobject.get("code").toString();
 
-        this.getToken(code,identifier);
+        this.getToken(code, identifier);
     }
-    
+
+
+
+    private void notify(String auth_req_id) {
+     // NotificationHandler.getInstance().sendNotificationtoClient(auth_req_id);
+    }
 }

@@ -559,6 +559,7 @@ public class DbQuery {
             prepStmt.setLong(3, pollingAtrribute.getPollingInterval());
             prepStmt.setLong(4, pollingAtrribute.getLastPolledTime());
             prepStmt.setLong(5, pollingAtrribute.getIssuedTime());
+            prepStmt.setBoolean(6,pollingAtrribute.getNotificationIssued());
 
 
             Boolean result = prepStmt.execute();
@@ -622,6 +623,7 @@ public class DbQuery {
                 pollingAtrribute.setPollingInterval(resultSet.getLong(3));
                 pollingAtrribute.setLastPolledTime(resultSet.getLong(4));
                 pollingAtrribute.setIssuedTime(resultSet.getLong(5));
+                pollingAtrribute.setNotificationIssued(resultSet.getBoolean(6));
 
 
             }

@@ -68,6 +68,7 @@ public class PollingAttributeDB implements ProxyJdbc {
     public void remove(String auth_req_id) {
         if( DbQuery.getInstance().deletePollingAttribute(auth_req_id)){
             LOGGER.info("Requested Authentication request is been deleted.");
+
         }
         else{
             try {

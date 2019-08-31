@@ -46,18 +46,6 @@ public class AuthRequestDB implements ProxyJdbc {
             try {
                if( DbQuery.getInstance().addAuthRequest(auth_req_id,authrequest)) {
                    LOGGER.info("CIBA Authentication added to store");
-                   if (!interestedparty.isEmpty()) {
-                       for (Handlers handler : interestedparty) {
-                           if (handler instanceof ServerRequestHandler) {
-                               ServerRequestHandler serverRequestHandler = (ServerRequestHandler) handler;
-
-                               serverRequestHandler.receive((CIBAauthRequest) authrequest, auth_req_id);
-
-                           }
-                       }
-                   } else {
-                       throw new InternalServerError("No handlers attached");
-                   }
                }else {
                    throw new InternalServerError("Error Adding Authentication Request to the store");
                }

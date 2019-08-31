@@ -3,9 +3,12 @@
 appName: PayHere
 clientId: PEHhH_VlNfxBO_y_a9EjiK8kX7sa
 clientSecret: q3EOal32Ewvl33mI1Bzgv80i6IYa
-authorizationServer: admin@wso2.com
+authorizationUser: admin@wso2.com
 authorizationPassword: admin
 storeConnectorType: JDBC
 database: ArtifactStore
 dbUserName: root
+flowMode: ping
+clientNotificationEndpoint: http://localhost/CIBADEMO/clientNotiifcationEnd
 dbUserPassword:
+

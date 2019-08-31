@@ -8,6 +8,7 @@ import handlers.*;
 import com.nimbusds.jose.Payload;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.ParseException;
+import org.apache.commons.logging.Log;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,8 +17,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-
+import java.util.logging.SimpleFormatter;
 
 
 /**
@@ -34,18 +36,16 @@ public class CIBAProxyServer implements AuthorizationServer {
 
     private ArrayList<Handlers> handlers = new ArrayList<Handlers> ();
     private static final Logger LOGGER = Logger.getLogger(CIBAProxyServer.class.getName());
-    
-    
     private final Object mutex = new Object(); //to serve as a mutex lock in synchronization
 
 
     public CIBAProxyServer() throws UnsupportedEncodingException, FileNotFoundException {
 
 
-       /**
-        * Registering CIBA auth request handle, token request handler to handlers arraylist of ciba proxy.
-        * Adding serverrequest handler to observers of cache
-       */
+        /**
+         * Registering CIBA auth request handle, token request handler to handlers arraylist of ciba proxy.
+         * Adding serverrequest handler to observers of cache
+         */
         CIBAAuthRequestHandler cibaauthrequesthandler = CIBAAuthRequestHandler.getInstance();
         this.register(cibaauthrequesthandler); //registering to Proxy server and to observe on auth requests coming
 
@@ -61,9 +61,7 @@ public class CIBAProxyServer implements AuthorizationServer {
         ServerResponseHandler serverResponseHandler = ServerResponseHandler.getInstance();
         this.register(serverResponseHandler); //registering to Proxy server and to observe on grant codes coming
 
-        ServerRequestHandler serverRequestHandler= ServerRequestHandler.getInstance();
-                serverRequestHandler.registerto(); //registering to Authentication request store
-        LOGGER.config("Authentication Request Handler & Token Request Handler Added");
+        LOGGER.config("Sucessfuly configured Handlers.");
 
 
     }
@@ -71,30 +69,32 @@ public class CIBAProxyServer implements AuthorizationServer {
 
     /**
      * Endpoint where authentication request hits and then proceeded.
-    */
+     */
     @RequestMapping(value = "/CIBAEndPoint",method = RequestMethod.POST)
     public String acceptAuthRequest(@RequestParam(defaultValue = "" , value = "request") String request) {
 
-       /**
-        * Considering that the request is always  signed.
-        * */
-       LOGGER.info("CIBA Authentication request hits the CIBA Auth Request Endpoint.");
+        /**
+         * Considering that the request is always  signed.
+         * */
+        LOGGER.info("CIBA Authentication request hits the CIBA Auth Request Endpoint.");
 
         try {
-        if (!handlers.isEmpty()) {
-            for (Handlers handler : handlers) {
-                if (handler instanceof CIBAAuthRequestHandler && !request.equals("")) {
-                    return notifyHandler(handler, request);
+            if (!handlers.isEmpty()) {
+                for (Handlers handler : handlers) {
+                    if (handler instanceof CIBAAuthRequestHandler && !request.equals("")) {
+                        return notifyHandler(handler, request);
+                    }
                 }
             }
-            }
 
-            LOGGER.warning("No handlers to listen the request.");
-            throw new InternalServerError("No EndPoints to listen.");
+
+            throw new InternalServerError("No Handlers configured to listen.");
 
         } catch (InternalServerError internalServerError) {
+            LOGGER.warning("No handlers to listen the request.");
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+
         }
 
     }
@@ -102,24 +102,24 @@ public class CIBAProxyServer implements AuthorizationServer {
 
     /**
      *Endpoint where token request hits and then proceeded.
-    */
+     */
     @RequestMapping("/TokenEndPoint")
     public String acceptTokenRequest(@RequestParam(defaultValue = "" , value = "auth_req_id") String auth_req_id,
-                                      @RequestParam(defaultValue = "" , value = "grant_type") String grantType) {
+                                     @RequestParam(defaultValue = "" , value = "grant_type") String grantType) {
 
         LOGGER.info("CIBA Token request hits the CIBA Token Request Endpoint.");
 
         try {
-        if (!handlers.isEmpty()) {
-            for (Handlers handler : handlers) {
-                if (handler instanceof TokenRequestHandler) {
+            if (!handlers.isEmpty()) {
+                for (Handlers handler : handlers) {
+                    if (handler instanceof TokenRequestHandler) {
 
-                    String result = this.notifyHandler(handler, auth_req_id , grantType).toString();
-                    return result;
+                        String result = this.notifyHandler(handler, auth_req_id , grantType).toString();
+                        return result;
 
+                    }
                 }
             }
-        }
 
             LOGGER.warning("No Token request handlers added to the system.");
             throw  new InternalServerError("No handlers registered");
@@ -134,8 +134,8 @@ public class CIBAProxyServer implements AuthorizationServer {
      */
     @RequestMapping("/RegistrationEndPoint")
     public String acceptRegistrationRequest(@RequestParam(defaultValue = "" , value = "name") String name,
-                                     @RequestParam(defaultValue = "" , value = "password") String password,
-                                     @RequestParam(defaultValue = "" , value = "mode") String mode) {
+                                            @RequestParam(defaultValue = "" , value = "password") String password,
+                                            @RequestParam(defaultValue = "" , value = "mode") String mode) {
 
         LOGGER.info("CIBA Client App registration request hits the CIBA Registration Endpoint.");
 
@@ -166,7 +166,7 @@ public class CIBAProxyServer implements AuthorizationServer {
     public String acceptUserRegistration(@RequestBody JSONObject user, @RequestHeader HttpHeaders headersRequest) {
 
 
-       // TODO: 8/13/19 consider the json tree-if possible- that would be greater
+        // TODO: 8/13/19 consider the json tree-if possible- that would be greater
 
         LOGGER.info("CIBA User registration request hits the CIBA User Registration Endpoint.");
 
@@ -208,7 +208,7 @@ public class CIBAProxyServer implements AuthorizationServer {
 
                 for (Handlers handler : handlers) {
                     if (handler instanceof ServerResponseHandler) {
-                       // if (response.get("code").toString() != null && response.get("session_state") != null) {
+                        // if (response.get("code").toString() != null && response.get("session_state") != null) {
                         if(! session_state.isEmpty() && !code.isEmpty() ){
                             System.out.println("Hnadlers not empty");
                             JWTClaimsSet claims = new JWTClaimsSet.Builder()
@@ -232,12 +232,12 @@ public class CIBAProxyServer implements AuthorizationServer {
                     }
                 }
 
-                }
+            }
             LOGGER.warning("No Token request handlers added to the system.");
-                throw new InternalServerError("No handlers registered");
+            throw new InternalServerError("No handlers registered");
 
-            } catch(InternalServerError internalServerError){
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        } catch(InternalServerError internalServerError){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
 
 
         }
@@ -254,8 +254,8 @@ public class CIBAProxyServer implements AuthorizationServer {
                 ServerResponseHandler serverResponseHandler = (ServerResponseHandler) handler;
 
 
-                    LOGGER.info("Server Request Handler is notified about reception of grant code");
-                    serverResponseHandler.receivecode(response,identifier);
+                LOGGER.info("Server Request Handler is notified about reception of grant code");
+                serverResponseHandler.receivecode(response,identifier);
 
 
             } else {
@@ -292,7 +292,7 @@ public class CIBAProxyServer implements AuthorizationServer {
 
     /**
      *  Add interested observers.
-    */
+     */
 
     public void register(Handlers handler) {
         if (handler == null) {
@@ -314,27 +314,27 @@ public class CIBAProxyServer implements AuthorizationServer {
 
     public void deRegister(Handlers handler) {
 
-            synchronized (mutex) {
-                handlers.remove(handler);
-            }
+        synchronized (mutex) {
+            handlers.remove(handler);
         }
+    }
 
 
 
 
     /**
      * Different notifying methods to notify specific handler.
-    */
+     */
     private String notifyHandler(Handlers handler, String params) {
         try {
-        if (handler instanceof CIBAAuthRequestHandler) {
+            if (handler instanceof CIBAAuthRequestHandler) {
 
-            CIBAAuthRequestHandler cibaauthrequesthandler = (CIBAAuthRequestHandler) handler;
-            LOGGER.info("Authentication request handler notified.");
+                CIBAAuthRequestHandler cibaauthrequesthandler = (CIBAAuthRequestHandler) handler;
+                LOGGER.info("Authentication request handler notified.");
 
-            return cibaauthrequesthandler.receive(params);
+                return cibaauthrequesthandler.receive(params);
 
-        }
+            }
             throw new InternalServerError("No Authentication request handlers found");
 
         } catch (InternalServerError internalServerError) {
@@ -349,11 +349,11 @@ public class CIBAProxyServer implements AuthorizationServer {
         try {
             if (handler instanceof TokenRequestHandler) {
 
-            TokenRequestHandler tokenrequesthandler = (TokenRequestHandler) handler;
+                TokenRequestHandler tokenrequesthandler = (TokenRequestHandler) handler;
                 LOGGER.info("Token request handler notified.");
-            return tokenrequesthandler.receive(authReqid, grantType);
+                return tokenrequesthandler.receive(authReqid, grantType);
 
-        } else {
+            } else {
                 throw new InternalServerError("No Authentication request handlers found");
             }
         } catch (InternalServerError internalServerError) {
@@ -403,10 +403,10 @@ public class CIBAProxyServer implements AuthorizationServer {
 
     // TODO: 8/5/19 public void communicateToAuthDevice(){}
 
-private void configureProxy() throws IOException, ParseException {
-    ConfigHandler.getInstance().configure();
-    LOGGER.config("Configuring Proxy for the Client of Application ");
-}
+    private void configureProxy() throws IOException, ParseException {
+        ConfigHandler.getInstance().configure();
+        LOGGER.config("Configuring Proxy for the Client of Application ");
+    }
 
 
 }

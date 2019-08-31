@@ -296,12 +296,13 @@ public  class DbScripts {
     private final static String CREATE_POLLING_ATTRIBUTE_DB_SCRIPT ="CREATE TABLE IF NOT EXISTS pollingAttribute (" +
             "auth_req_id VARCHAR(255) NOT NULL,  expiresIn BIGINT NOT NULL," +
             "pollingTime BIGINT NOT NULL, lastPolled BIGINT NOT NULL," +
-            " issuedTime BIGINT NOT NULL,primary key (auth_req_id));";
+            " issuedTime BIGINT NOT NULL, notification_issued BOOLEAN NOT NULL ," +
+            "primary key (auth_req_id));";
 
 
     private static final String ADD_POLLING_ATTRIBUTE_TO_DB_SCRIPT = "INSERT INTO pollingAttribute" +
-            "(auth_req_id,expiresIn,pollingTime,lastPolled,issuedTime)" +
-            " VALUES (?,?,?,?,?) ";
+            "(auth_req_id,expiresIn,pollingTime,lastPolled,issuedTime,notification_issued)" +
+            " VALUES (?,?,?,?,?,?) ";
 
     private static final String REMOVE_POLLING_ATTRIBUTE_FROM_DB_SCRIPT = "DELETE FROM pollingAttribute where auth_req_id = ?";
     private final static String GET_POLLING_ATTRIBUTE_FROM_DB_SCRIPT = "SELECT * FROM pollingAttribute where auth_req_id = ? ";

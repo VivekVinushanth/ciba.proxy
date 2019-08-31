@@ -44,7 +44,7 @@ public class ServerRequestHandler implements Handlers {
 
 
     //should be notified
-    public void receive(CIBAauthRequest cibAauthRequest, String auth_req_id) {
+    public void initiateServerCommunication(CIBAauthRequest cibAauthRequest, String auth_req_id) {
 
         refactor(cibAauthRequest, storeInDB(auth_req_id));
 
@@ -114,7 +114,7 @@ public class ServerRequestHandler implements Handlers {
                 /**
                  Send the Authentication Request to the Identity Server.
                  */
-                initiateRequest(cibarequest,identifier); //sending the request
+                initiateRequest(cibarequest,identifier); //sending the request as binded
 
 
 
@@ -150,9 +150,7 @@ public class ServerRequestHandler implements Handlers {
                         getCallBackURL()+"&client_id="+ ConfigurationFile.getInstance().getCLIENT_ID()+
                         "&sectoken="+ ConfigurationFile.getInstance().getSEC_TOKEN()+"&prompt=none",String.class);
 
-                // typecasting obj to JSONObject
 
-                System.out.println("Result is here:"+result);
 
 
                 if (result != null){
@@ -174,12 +172,6 @@ public class ServerRequestHandler implements Handlers {
         public String getAuthReqId(String identifier){
         return identifierstore.get(identifier);
 
-        }
-
-        public void registerto(){
-
-           // DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToAuthRequestObservers(this);
-            DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).registerToAuthRequestObservers(this);
         }
 
 

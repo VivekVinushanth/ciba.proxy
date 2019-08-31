@@ -45,25 +45,7 @@ public class AuthRequestCache implements ProxyCache {
          LOGGER.info("CIBA Authentication added to store");
             authRequestCache.put(auth_req_id, authrequest);
 
-
-            try {
-                //wait(3000);
-                if (!interestedparty.isEmpty()) {
-                    for (Handlers handler : interestedparty) {
-                        if (handler instanceof ServerRequestHandler) {
-                            ServerRequestHandler serverRequestHandler = (ServerRequestHandler) handler;
-
-                            serverRequestHandler.receive((CIBAauthRequest) authrequest, auth_req_id);
-
-                        }
-                    }
-                }else {
-                        throw new InternalServerError("No handlers attached");
-                    }
-
-            } catch (InternalServerError internalServerError) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
-        }}
+           }
     }
 
     @Override

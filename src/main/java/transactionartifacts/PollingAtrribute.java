@@ -7,6 +7,15 @@ public class PollingAtrribute implements Artifacts {
     private long lastPolledTime;
     private long pollingInterval;
     private long issuedTime;
+    private Boolean notificationIssued;
+
+    public Boolean getNotificationIssued() {
+        return notificationIssued;
+    }
+
+    public void setNotificationIssued(Boolean notificationIssued) {
+        this.notificationIssued = notificationIssued;
+    }
 
     public String getAuth_req_id() {
         return auth_req_id;

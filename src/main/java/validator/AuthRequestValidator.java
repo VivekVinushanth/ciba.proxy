@@ -1,6 +1,7 @@
 package validator;
 
 import authorizationserver.CIBAProxyServer;
+import configuration.ConfigurationFile;
 import errorfiles.BadRequest;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -228,15 +229,36 @@ public class AuthRequestValidator {
          * Not Mandatory for polling.
          * Mandatory if ping.
          * */
-        if ((String.valueOf(jo.get("client_notification_token")).isEmpty())) {
-            //do nothing
+        if (ConfigurationFile.getInstance().getFLOW_MODE().equalsIgnoreCase("ping")){
+           try{
+               if ((String.valueOf(jo.get("client_notification_token")).isEmpty())) {
+                   throw new BadRequest("Client Notification Token is mandotory for ping");
 
-        } else if ((jo.get("client_notification_token")) == null) {
-            //do nothing
+               } else if ((jo.get("client_notification_token")) == null) {
+                   throw new BadRequest("Client Notification Token is mandotory for ping");
 
-        } else {
-            //cibaparameters.setClient_notification_token(String.valueOf(jo.get("client_notification_token")));
-            cibaAuthRequest.setClient_notification_token(String.valueOf(jo.get("client_notification_token")));
+               } else {
+                   //cibaparameters.setClient_notification_token(String.valueOf(jo.get("client_notification_token")));
+                   cibaAuthRequest.setClient_notification_token(String.valueOf(jo.get("client_notification_token")));
+               }
+           } catch (BadRequest badRequest) {
+               LOGGER.warning("Invalid request : Missing Client Notification token'");
+               throw new ResponseStatusException(
+                       HttpStatus.BAD_REQUEST, badRequest.getMessage());
+           }
+
+        } else{
+            if ((String.valueOf(jo.get("client_notification_token")).isEmpty())) {
+                //do nothing
+
+            } else if ((jo.get("client_notification_token")) == null) {
+                //do nothing
+
+            } else {
+                //cibaparameters.setClient_notification_token(String.valueOf(jo.get("client_notification_token")));
+                cibaAuthRequest.setClient_notification_token(String.valueOf(jo.get("client_notification_token")));
+            }
+
         }
 
 
