@@ -59,7 +59,7 @@ public class TokenRequestHandler implements Handlers {
              * TokenRequestHandler getting the service from Token_Response_Handler to create response.
              * */
             TokenResponseHandler tokenresponsehandler = TokenResponseHandler.getInstance();
-            LOGGER.info("Token Response created.");
+            //LOGGER.info("Token Response created.");
             return (tokenresponsehandler.createTokenResponse(authreqid));
 
 

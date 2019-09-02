@@ -63,7 +63,7 @@ public class AuthRequestDB implements ProxyJdbc {
     @Override
     public void remove(String auth_req_id) {
         if(DbQuery.getInstance().deleteAuthRequest(auth_req_id)){
-            LOGGER.info("Requested Authentication request is been deleted.");
+            LOGGER.info(" Authentication request is been deleted.");
         }
         else{
             try {

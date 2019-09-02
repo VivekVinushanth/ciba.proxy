@@ -51,15 +51,11 @@ public class ServerRequestHandler implements Handlers {
 
 
     }
-
-   /* public void register(){
-        DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToTokenRequestCache(this);
-
-        }
-*/
+    
 
     private void refactor(CIBAauthRequest cibAauthRequest, String identifier) {
         try {
+            // TODO: 9/2/19 write the logic for empty usercode and binding message
             /*String bindingmessage = cibAauthRequest.getBinding_message();
             String usercode = cibAauthRequest.getUser_code();*/
 /*
@@ -73,6 +69,9 @@ public class ServerRequestHandler implements Handlers {
                     String cibarequest = claims.toJSONObject().toString();
 
                     Payload cibarequestpaylaod = new Payload(claims.toJSONObject());
+                 
+                 
+                 
 
                     *//**
                     Send the Authentication Request to the Identity Server.

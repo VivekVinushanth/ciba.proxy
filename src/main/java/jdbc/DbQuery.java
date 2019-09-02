@@ -308,8 +308,10 @@ public class DbQuery {
                 cibAauthResponse.setAuth_req_id(resultSet.getString(1));
                 cibAauthResponse.setExpires_in(resultSet.getLong(2));
                 cibAauthResponse.setInterval(resultSet.getLong(3));
+                return cibAauthResponse;
 
             }
+            cibAauthResponse = null; // TODO: 9/2/19 add this kind of null things as when needed to ensure there is no result 
             statement.close();
             preparedStmt.close();
             

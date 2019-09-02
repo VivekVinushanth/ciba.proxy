@@ -169,6 +169,6 @@ public class ServerResponseHandler implements Handlers {
 
 
     private void notify(String auth_req_id) {
-     // NotificationHandler.getInstance().sendNotificationtoClient(auth_req_id);
+      NotificationHandler.getInstance().sendNotificationtoClient(auth_req_id);
     }
 }

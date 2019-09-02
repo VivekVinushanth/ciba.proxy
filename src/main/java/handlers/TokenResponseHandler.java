@@ -43,16 +43,11 @@ public class TokenResponseHandler implements Handlers {
 
     public Payload createTokenResponse(String auth_req_id) {
         CIBAParameters cibaparameters = CIBAParameters.getInstance();
-        //TokenResponse tokenResponse = DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").getTokenResponse(auth_req_id);
 
-TokenResponse tokenResponse =DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id);
-        // String clientNotificationToken = cibaparameters.getClient_notification_token();
+TokenResponse tokenResponse =DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().
+        getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id);
 
 
-        //BearerAccessToken bearerAccessToken = new BearerAccessToken(clientNotificationToken);
-        //creating bearer access token and adding to header
-        //JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).customParam("Authorization", bearerAccessToken).build();
-        // TODO: 8/7/19 Should concider ping flow also
 
         //Only checking the presence of refresh token and creating payload accordingly
         if (tokenResponse.getRefreshToken() != null) {
@@ -98,7 +93,8 @@ TokenResponse tokenResponse =DaoFactory.getInstance().getArtifactStoreConnector(
         public boolean checkTokenReceived (String auth_req_id) {
 
             if (//DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").getTokenResponse(auth_req_id) != null) {
-                   DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id)!=null ){
+                   DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().
+                           getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id)!=null ){
                 return true;
             }
             LOGGER.info("Token Response still not received");

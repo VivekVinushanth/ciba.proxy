@@ -80,21 +80,6 @@ public class CIBAAuthResponseHandler implements Handlers {
     }
 
 
-    /**
-     * Creating error response.
-     */
-   /* public Payload createAuthErrorResponse() {
-        // ErrorCodeHandlers errorCodeHandlers = ErrorCodeHandlers.getInstance();
-
-        try {
-            throw new BadRequest("Bad Request");
-        } catch (BadRequest badRequest) {
-            badRequest.printStackTrace();
-        }
-
-        return new Payload("Here");
-    }*/
-
 
   /**
    * Storing auth response to cache memory.

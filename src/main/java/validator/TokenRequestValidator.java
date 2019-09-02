@@ -53,13 +53,18 @@ public class TokenRequestValidator {
         CIBAParameters cibaparameters = CIBAParameters.getInstance();
 
         try {
-            if (auth_req_id.isEmpty() || auth_req_id.equals("") || auth_req_id == null) {
+            if (auth_req_id.isEmpty() || auth_req_id.equals("") || auth_req_id == null ) {
                 tokenRequest = null;
                 LOGGER.info("Invalid auth_req_id");
 
                 throw new UnAuthorizedRequest("Invalid auth_req_id");
 
-            } else if (grant_type.isEmpty()) {
+            } else if(artifactStoreConnectors.getAuthResponse(auth_req_id)==null) {
+                LOGGER.info("Invalid auth_req_id");
+
+                throw new UnAuthorizedRequest("Invalid auth_req_id");
+
+            }else if (grant_type.isEmpty()) {
                 tokenRequest = null;
                 LOGGER.info("Improper grant_type");
                 throw new BadRequest("Improper grant_type");
@@ -84,7 +89,7 @@ public class TokenRequestValidator {
 
                             }   else if (currenttime > issuedtime + expiryduration + 5) {
                                 tokenRequest = null;
-                                LOGGER.info("Improper Flow. Subscribed to Ping but yet Polling");
+                                LOGGER.info("Expired Token");
                                 throw new BadRequest("Expired Token");
 
                                 //checking for frequency of poll
@@ -109,6 +114,7 @@ public class TokenRequestValidator {
 
                             } else {
                                 if (TokenResponseHandler.getInstance().checkTokenReceived(auth_req_id)) {
+                                    //check for the reception of token is handled here
                                     tokenRequest.setGrant_type(grant_type);
                                     tokenRequest.setAuth_req_id(auth_req_id);
 
