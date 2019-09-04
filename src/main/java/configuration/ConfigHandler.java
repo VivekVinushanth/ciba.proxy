@@ -48,7 +48,7 @@ public class ConfigHandler {
                         ConfigurationFile.getInstance().setAPP_NAME(tempConfig.getAppName());
                     }
                 }catch (IllegalArgumentException e){
-                    LOGGER.severe("App Name Can not be null");
+                    LOGGER.severe("App Name can not be null");
                 }
 
 
@@ -59,7 +59,7 @@ public class ConfigHandler {
                         ConfigurationFile.getInstance().setCLIENT_ID(tempConfig.getClientId());
                     }
                 }catch (IllegalArgumentException e){
-                    LOGGER.severe("Client ID Can not be null");
+                    LOGGER.severe("Client ID can not be null");
                 }
 
 
@@ -70,7 +70,7 @@ public class ConfigHandler {
                         ConfigurationFile.getInstance().setCLIENT_SECRET(tempConfig.getClientSecret());
                     }
                 }catch (IllegalArgumentException e){
-                    LOGGER.severe("Client Secret Can not be null");
+                    LOGGER.severe("Client Secret can not be null");
                 }
 
 
@@ -82,7 +82,7 @@ public class ConfigHandler {
                         ConfigurationFile.getInstance().setAUTHORIZATION_USER(tempConfig.getAuthorizationUser());
                     }
                 }catch (IllegalArgumentException e){
-                    LOGGER.severe("Authorization User Can not be null");
+                    LOGGER.severe("Authorization User can not be null");
                 }
 
 
@@ -94,7 +94,7 @@ public class ConfigHandler {
                         ConfigurationFile.getInstance().setAUTHORIZATION_PASSWORD(tempConfig.getAuthorizationPassword());
                     }
                 }catch (IllegalArgumentException e){
-                    LOGGER.severe("Authorization Password Can not be null");
+                    LOGGER.severe("Authorization Password can not be null");
                 }
 
                 try{
@@ -105,7 +105,7 @@ public class ConfigHandler {
                         ConfigurationFile.getInstance().setSTORE_CONNECTOR_TYPE(tempConfig.getStoreConnectorType());
                     }
                 }catch (IllegalArgumentException e){
-                    LOGGER.severe("Store Connector Type Can not be null");
+                    LOGGER.severe("Store Connector Type can not be null");
                 }
 
                 try{
@@ -116,7 +116,7 @@ public class ConfigHandler {
                         ConfigurationFile.getInstance().setDB_USER_NAME(tempConfig.getDbUserName());
                     }
                 }catch (IllegalArgumentException e){
-                    LOGGER.severe("Database User Name Can not be null");
+                    LOGGER.severe("Database User Name can not be null");
                 }
 
                 try{
@@ -196,7 +196,7 @@ public class ConfigHandler {
             ConfigurationFile.getInstance().setSEC_TOKEN(ConfigurationFile.getInstance().getAUTHORIZATION_USER(),
                     ConfigurationFile.getInstance().getAUTHORIZATION_PASSWORD());
         } catch (UnsupportedEncodingException e) {
-            LOGGER.severe("Can not Create Sec-Token.Check Authorization UserName and Password is configured properly.");
+            LOGGER.severe("can not Create Sec-Token.Check whether Authorization UserName and Password is configured properly.");
         }
 
     }

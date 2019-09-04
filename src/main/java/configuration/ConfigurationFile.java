@@ -149,7 +149,7 @@ public class ConfigurationFile {
     public void setSEC_TOKEN(String AUTHORIZATION_USER ,String AUTHORIZATION_PASSWORD) throws UnsupportedEncodingException {
 
         this.SEC_TOKEN = Base64.getEncoder().encodeToString((AUTHORIZATION_USER+":"+AUTHORIZATION_PASSWORD).getBytes("utf-8"));
-        //System.out.println("Sec token here :"+SEC_TOKEN);
+       // System.out.println("Sec token here :"+SEC_TOKEN);
     }
 
 

@@ -86,10 +86,12 @@ public class CIBAAuthResponseHandler implements Handlers {
    * */
    public void storeAuthResponse(String auth_req_id, CIBAauthResponse cibAauthResponse) {
 
-       daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addAuthResponse(auth_req_id,cibAauthResponse);
+       daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).
+               addAuthResponse(auth_req_id,cibAauthResponse);
        //daoFactory.getArtifactStoreConnector("InMemoryCache").addAuthResponse(auth_req_id, cibAauthResponse);
       LOGGER.info("CIBA Authentication Response stored in Auth Response Store.");
-      System.out.println("Working in perfection"+daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).getAuthResponse(auth_req_id).getExpires_in());
+      System.out.println("Working in perfection"+daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().
+              getSTORE_CONNECTOR_TYPE()).getAuthResponse(auth_req_id).getExpires_in());
 
       storePollingAttribute(auth_req_id); // store polling attributes first
       triggerServerRequestHandler(auth_req_id); //then trigggering the server to initiate the flow

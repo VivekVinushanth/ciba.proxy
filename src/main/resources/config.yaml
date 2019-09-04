@@ -1,14 +1,14 @@
 ---
 #config_file
-appName: PayHere
-clientId: PEHhH_VlNfxBO_y_a9EjiK8kX7sa
-clientSecret: q3EOal32Ewvl33mI1Bzgv80i6IYa
-authorizationUser: admin@wso2.com
+appName: cibatryout
+clientId: vl0TxR4bwjT7F7vCQmdXu_FRkWAa
+clientSecret: 3kYVaLJFSlYsHkbbeFSIJz41lwMa
+authorizationUser: admin
 authorizationPassword: admin
 storeConnectorType: JDBC
 database: ArtifactStore
 dbUserName: root
 flowMode: ping
-clientNotificationEndpoint: http://localhost/CIBADEMO/clientNotiifcationEnd
+clientNotificationEndpoint: http://localhost/CIBADEMO/clientNotificationEnd
 dbUserPassword:
 

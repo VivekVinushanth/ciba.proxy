@@ -90,7 +90,7 @@ public class ServerResponseHandler implements Handlers {
 
             //headers set
             HttpHeaders headers = new HttpHeaders();
-            headers.setBasicAuth("PEHhH_VlNfxBO_y_a9EjiK8kX7sa", "q3EOal32Ewvl33mI1Bzgv80i6IYa");
+            headers.setBasicAuth(ConfigurationFile.getInstance().getCLIENT_ID(),ConfigurationFile.getInstance().getCLIENT_SECRET());
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
                /* JWTClaimsSet claims = new JWTClaimsSet.Builder()

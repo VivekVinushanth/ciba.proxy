@@ -104,6 +104,7 @@ public class ServerRequestHandler implements Handlers {
                         .claim("identifier", identifier)
                         .claim("bindingmessage",cibAauthRequest.getBinding_message())
                         .claim("usercode",cibAauthRequest.getUser_code())
+                        .claim("username","cvivekvinushanth@gmail.com")
                         .build();
 
                 String cibarequest = claims.toJSONObject().toString();
@@ -144,10 +145,9 @@ public class ServerRequestHandler implements Handlers {
 
             try {
                 RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
-                String result = restTemplate.getForObject(CIBAParameters.getInstance().getAUTHORIZE_ENDPOINT()+"?scope=openid&" +
+                String result = restTemplate.getForObject(CIBAParameters.getInstance().getAUTHORIZE_ENDPOINT()+"?scope=openid&"+
                         "response_type=code&state="+identifier+"&redirect_uri="+CIBAParameters.getInstance().
-                        getCallBackURL()+"&client_id="+ ConfigurationFile.getInstance().getCLIENT_ID()+
-                        "&sectoken="+ ConfigurationFile.getInstance().getSEC_TOKEN()+"&prompt=none",String.class);
+                        getCallBackURL()+"&client_id="+ ConfigurationFile.getInstance().getCLIENT_ID(),String.class);
 
 
 
