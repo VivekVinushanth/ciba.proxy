@@ -264,7 +264,7 @@ public  class DbScripts {
     private final static String CREATE_TOKEN_RESPONSE_DB_SCRIPT ="CREATE TABLE IF NOT EXISTS tokenResponse (" +
             "auth_req_id VARCHAR(255) NOT NULL,  access_token TEXT NOT NULL , " +
             "id_token TEXT NOT NULL , token_type VARCHAR(255) NOT NULL ," +
-            "expires_in BIGINT NOT NULL ,refresh_token TEXT," +
+            "expires_in BIGINT NOT NULL ,refresh_token TEXT, " +
             "primary key (auth_req_id));";
 
     private static final String ADD_TOKEN_RESPONSE_TO_DB_SCRIPT = "INSERT INTO tokenResponse" +

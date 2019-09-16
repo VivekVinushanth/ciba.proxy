@@ -64,8 +64,9 @@ public class TokenRequestHandler implements Handlers {
 
 
         } else {
+            System.out.println("Error Response to be created.");
             TokenResponseHandler tokenresponsehandler = TokenResponseHandler.getInstance();
-            return (tokenresponsehandler.createTokenErrorResponse());
+            return (tokenresponsehandler.createTokenErrorResponse(authreqid));
         }
 
     }

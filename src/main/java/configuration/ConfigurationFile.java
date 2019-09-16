@@ -33,8 +33,8 @@ public class ConfigurationFile {
     private  String CLIENT_ID;
     private  String CLIENT_SECRET;
     private  String SEC_TOKEN;
-    private  String AUTHORIZATION_USER;
-    private  String AUTHORIZATION_PASSWORD;
+  /*  private  String AUTHORIZATION_USER;
+    private  String AUTHORIZATION_PASSWORD;*/
     private  String STORE_CONNECTOR_TYPE; // TODO: 8/28/19 important place for shifting the dao object
     private  String DB_USER_NAME;
     private  String DB_PASSWORD ;
@@ -92,7 +92,7 @@ public class ConfigurationFile {
         this.SEC_TOKEN = SEC_TOKEN;
     }
 
-    public String getAUTHORIZATION_USER() {
+ /*   public String getAUTHORIZATION_USER() {
         return AUTHORIZATION_USER;
     }
 
@@ -106,7 +106,7 @@ public class ConfigurationFile {
 
     public void setAUTHORIZATION_PASSWORD(String AUTHORIZATION_PASSWORD) {
         this.AUTHORIZATION_PASSWORD = AUTHORIZATION_PASSWORD;
-    }
+    }*/
 
     public String getSTORE_CONNECTOR_TYPE() {
         return STORE_CONNECTOR_TYPE;

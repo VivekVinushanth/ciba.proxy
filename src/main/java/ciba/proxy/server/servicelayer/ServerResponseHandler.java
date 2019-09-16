@@ -166,6 +166,9 @@ public class ServerResponseHandler implements Handlers {
         this.getToken(code, identifier);
     }
 
+    /*public void addErrorResponse(JSONObject response, String identifier) {
+        addtoStore(response, identifier);
+    }*/
 
 
     private void notify(String auth_req_id) {

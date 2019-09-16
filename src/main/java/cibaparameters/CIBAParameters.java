@@ -67,7 +67,7 @@ public class CIBAParameters {
         this.callBackURL = callBackURL;
     }
 
-    private String callBackURL = "http://localhost:8080/CallBackEndpoint" ;
+    private String callBackURL = "http://10.10.10.134:8080/CallBackEndpoint" ;
 
     private  String grant_type = "urn:openid:params:grant-type:ciba";
 

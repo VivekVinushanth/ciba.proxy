@@ -8,18 +8,14 @@ import handlers.*;
 import com.nimbusds.jose.Payload;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.ParseException;
-import org.apache.commons.logging.Log;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import tempErrorCache.TempErrorCache;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 
 /**
@@ -70,7 +66,7 @@ public class CIBAProxyServer implements AuthorizationServer {
     /**
      * Endpoint where authentication request hits and then proceeded.
      */
-    @RequestMapping(value = "/CIBAEndPoint",method = RequestMethod.POST,produces={"application/json","application/xml"}, consumes="application/x-www-form-urlencoded")
+    @RequestMapping(value = "/CIBAEndPoint")
     public String acceptAuthRequest(@RequestParam(defaultValue = "" , value = "request") String request) {
 
         /**
@@ -103,7 +99,7 @@ public class CIBAProxyServer implements AuthorizationServer {
     /**
      *Endpoint where token request hits and then proceeded.
      */
-    @RequestMapping(value= "/TokenEndPoint", method = RequestMethod.POST)
+    @RequestMapping(value= "/TokenEndPoint")
     public String acceptTokenRequest(@RequestParam(defaultValue = "" , value = "auth_req_id") String auth_req_id,
                                      @RequestParam(defaultValue = "" , value = "grant_type") String grantType) {
 
@@ -196,7 +192,9 @@ public class CIBAProxyServer implements AuthorizationServer {
     @RequestMapping("/CallBackEndpoint")
     public void acceptAuthCode(@RequestParam(defaultValue = "" , value = "code") String code,
                                        @RequestParam(defaultValue = "" , value = "session_state") String session_state,
-                                       @RequestParam(defaultValue = "" , value = "state") String state)
+                                       @RequestParam(defaultValue = "" , value = "state") String state,
+                                        @RequestParam(defaultValue = "" , value = "error_description") String error_description)
+
     {
 
         // TODO: 8/15/19 since both code and tokens are received here right the logic for it.
@@ -209,14 +207,16 @@ public class CIBAProxyServer implements AuthorizationServer {
                 for (Handlers handler : handlers) {
                     if (handler instanceof ServerResponseHandler) {
                         // if (response.get("code").toString() != null && response.get("session_state") != null) {
-                        if(! session_state.isEmpty() && !code.isEmpty() ){
-                            System.out.println("Handlers not empty");
+                        if(!code.isEmpty() && !code.equals(null)){
+
                             JWTClaimsSet claims = new JWTClaimsSet.Builder()
                                     .claim("code", code)
                                     .claim("session_state", session_state)
                                     .claim("state",state)
                                     .build();
-
+// TODO: 9/12/19 added today
+                            TempErrorCache.getInstance().removeAuthResponse(ServerRequestHandler.getInstance().getAuthReqId(state));
+                            TempErrorCache.getInstance().addAuthenticationStatus(ServerRequestHandler.getInstance().getAuthReqId(state),"Sucess");
 /*
                                 JSONObject json = (JSONObject) new net.minidev.json.parser.JSONParser().parse(state);
                                 String identifier = String.valueOf(json.get("identifier"));*/
@@ -230,16 +230,25 @@ public class CIBAProxyServer implements AuthorizationServer {
                             notifyTokenHandler(handler, response, state);
 
                         }*/ else{
-                            throw new InternalServerError("Auth code parameters missing.");
+                            // TODO: 9/12/19 check for error and can send a notification when polled.
+                            System.out.println("code is empty");
+                            TempErrorCache.getInstance().removeAuthResponse(ServerRequestHandler.getInstance().getAuthReqId(state));
+                            TempErrorCache.getInstance().addAuthenticationStatus(ServerRequestHandler.getInstance().getAuthReqId(state),"Failed");
+                            //System.out.println("here - session"+String.valueOf(response.get("session_state")));
+                            //notifyCodeHandler(handler, response, state);
+                            //throw new InternalServerError(response.toString());
+
+
                         }
                     }
                 }
 
             }
-            LOGGER.warning("No Server event handlers added to the system.");
+            else{
+                LOGGER.warning("No Server Response handlers added to the system.");
             throw new InternalServerError("No Server event handlers registered");
 
-        } catch(InternalServerError internalServerError){
+        } }catch(InternalServerError internalServerError){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
 
 

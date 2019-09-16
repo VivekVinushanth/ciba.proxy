@@ -3,12 +3,10 @@
 appName: cibatryout
 clientId: vl0TxR4bwjT7F7vCQmdXu_FRkWAa
 clientSecret: 3kYVaLJFSlYsHkbbeFSIJz41lwMa
-authorizationUser: admin
-authorizationPassword: admin
 storeConnectorType: JDBC
 database: ArtifactStore
 dbUserName: root
-flowMode: ping
-clientNotificationEndpoint: http://localhost/CIBADEMO/clientNotificationEnd
+flowMode: poll
+clientNotificationEndpoint: http://localhost/PayHere/clientNotificationEnd
 dbUserPassword:
 

@@ -2,6 +2,7 @@ package handlers;
 
 
 import authorizationserver.CIBAProxyServer;
+import com.nimbusds.jwt.SignedJWT;
 import configuration.ConfigurationFile;
 import dao.DaoFactory;
 import net.minidev.json.JSONObject;
@@ -57,23 +58,26 @@ public class CIBAAuthRequestHandler implements Handlers {
 
     public String extractParameters(String request) {
 
-        String[] paramsarray = new String[3];
+//        String[] paramsarray = new String[3];
 
         CIBAAuthResponseHandler cibaAuthResponseHandler = CIBAAuthResponseHandler.getInstance();
        try {
 
            /*Decoding the web token.*/
-           paramsarray = request.split("\\.");
-           String header = new String(Base64.decodeBase64(paramsarray[0]));
-           String payload = new String(Base64.decodeBase64(paramsarray[1]));
-           String signature = new String(Base64.decodeBase64(paramsarray[2]));
+//           paramsarray = request.split("\\.");
+//           String header = new String(Base64.decodeBase64(paramsarray[0]));
+//           String payload = new String(Base64.decodeBase64(paramsarray[1]));
+//           String signature = new String(Base64.decodeBase64(paramsarray[2]));
 
-
+           SignedJWT signedJWT = SignedJWT.parse(request);
+           String payload =signedJWT.getPayload().toString();
+           System.out.println("Payload" + payload);
+           JSONObject jo = signedJWT.getJWTClaimsSet().toJSONObject();
            // parsing file "JSONExample.json"
-           Object obj = new JSONParser().parse(payload);
+   /*        Object obj = new JSONParser().parse(payload);
 
                // typecasting obj to JSONObject
-               JSONObject jo = (JSONObject) obj;
+               JSONObject jo = (JSONObject) obj;*/
 
                LOGGER.info("Auth request parameters extracted.");
 
@@ -95,13 +99,14 @@ public class CIBAAuthRequestHandler implements Handlers {
                      * */
                    storeAuthRequest(authReqId, this.refactorAuthRequest(jo));
 
-
+//System.out.println(cibaAuthResponseHandler.createAuthResponse(authReqId).toString());
                    return cibaAuthResponseHandler.createAuthResponse(authReqId).toString(); //returning authentication response
                }
 
        } catch (ArrayIndexOutOfBoundsException e) {
            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Improper 'request' parameter.");
-    } catch (ParseException e) {
+
+       } catch (java.text.ParseException e) {
            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to parse JWS.");
        }
 
@@ -120,9 +125,10 @@ public class CIBAAuthRequestHandler implements Handlers {
 
         if (authRequestValidator.validateAuthRequest(jo) != null) {
             return authRequestValidator.validateAuthRequest(jo);
-        }
+        } else {
 
             return null;
+        }
     }
 
 

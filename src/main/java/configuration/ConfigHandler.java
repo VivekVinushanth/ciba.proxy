@@ -74,7 +74,7 @@ public class ConfigHandler {
                 }
 
 
-                try{
+              /*  try{
                     if(tempConfig.getAuthorizationUser().isEmpty() ||tempConfig.getAuthorizationUser().equals("")
                             || tempConfig.getAuthorizationUser().equals("null")){
                         throw new IllegalArgumentException();
@@ -95,7 +95,7 @@ public class ConfigHandler {
                     }
                 }catch (IllegalArgumentException e){
                     LOGGER.severe("Authorization Password can not be null");
-                }
+                }*/
 
                 try{
                     if(tempConfig.getStoreConnectorType().isEmpty() ||tempConfig.getStoreConnectorType().equals("") ||
@@ -168,7 +168,7 @@ public class ConfigHandler {
                 }
 
 
-                this.setConfiguration();
+               // this.setConfiguration();
 
                 try {
                     if (tempConfig.getflowMode().equalsIgnoreCase("push")) {
@@ -190,16 +190,16 @@ public class ConfigHandler {
 
 
 
-    private  void setConfiguration(){
-
-        try {
-            ConfigurationFile.getInstance().setSEC_TOKEN(ConfigurationFile.getInstance().getAUTHORIZATION_USER(),
-                    ConfigurationFile.getInstance().getAUTHORIZATION_PASSWORD());
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.severe("can not Create Sec-Token.Check whether Authorization UserName and Password is configured properly.");
-        }
-
-    }
+//    private  void setConfiguration(){
+//
+//        try {
+//            ConfigurationFile.getInstance().setSEC_TOKEN(ConfigurationFile.getInstance().getAUTHORIZATION_USER(),
+//                    ConfigurationFile.getInstance().getAUTHORIZATION_PASSWORD());
+//        } catch (UnsupportedEncodingException e) {
+//            LOGGER.severe("can not Create Sec-Token.Check whether Authorization UserName and Password is configured properly.");
+//        }
+//
+//    }
 
 
 

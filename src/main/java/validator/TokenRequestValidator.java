@@ -10,6 +10,7 @@ import errorfiles.UnAuthorizedRequest;
 import handlers.TokenResponseHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import tempErrorCache.TempErrorCache;
 import transactionartifacts.PollingAtrribute;
 import transactionartifacts.TokenRequest;
 
@@ -53,18 +54,18 @@ public class TokenRequestValidator {
         CIBAParameters cibaparameters = CIBAParameters.getInstance();
 
         try {
-            if (auth_req_id.isEmpty() || auth_req_id.equals("") || auth_req_id == null ) {
+            if (auth_req_id.isEmpty() || auth_req_id.equals("") || auth_req_id == null) {
                 tokenRequest = null;
                 LOGGER.info("Invalid auth_req_id");
 
                 throw new UnAuthorizedRequest("Invalid auth_req_id");
 
-            } else if(artifactStoreConnectors.getAuthResponse(auth_req_id)==null) {
+            } else if (artifactStoreConnectors.getAuthResponse(auth_req_id) == null) {
                 LOGGER.info("Invalid auth_req_id");
 
                 throw new UnAuthorizedRequest("Invalid auth_req_id");
 
-            }else if (grant_type.isEmpty()) {
+            } else if (grant_type.isEmpty()) {
                 tokenRequest = null;
                 LOGGER.info("Improper grant_type");
                 throw new BadRequest("Improper grant_type");
@@ -72,47 +73,50 @@ public class TokenRequestValidator {
             } else {
                 //check whether provided auth_req_id is valid and provided by the system and has relevant auth response
 
-                    if (!(artifactStoreConnectors.getAuthResponse(auth_req_id) == null) &&
-                            (grant_type.equals(cibaparameters.getGrant_type()))) {
+                if (!(artifactStoreConnectors.getAuthResponse(auth_req_id) == null) &&
+                        (grant_type.equals(cibaparameters.getGrant_type()))) {
 
-                        long expiryduration = artifactStoreConnectors.getPollingAttribute(auth_req_id).getExpiresIn();
-                        long issuedtime = artifactStoreConnectors.getPollingAttribute(auth_req_id).getIssuedTime();
-                        long currenttime = ZonedDateTime.now().toInstant().toEpochMilli();
-                        long interval = artifactStoreConnectors.getPollingAttribute(auth_req_id).getPollingInterval();
-                        long lastpolltime = artifactStoreConnectors.getPollingAttribute(auth_req_id).getLastPolledTime();
-                        Boolean notificationIssued = artifactStoreConnectors.getPollingAttribute(auth_req_id).getNotificationIssued();
-                        System.out.println("notification status : " +notificationIssued);
-                        try {
-                            if (!notificationIssued) {
-                                    LOGGER.info("Improper Flow. Subscribed to Ping but yet Polling");
-                                    throw new BadRequest("Improper Flow. Subscribed to Ping but yet Polling");
+                    long expiryduration = artifactStoreConnectors.getPollingAttribute(auth_req_id).getExpiresIn();
+                    long issuedtime = artifactStoreConnectors.getPollingAttribute(auth_req_id).getIssuedTime();
+                    long currenttime = ZonedDateTime.now().toInstant().toEpochMilli();
+                    long interval = artifactStoreConnectors.getPollingAttribute(auth_req_id).getPollingInterval();
+                    long lastpolltime = artifactStoreConnectors.getPollingAttribute(auth_req_id).getLastPolledTime();
+                    Boolean notificationIssued = artifactStoreConnectors.getPollingAttribute(auth_req_id).getNotificationIssued();
+                    System.out.println("notification status : " + notificationIssued);
+                    try {
+                        if (!notificationIssued) {
+                            LOGGER.info("Improper Flow. Subscribed to Ping but yet Polling");
+                            throw new BadRequest("Improper Flow. Subscribed to Ping but yet Polling");
 
-                            }   else if (currenttime > issuedtime + expiryduration + 5) {
-                                tokenRequest = null;
-                                LOGGER.info("Expired Token");
-                                throw new BadRequest("Expired Token");
+                        } else if (currenttime > issuedtime + expiryduration + 5) {
+                            tokenRequest = null;
+                            LOGGER.info("Expired Token");
+                            throw new BadRequest("Expired Token");
 
-                                //checking for frequency of poll
-                            } else if (currenttime - lastpolltime < interval) {
+                            //checking for frequency of poll
+                        } else if (currenttime - lastpolltime < interval) {
 
-                                artifactStoreConnectors.removePollingAttribute(auth_req_id);
+                            artifactStoreConnectors.removePollingAttribute(auth_req_id);
 
-                                PollingAtrribute pollingAtrribute2 =new PollingAtrribute();
-                                pollingAtrribute2.setIssuedTime(issuedtime);
-                                pollingAtrribute2.setLastPolledTime(currenttime);
-                                pollingAtrribute2.setPollingInterval(5000);
-                                pollingAtrribute2.setAuth_req_id(auth_req_id);
-                                pollingAtrribute2.setExpiresIn(expiryduration);
-                                System.out.println("notification status 2: " +notificationIssued);
-                                pollingAtrribute2.setNotificationIssued(notificationIssued);
-                                // TODO: 8/31/19   pollingAtrribute2.setNotificationIssued();
+                            PollingAtrribute pollingAtrribute2 = new PollingAtrribute();
+                            pollingAtrribute2.setIssuedTime(issuedtime);
+                            pollingAtrribute2.setLastPolledTime(currenttime);
+                            pollingAtrribute2.setPollingInterval(5000);
+                            pollingAtrribute2.setAuth_req_id(auth_req_id);
+                            pollingAtrribute2.setExpiresIn(expiryduration);
+                            System.out.println("notification status 2: " + notificationIssued);
+                            pollingAtrribute2.setNotificationIssued(notificationIssued);
+                            // TODO: 8/31/19   pollingAtrribute2.setNotificationIssued();
 
-                                artifactStoreConnectors.addPollingAttribute(auth_req_id,pollingAtrribute2);
-                                //updating the polling frequency -deleting and adding new object with updated values
-                                tokenRequest = null;
-                                throw new BadRequest("Slow Down");
+                            artifactStoreConnectors.addPollingAttribute(auth_req_id, pollingAtrribute2);
+                            //updating the polling frequency -deleting and adding new object with updated values
+                            tokenRequest = null;
+                            throw new BadRequest("Slow Down");
 
-                            } else {
+                        } else {
+                            if (TempErrorCache.getInstance().getAuthenticationResponse(auth_req_id).equals("Sucess") ||
+                                    TempErrorCache.getInstance().getAuthenticationResponse(auth_req_id).equals("RequestSent")) {
+
                                 if (TokenResponseHandler.getInstance().checkTokenReceived(auth_req_id)) {
                                     //check for the reception of token is handled here
                                     tokenRequest.setGrant_type(grant_type);
@@ -123,7 +127,7 @@ public class TokenRequestValidator {
 
                                     artifactStoreConnectors.removePollingAttribute(auth_req_id);
 
-                                    PollingAtrribute pollingAtrribute3 =new PollingAtrribute();
+                                    PollingAtrribute pollingAtrribute3 = new PollingAtrribute();
                                     pollingAtrribute3.setIssuedTime(issuedtime);
                                     pollingAtrribute3.setLastPolledTime(currenttime);
                                     pollingAtrribute3.setPollingInterval(interval);
@@ -131,35 +135,41 @@ public class TokenRequestValidator {
                                     pollingAtrribute3.setExpiresIn(expiryduration);
                                     pollingAtrribute3.setNotificationIssued(notificationIssued);
 
-                                    artifactStoreConnectors.addPollingAttribute(auth_req_id,pollingAtrribute3);
+                                    artifactStoreConnectors.addPollingAttribute(auth_req_id, pollingAtrribute3);
                                     //updating last polled time
 
                                 } else {
                                     tokenRequest = null;
                                     throw new BadRequest("authorization pending");
                                 }
-                            }
-                        } catch (BadRequest badrequest) {
-                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badrequest.getMessage());
-                        }
-                        return tokenRequest;
 
+                            } else {
+
+                                System.out.println("Not authenticated");
+                                return null;
+                                //throw new BadRequest("authorization pending");
+
+                               //
+                            }
+
+                            return tokenRequest;
+
+                        }
+
+
+                    } catch (BadRequest badrequest) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badrequest.getMessage());
                     }
 
-
+                }
 
             }
 
-        } catch (UnAuthorizedRequest authorizedRequest) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, authorizedRequest.getMessage());
-        } catch (BadRequest badrequest) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badrequest.getMessage());
+        } catch (UnAuthorizedRequest unAuthorizedRequest){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, unAuthorizedRequest.getMessage());
+        }catch (BadRequest badRequest){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badRequest.getMessage());
         }
-
         return tokenRequest;
     }
-
 }
-
-
-

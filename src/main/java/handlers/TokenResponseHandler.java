@@ -7,6 +7,7 @@ import configuration.ConfigurationFile;
 import dao.DaoFactory;
 import errorfiles.Forbidden;
 import com.nimbusds.jwt.JWTClaimsSet;
+import tempErrorCache.TempErrorCache;
 import transactionartifacts.TokenResponse;
 
 import java.util.logging.Logger;
@@ -44,61 +45,72 @@ public class TokenResponseHandler implements Handlers {
     public Payload createTokenResponse(String auth_req_id) {
         CIBAParameters cibaparameters = CIBAParameters.getInstance();
 
-TokenResponse tokenResponse =DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().
-        getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id);
+    TokenResponse tokenResponse = DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().
+            getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id);
 
 
-
-        //Only checking the presence of refresh token and creating payload accordingly
-        if (tokenResponse.getRefreshToken() != null) {
-            JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                    .claim("access_token", tokenResponse.getAccessToken())
-                    .claim("token_type", tokenResponse.getTokenType())
-                    .claim("refresh_token", tokenResponse.getRefreshToken())
-                    .claim("token_expires_in", tokenResponse.getTokenExpirein())
-                    .claim("id_token", tokenResponse.getIdToken())
-                    .build();
-
-
-            Payload payload = new Payload(claims.toJSONObject());
-            //JWSObject response = new JWSObject(header, payload);
-            return payload;
-        } else {
-            JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                    .claim("access_token", tokenResponse.getAccessToken())
-                    .claim("token_type", tokenResponse.getTokenType())
-                    .claim("token_expires_in", tokenResponse.getTokenExpirein())
-                    .claim("id_token", tokenResponse.getIdToken())
-                    .build();
+    //Only checking the presence of refresh token and creating payload accordingly
+    if (tokenResponse.getRefreshToken() != null) {
+        JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                .claim("access_token", tokenResponse.getAccessToken())
+                .claim("token_type", tokenResponse.getTokenType())
+                .claim("refresh_token", tokenResponse.getRefreshToken())
+                .claim("token_expires_in", tokenResponse.getTokenExpirein())
+                .claim("id_token", tokenResponse.getIdToken())
+                .build();
 
 
-            Payload payload = new Payload(claims.toJSONObject());
-            //JWSObject response = new JWSObject(header, payload);
-            return payload;
-        }
+        Payload payload = new Payload(claims.toJSONObject());
+        //JWSObject response = new JWSObject(header, payload);
+        return payload;
+    } else {
+        JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                .claim("access_token", tokenResponse.getAccessToken())
+                .claim("token_type", tokenResponse.getTokenType())
+                .claim("token_expires_in", tokenResponse.getTokenExpirein())
+                .claim("id_token", tokenResponse.getIdToken())
+                .build();
+
+
+        Payload payload = new Payload(claims.toJSONObject());
+        //JWSObject response = new JWSObject(header, payload);
+        return payload;
     }
+}
 
-       public Payload createTokenErrorResponse () {
 
-            ErrorCodeHandlers errorCodeHandlers = ErrorCodeHandlers.getInstance();
-            try {
-                throw new Forbidden("Invalid Token Request");
-            } catch (Forbidden forbidden) {
-                forbidden.printStackTrace();
-            }
 
-            return new Payload("Invalid");
-        }
+       public Payload createTokenErrorResponse (String auth_req_id) {
+           if (TempErrorCache.getInstance().getAuthenticationResponse(auth_req_id).equals("Failed")) {
+               System.out.println("Failed Authentication error response.");
+              return new Payload("Authentication Denied.");
+
+           } else {
+               ErrorCodeHandlers errorCodeHandlers = ErrorCodeHandlers.getInstance();
+               try {
+                   throw new Forbidden("Invalid Token Request");
+               } catch (Forbidden forbidden) {
+                   forbidden.printStackTrace();
+               }
+
+               return new Payload("Invalid");
+           }
+       }
 
         public boolean checkTokenReceived (String auth_req_id) {
 
-            if (//DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").getTokenResponse(auth_req_id) != null) {
-                   DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().
-                           getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id)!=null ){
-                return true;
+// TODO: 9/12/19 added now
+
+                if (DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.getInstance().
+                                getSTORE_CONNECTOR_TYPE()).getTokenResponse(auth_req_id) != null) {
+                    return true;
+
+                } else {
+                    LOGGER.info("Token Response still not received");
+                    return false;
+                }
             }
-            LOGGER.info("Token Response still not received");
-            return false;
-        }
+
+
 
 }

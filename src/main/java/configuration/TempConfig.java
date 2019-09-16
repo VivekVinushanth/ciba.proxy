@@ -5,8 +5,8 @@ public class TempConfig {
     private  String appName;
     private  String clientId;
     private  String clientSecret;
-    private  String authorizationUser;
-    private  String authorizationPassword;
+    /*private  String authorizationUser;
+    private  String authorizationPassword;*/
     private  String storeConnectorType;
     private  String dbUserName;
     private  String dbUserPassword;
@@ -56,7 +56,7 @@ public class TempConfig {
     }
 
 
-
+/*
     public String getAuthorizationUser() {
         return authorizationUser;
     }
@@ -71,7 +71,7 @@ public class TempConfig {
 
     public void setAuthorizationPassword(String authorizationPassword) {
         this.authorizationPassword = authorizationPassword;
-    }
+    }*/
 
     public String getStoreConnectorType() {
         return storeConnectorType;

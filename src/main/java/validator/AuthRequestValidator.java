@@ -278,7 +278,7 @@ public class AuthRequestValidator {
                 && (String.valueOf(jo.get("login_hint")) != "null")
                 && (String.valueOf(jo.get("id_token_hint")) == "null")) {
             //cibaparameters.setLogin_hint_token(String.valueOf(jo.get("login_hint")));
-            cibaAuthRequest.setLogin_hint_token(String.valueOf(jo.get("login_hint")));
+            cibaAuthRequest.setLogin_hint(String.valueOf(jo.get("login_hint")));
 
             // TODO: 8/4/19 To be validated for the user-id and etc provided
 
@@ -286,7 +286,7 @@ public class AuthRequestValidator {
                 && (String.valueOf(jo.get("login_hint")) != "null")
                 && (String.valueOf(jo.get("id_token_hint")) != "null")) {
             //cibaparameters.setLogin_hint_token(String.valueOf(jo.get("id_token_hint")));
-            cibaAuthRequest.setLogin_hint_token(String.valueOf(jo.get("id_token_hint")));
+            cibaAuthRequest.setId_token_hint(String.valueOf(jo.get("id_token_hint")));
             //id_token_hint cannot be validated
 
         } else {

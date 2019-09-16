@@ -1,12 +1,17 @@
 package ciba.proxy.server.servicelayer;
 
 import cibaparameters.CIBAParameters;
-import com.nimbusds.jose.Payload;
-import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import configuration.ConfigurationFile;
-import dao.DaoFactory;
+import errorfiles.BadRequest;
 import handlers.Handlers;
+import net.minidev.json.JSONObject;
+import org.apache.http.client.HttpResponseException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
+import tempErrorCache.TempErrorCache;
 import transactionartifacts.CIBAauthRequest;
 import util.CodeGenerator;
 import util.RestTemplateFactory;
@@ -14,6 +19,7 @@ import util.RestTemplateFactory;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -100,7 +106,7 @@ public class ServerRequestHandler implements Handlers {
             }*/
            // if (cibAauthRequest.getUser_code().isEmpty() && cibAauthRequest.getBinding_message().isEmpty()){
                 /*creating authentication response for the request*/
-                JWTClaimsSet claims = new JWTClaimsSet.Builder()
+               /* JWTClaimsSet claims = new JWTClaimsSet.Builder()
                         .claim("identifier", identifier)
                         .claim("bindingmessage",cibAauthRequest.getBinding_message())
                         .claim("usercode",cibAauthRequest.getUser_code())
@@ -110,11 +116,11 @@ public class ServerRequestHandler implements Handlers {
                 String cibarequest = claims.toJSONObject().toString();
 
                 Payload cibarequestpaylaod = new Payload(claims.toJSONObject());
-
+*/
                 /**
                  Send the Authentication Request to the Identity Server.
                  */
-                initiateRequest(cibarequest,identifier); //sending the request as binded
+                initiateRequest(cibAauthRequest,identifier); //sending the request as binded
 
 
 
@@ -136,7 +142,8 @@ public class ServerRequestHandler implements Handlers {
         }
 
         //Initiate token request to server
-        private void initiateRequest(String  cibarequest,String identifier){
+
+        private void initiateRequest(CIBAauthRequest  cibAauthRequest,String identifier) {
         System.out.println("Initiating server auth2 code grant");
             //Start sending request to IS server and listen upon
 
@@ -144,29 +151,114 @@ public class ServerRequestHandler implements Handlers {
            // ServerResponseHandler.getInstance().InitiateFakeResponse(identifier);
 
             try {
-                RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
-                String result = restTemplate.getForObject(CIBAParameters.getInstance().getAUTHORIZE_ENDPOINT()+"?scope=openid&"+
-                        "response_type=code&state="+identifier+"&redirect_uri="+CIBAParameters.getInstance().
-                        getCallBackURL()+"&client_id="+ ConfigurationFile.getInstance().getCLIENT_ID(),String.class);
+               String user= getUser(cibAauthRequest);
+               if(!user.equals(null)) {
+                   String bindingmessage = cibAauthRequest.getBinding_message(); // TODO: 9/16/19 its fine if they are null. we can send null.
+                   String usercode = cibAauthRequest.getUser_code();
+
+                   // TODO: 9/12/19 just added
+                   TempErrorCache.getInstance().addAuthenticationStatus(ServerRequestHandler.getInstance().getAuthReqId(identifier), "RequestSent");
+
+                   RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
+                   String result = restTemplate.getForObject(CIBAParameters.getInstance().getAUTHORIZE_ENDPOINT() + "?scope=openid&" +
+                           "response_type=code&state=" + identifier + "&redirect_uri=" + CIBAParameters.getInstance().
+                           getCallBackURL() + "&client_id=" + ConfigurationFile.getInstance().getCLIENT_ID() + "&user=" + user, String.class);
 
 
+                   if (result != null) {
+                       LOGGER.info("Code received at the Endpoint. Need processing the code flow");
+                       // System.out.println("uri"+CIBAParameters.getInstance().getCallBackURL());
+                       //System.out.println(result);
 
-
-                if (result != null){
-                    LOGGER.info("Code received at the Endpoint. Need processing the code flow");
-                   // System.out.println("uri"+CIBAParameters.getInstance().getCallBackURL());
-                    //System.out.println(result);
-
-                }
+                   }
+               } else {
+                   throw new BadRequest("Identifier for request not found.");
+               }
 
             } catch (KeyStoreException e) {
-                e.printStackTrace();
+                throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Improper Keys.");
+            } catch (HttpClientErrorException e){
+                throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Denied the consent.");
             } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+                throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such Algorithm.");
             } catch (KeyManagementException e) {
-                e.printStackTrace();
+                throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "KeyManagement Exception.");
+
+            } catch (BadRequest badRequest) {
+                LOGGER.info("Identifier for request not found.");
+                throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,badRequest.getMessage());
             }
         }
+
+
+    private String getUser(CIBAauthRequest cibAauthRequest) {
+        try {
+            if (!cibAauthRequest.getLogin_hint().equals("null")) {
+                return cibAauthRequest.getLogin_hint(); //sending the request as binded
+
+                /**
+                 *  We don't support this for now.
+                 *  But still extensible.
+                 *  */
+            } else if (!cibAauthRequest.getLogin_hint_token().equals("null")) { // TODO: 9/16/19 implement for loginhinttoken
+
+                return null; // TODO: 9/16/19 We need to support authentication profile 1.0 spec for this.
+
+            } else if (!cibAauthRequest.getId_token_hint().equals("null")) {
+                //String user = cibAauthRequest.getId_token_hint();   TODO: 9/16/19 implement for getting user claims from idtokenhint
+
+                SignedJWT signedJWT = SignedJWT.parse(cibAauthRequest.getId_token_hint());
+                String payload = signedJWT.getPayload().toString();
+                System.out.println(payload);
+
+                JSONObject jo = signedJWT.getJWTClaimsSet().toJSONObject();
+
+
+                if (String.valueOf(jo.get("email")) != null) {
+                    return String.valueOf(jo.get("email")); //obtaining email of user and setting it as user
+
+                } else if (String.valueOf(jo.get("given_name")) != null) {
+                    return String.valueOf(jo.get("given_name")); //obtaining name of user and setting it as user
+
+                } else if (String.valueOf(jo.get("family_name")) != null) {
+                    return String.valueOf(jo.get("family_name")); //obtaining name of user and setting it as user
+
+                } else if (String.valueOf(jo.get("name")) != null) {
+                    return String.valueOf(jo.get("name")); //obtaining email of name and setting it as user
+
+                } else if (String.valueOf(jo.get("username")) != null) {
+                    return String.valueOf(jo.get("username")); //obtaining username of user and setting it as user
+
+                }else if (String.valueOf(jo.get("userid")) != null) {
+                    return String.valueOf(jo.get("userid")); //obtaining userid of user and setting it as user
+
+                }else if (String.valueOf(jo.get("mobile")) != null) {
+                    return String.valueOf(jo.get("mobile")); //obtaining mobile of user and setting it as user
+// TODO: 9/16/19 Good if we can get the userclaims using a rest call.Else we need to follow this weird long method.
+//  Or user need to configure here in config as well.
+                }else if (String.valueOf(jo.get("phonenumber.work")) != null) {
+                    return String.valueOf(jo.get("phonenumber.work")); //obtaining phonenumber of user and setting it as user
+
+                }else if (String.valueOf(jo.get("phonenumber.home")) != null) {
+                return String.valueOf(jo.get("phonenumber.home")); //obtaining phonenumber of user and setting it as user
+
+            }else {
+                    return null;
+                }
+
+            } else {
+                return null;
+            }
+
+
+        } catch (ParseException e) {
+            LOGGER.info("Unable to parse given ID TokenHint.");
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"Unable to parse given ID TokenHint.");
+        }
+
+    }
+
+
 
         public String getAuthReqId(String identifier){
         return identifierstore.get(identifier);
