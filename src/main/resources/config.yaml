@@ -1,8 +1,8 @@
 ---
 #config_file
-appName: cibatryout
-clientId: vl0TxR4bwjT7F7vCQmdXu_FRkWAa
-clientSecret: 3kYVaLJFSlYsHkbbeFSIJz41lwMa
+appName: payhere
+clientId: ZzxmDqqK8YYfjtlOh9vw85qnNVoa
+clientSecret: ZkaeWpAW3RztIm4hKAgmf251LdAa
 storeConnectorType: JDBC
 database: ArtifactStore
 dbUserName: root
