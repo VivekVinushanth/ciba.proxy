@@ -4,45 +4,120 @@
 <title>Pay Here</title>
  <!-- Meta-Tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="utf-8"><link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <link href="css/cibahome.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/split.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="scss/_variables.scss" rel="stylesheet" type="text/css" media="all"/>
+<link href="scss/_bootswatch.scss" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/payhere.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/nowterminal.css" rel="stylesheet" type="text/css" media="all"/>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!------ Include the above in your HEAD tag ---------->
- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 </head>
 <body>
- <div class="space-medium">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
-                    <div class="feature-block-v7 feature-block">
-                        <div class="feature-icon text-brand bg-brand-light mb-5">
-                            <img src ="Images" alt="Logo-PayApp" height="100" width="100">
-                        </div>
-                        <div class="feature-content">
-                            <h2>Pay Here</h2>
-                            <p class="lead">Pay your bills with your Phone Number. </p>
-                            <hr class="m-t-30 m-b-30">
-                            <p>Provide your Phone Number</p>
-                            <p>Initiate the transaction. Authenticate from your phone.</p>
-                            <a href="transactionpage.php" class="btn btn-rounded btn-outline-primary">Pay a Bill ?</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="offset-xl-1 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="circle-1"></div>
-                    <div class="feature-app-img">
-			<img src="https://jituchauhan.com/quanto/quanto/images/iphone-img-2.png" alt="App Landing Page Template - Quanto">
-                    </div>
-                </div>
-            </div>
-             <div class="row">
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center mt-4"> 
-              Created for <a href="https://jituchauhan.com/quanto/" target="_blank" class="text-primary">jituchauhan.com</a>
-              </div></div>
-        </div>
-    </div>
+<section class="container">
+  <div class="left-half">
+	
+ <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="#">VShop Console</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Features</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Pricing</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Sales</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+<div class="container h-100" style = "position:absolute; left:50px; top:120px;>
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card4">
+				<p><a href='transactionpage.php'>
+						<img src="/CIBA/pay4.jpg" alt="Logo" height=190px; width=190px style = "position:realtive; left:2px; top:2px; onClick="location.href='transactionpage.php'">
+				</p>
+				
+				
+			</div>
+		</div>
+	</div>
+
+<div class="container h-100" style = "position:absolute; left:325px; top:120px; >
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card4">
+				<p><a href='transactionpage.php'>
+						<img src="/CIBA/Images" alt="Logo" height=190px; width=190px style = "position:realtive; left:2px; top:2px; onClick="location.href='transactionpage.php'">
+				</p>
+				
+				
+			</div>
+		</div>
+	</div>
+
+<div class="container h-100" style = "position:absolute; left:600px; top:120px;>
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card4">
+				<p><a href='transactionpage.php'>
+						<img src="/CIBA/pay2.jpg" alt="Logo" height=190px; width=190px style = "position:realtive; left:2px; top:2px; onClick="location.href='transactionpage.php'">
+				</p>
+				
+				
+			</div>
+		</div>
+	</div>
+<div class="container h-100" style = "position:absolute; left:50px; top:375px;>
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card4">
+				<p><a href='transactionpage.php'>
+						<img src="/CIBA/pay.jpg" alt="Logo" height=190px; width=190px style = "position:realtive; left:2px; top:2px; onClick="location.href='transactionpage.php'">
+				</p>
+				
+				
+			</div>
+		</div>
+	</div>
+<div class="container h-100" style = "position:absolute; left:325px; top:375px; >
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card4">
+				<p><a href='transactionpage.php'>
+						<img src="/CIBA/pay5.jpg" alt="Logo" height=190px; width=190px style = "position:realtive; left:2px; top:2px; onClick="location.href='transactionpage.php'">
+				</p>
+				
+				
+			</div>
+		</div>
+	</div>
+ <div class="right-half">
+	<div class="window">
+	  <div class="terminal">
+	<h1>Developer Mode </h1>
+	    <p class="log">
+	      <span>
+		<p> Location: VShop Console</br>
+	    State: Waiting for User to choose a payment mode. . .</p>
+	      </span>
+	    </p>
+	  </div>
+	</div>
+	  </div>
+</section>
+ 
 </body>
 </html>

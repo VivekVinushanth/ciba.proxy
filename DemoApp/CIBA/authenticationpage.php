@@ -11,22 +11,27 @@
     <!-- //Meta-Tags -->
 	
 	<!-- css files -->
-	<link href="css/font1-awesome.min.css" rel="stylesheet" type="text/css" media="all">
-	<link href="css/style1.css" rel="stylesheet" type="text/css" media="all"/>
 	<link href="css/cibacss.css" rel="stylesheet" type="text/css" media="all"/>
 	<link href="css/xcss.css" rel="stylesheet" type="text/css" media="all"/>
-	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	 
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="scss/_variables.scss" rel="stylesheet" type="text/css" media="all"/>
+<link href="scss/_bootswatch.scss" rel="stylesheet" type="text/css" media="all"/>
 
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<!------ Include the above in your HEAD tag ---------->
-
-
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/enc-base64-min.js"></script>
+  	
+ <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<link href="css/cibahome.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/split.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/payhere.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/nowterminal.css" rel="stylesheet" type="text/css" media="all"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+ <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+	<!------ Include the above in your HEAD tag ----------
 
 	<!-- //css files -->
 	
@@ -36,14 +41,78 @@
 	
 </head>
 <script>
-function showHint() {
+var poll_count=0;
+var setinterval;
+var request;
+var auth_reponse;
+var token_request;
+var token_response;
+var user;
+
+function base64url(source) {
+  // Encode in classical base64
+  encodedSource = CryptoJS.enc.Base64.stringify(source);
+  
+  // Remove padding equal characters
+  encodedSource = encodedSource.replace(/=+$/, '');
+  
+  // Replace characters according to base64url specifications
+  encodedSource = encodedSource.replace(/\+/g, '-');
+  encodedSource = encodedSource.replace(/\//g, '_');
+  
+  return encodedSource;
+}
 
 
+function sendRequest() {
 	console.log("Identity Received");
 	var data = null;
         var xmlhttp = new XMLHttpRequest();
-		
-xmlhttp.open("POST", "http://localhost:8080/CIBAEndPoint?request=eyJraWQiOiJsdGFjZXNidyIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJz%0A%20%20%20NkJoZFJrcXQzIiwiYXVkIjoiaHR0cHM6Ly9zZXJ2ZXIuZXhhbXBsZS5jb20iLCJl%0A%20%20%20eHAiOjE1Mzc4MjAwODYsImlhdCI6MTUzNzgxOTQ4NiwibmJmIjoxNTM3ODE4ODg2%0A%20%20%20LCJqdGkiOiI0TFRDcUFDQzJFU0M1QldDbk4zajU4RW5BIiwic2NvcGUiOiJvcGVu%0A%20%20%20aWQgZW1haWwgZXhhbXBsZS1zY29wZSIsImNsaWVudF9ub3RpZmljYXRpb25fdG9r%0A%20%20%20ZW4iOiI4ZDY3ZGM3OC03ZmFhLTRkNDEtYWFiZC02NzcwN2IzNzQyNTUiLCJiaW5k%0A%20%20%20aW5nX21lc3NhZ2UiOiJXNFNDVCIsImxvZ2luX2hpbnRfdG9rZW4iOiJleUpyYVdR%0A%20%20%20aU9pSnNkR0ZqWlhOaWR5SXNJbUZzWnlJNklsSlRNalUySW4wLmV5SnpkV0pxWldO%0A%20%20%20MElqcDdJbk4xWW1wbFkzUmZkSGx3WlNJNkluQm9iMjVsSWl3aWNHaHZibVVpT2lJ%0A%20%20%20ck1UTXpNREk0TVRnd01EUWlmWDAuWUI4XzhPa3NKZDFGd2ZWc0lVbEgtcnM5Y1Bo%0A%20%20%20a0lhMERVaTdPVldfRGE5Z1A2aHVCeGY3YVNEbDNxS1hBMjB1VDF6VGh1U2lZejBi%0A%20%20%20ZHo4Sl9LUFJIdUM2dndvRmx6OXlCSjlrc1dPUDI4c0hQUGkxOV80LXhpZHduYjhQ%0A%20%20%20MTItUm9Yd1kyZUFGODJfTkFuMnZtcHZxVWpsdW9XeU5IYXk4dmd1Q2hJdXRxemlW%0A%20%20%20MGJGbC03b2F4cDM2aTRlbGJ2VF9EWWVnMjBhMGp6NHdJQktjXzQ2SzhJMjhFcmt3%0A%20%20%20Ykk1TzM1R2ZFbFBYbC00SjU1Tkhra09zRHh1VVlRdFdqU00zd21lMTk3MzVYV3Ey%0A%20%20%20RElUMm5tTEZpNEh6elQyN1cwY25KZzdMX2FpOXVOTkJ2SXhfTXA1QWJjbWtSODNh%0A%20%20%20cFI0anhuUXVFNVhmMjNxeVJwQWhhd2U3SVBRIn0.IBuxW3F_L9tj9f6fGC7FnVsH%0A%20%20%209B9RoJYA8QyxtnxgOgMc1kcnufyGxdtd7lU1TjPCVNsbkR0vfGasCmoMYSMohPOb%0A%20%20%20nwAlkm8Yf0uglhxM83B0dj_I10vwlMGnVFvydaH9wnacM4Ln7E-JIYOxtZa33abf%0A%20%20%201PB3fLs29GKOBmgNPn3NrxJ0iCLb0F243556Ypzdhcyj7vM8ukNzkKT3eQ0ZWJ1v%0A%20%20%20VRToThgKyIN-HvLFpeSfJtSH5ycMYOjob-qXUgKpQryUbgbpqsM1XnUV-8aBD5d8%0A%20%20%20VF5fQoz0PQWq63B_zpC22nstIFxNmfxztSFpnW0vgX0htNKOtL_HMwFRfwh71g");
+
+const urlParams = new URLSearchParams(window.location.search);
+ user = urlParams.get('user'); 	
+document.getElementById("user").innerHTML=("User :  "+ user);
+
+var header = {
+  "alg": "HS256",
+  "typ": "JWT"
+};
+
+var data = {
+
+ "iss": "s6BhdRkqt3",
+ "aud": "https://server.example.com",
+ "exp": 1568031148,
+ "iat": 1537819486,
+ "nbf": 1537818886,
+ "jti": "4LTCqACC2ESC5BWCnN3j58EnA",
+ "scope": "openid email example-scope",
+ "client_notification_token": "8d67dc78-7faa-4d41-aabd-67707b374255",
+ "binding_message": "W4SCT",
+ "login_hint": user
+};
+
+var secret = "My very confidential secret!!!";
+
+var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));
+var encodedHeader = base64url(stringifiedHeader);
+
+
+var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data));
+var encodedData = base64url(stringifiedData);
+
+
+var signature = encodedHeader + "." + encodedData;
+signature = CryptoJS.HmacSHA256(signature, secret);
+signature = base64url(signature);
+
+  request = encodedHeader+"."+encodedData+"."+signature ;
+
+	xmlhttp.open("POST", "http://localhost:8080/CIBAEndPoint?request="+request);
+	
+document.getElementById("CIBAauthRequest").innerHTML=("Authentication Request sent. "+" <br />" + " <br />" +"Authentication Request : "+"http://localhost:8080/CIBAEndPoint?request="+request);
+
+
 	xmlhttp.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
     	xmlhttp.onreadystatechange = function() {
 		
@@ -56,11 +125,14 @@ xmlhttp.open("POST", "http://localhost:8080/CIBAEndPoint?request=eyJraWQiOiJsdGF
 
 
 			console.log("Auth_req ID",auth_req_id)
-			
-			setTimeout(function(){tokenrequest(auth_req_id)}, interval*2000);
+                        //document.getElementById("CIBAauthRequest").innerHTML=("");	
+			document.getElementById("CIBAauthResponse").innerHTML=("Authentication Response received. "+" <br />"  + " <br />" +"Authentication Response : "+response);	
+			 auth_reponse = response;
+			setinterval= setInterval(function(){tokenRequest(auth_req_id)},5000);
 
-			 
 		} else{
+			document.getElementById("CIBAauthResponse").innerHTML=("Error  : "+response);
+
 			console.log(this.responseText);
         }
 };
@@ -70,12 +142,20 @@ console.log("Authentication Request Sent");
 
 };
     
-	function tokenrequest(auth_req_id){
-		console.log("Token Request posted")
+	function tokenRequest(auth_req_id){
+token_request = " http://localhost:8080/TokenEndPoint?auth_req_id="+auth_req_id+"&grant_type=urn:openid:params:grant-type:ciba" ;
+		document.getElementById("polling_status").innerHTML=("");
+		document.getElementById("tokenRequest").innerHTML=("");
+		document.getElementById("tokenResponse").innerHTML=("");
+		poll_count++;
+		console.log("Token Request posted");
+		document.getElementById("polling_status").innerHTML=("Initiated Polling. "+" <br />" + " <br />" +"Polling Status : ("+poll_count +"). Polling for Token . . .");
+		document.getElementById("tokenRequest").innerHTML=("Token Request Sent."+" <br />" + " <br />" +" Token Request : http://localhost:8080/TokenEndPoint?auth_req_id="+auth_req_id+"&grant_type=urn:openid:params:grant-type:ciba");
+
 		var data1=null
-		var id= auth_req_id;
+		
 		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.open("POST", "http://localhost:8080/TokenEndPoint?auth_req_id="+id+"&grant_type=urn:openid:params:grant-type:ciba", true);
+		xmlhttp.open("POST", "http://localhost:8080/TokenEndPoint?auth_req_id="+auth_req_id+"&grant_type=urn:openid:params:grant-type:ciba", true);
 		xmlhttp.onreadystatechange = function() {
         		if (this.readyState == 4 && this.status == 200) {
 			console.log(this.responseText)
@@ -83,67 +163,110 @@ console.log("Authentication Request Sent");
 			var json = JSON.parse(response);
 			var id_token = json.ID_token;
 
-			
-			console.log("Token received")
-			window.open("resultpage.php");
-			 
+			if (response.includes("id_token")){
+				clearInterval(setinterval);
+				console.log("Token received");
+				document.getElementById("tokenResponse").innerHTML=("Token Response recieved."+" <br />" + " <br />" +"Token Response : " +response);
+				token_response = response;
+                               window.location.replace("http://localhost/CIBA/resultpage.php?CIBAauthRequest="+request+"&CIBAauthResponse="+auth_reponse+"&tokenRequest="+token_request+"&tokenResponse="+token_response+"&user="+user);
+
 			}else{
-			//window.open("ErrorPage.php);
-			console.log(this.responseText);
+				document.getElementById("tokenResponse").innerHTML=("Pending Authentication . . .");
+				};
+
+			
+			}else{
+				//window.open("ErrorPage.php);
+				console.log(this.responseText);
+				document.getElementById("tokenResponse").innerHTML=(response);
 			}	
- 
         	};
-
-    
-    	xmlhttp.send(data1);
-		
+		xmlhttp.send(data1);
 	};
+
     </script>
-<body onload="showHint()">
+<body onload="sendRequest()">
+<section class="container">
+  <div class="left-half">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="#">VShop Console</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-
-<div class="space-medium">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
-                    <div class="feature-block-v7 feature-block">
-                        <div class="feature-icon text-brand bg-brand-light mb-5">
-                            <i class="fas fa-paint-roller"></i>
-                        </div>
-                        <div class="feature-content">
-                            <h2>Pay Here</h2>
-                            <p class="lead">Please Authenticate.</p>
-                            <hr class="m-t-30 m-b-30">
-                            <p>Transaction ID : 19081995</p>
-                            <p>Waiting for your Authentication.</p>
-                            <div id="circle">
-  <div class="loader">
-    <div class="loader">
-        <div class="loader">
-           <div class="loader">
-
-           </div>
-        </div>
-    </div>
+  <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Features</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Pricing</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Sales</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+    </form>
   </div>
-</div> 
+</nav>
+
+                    <div>
+                         
+        			<img src="/CIBA/Images" alt="Logo" height=100px; width=100px>
+                     </div>       
+   
+ 
+            <div style = "position:absolute; left:20px; top:200px;  color=#FFA500 height=400px; width=400px;">
+                    <h3 class="card-title" id = "user"> </h3> 
+                   <p>Transaction ID : 1908</p>
+	<p>Waiting for Authentication......</p>
+
+                </div>
+       
+      
+
+       <div id="circle">
+
+<img src="/CIBA/home.png" alt="PayHere" height=400px; width=400px ; style = "position:absolute; left:10px; top:20px;" >
+  <div class="loader">
+				    <div class="loader">
+					<div class="loader">
+					   <div class="loader">
+
+					   </div>
+					</div>
+				    </div>
+				  </div>
+			   </div> 
+                    
 
 
-                        </div>
-                    </div>
-                </div>
-                <div class="offset-xl-1 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="circle-1"></div>
-                    <div class="feature-app-img">
-                        <img src="https://jituchauhan.com/quanto/quanto/images/iphone-img-2.png" alt="App Landing Page Template - Quanto">
-                    </div>
-                </div>
-            </div>
-             <div class="row">
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center mt-4"> 
-              Created for <a href="https://jituchauhan.com/quanto/" target="_blank" class="text-primary">jituchauhan.com</a>
-              </div></div>
-        </div>
-    </div>
+  </div>
+  <div class="right-half">
+	<div class="window">
+	  <div class="terminal">
+	<h1>Developer Mode </h1>
+	    <p class="log">
+	<span>
+	<p> Location: PayHere Console</br>
+	    State: Waiting for User authentication...</p>
+	<p class="log"id="CIBAauthRequest"></p>
+	<p class="log" id="CIBAauthResponse"></p>
+	<p class="log" id="polling_status"></p>
+	<p class="log" id="tokenRequest"></p>
+	<p class="log" id="tokenResponse"></p>
+      </span>
+	    </p>
+	  </div>
+	</div>
+ </div>
+</section>
+ 
 </body>
 </html>

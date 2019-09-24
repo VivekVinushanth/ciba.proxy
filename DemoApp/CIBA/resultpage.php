@@ -5,43 +5,111 @@
  <!-- Meta-Tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8"><link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
 <link href="css/cibahome.css" rel="stylesheet" type="text/css" media="all"/>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!------ Include the above in your HEAD tag ---------->
  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="scss/_variables.scss" rel="stylesheet" type="text/css" media="all"/>
+<link href="scss/_bootswatch.scss" rel="stylesheet" type="text/css" media="all"/>
 
+
+  	
+ <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<link href="css/cibahome.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/tick.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/split.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/payhere.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/nowterminal.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+var user = urlParams.get('user'); 
+document.getElementById("user").innerHTML = ("User : " +user +" authenticated!!");
+</script>
 <body>
- <div class="space-medium">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
-                    <div class="feature-block-v7 feature-block">
-                        <div class="feature-icon text-brand bg-brand-light mb-5">
-                            <i class="fas fa-paint-roller"></i>
-                        </div>
-                        <div class="feature-content">
-                            <h2>Happy Customer !!</h2>
-                            <p class="lead">Transaction Sucesssfull !!!!!! </p>
-                            <hr class="m-t-30 m-b-30">
-             
-                            <a href="index.php" class="btn btn-rounded btn-outline-primary">Pay another Bill ?</a>
-                        </div>
-                    </div>
+<section class="container">
+  <div class="left-half">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="#">VShop Console</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Features</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Pricing</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Sales</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+                    <div>
+                         
+        			<img src="/CIBA/Images" alt="Logo" height=100px; width=100px>
+                     </div>       
+   
+ 
+            <div style = "position:absolute; left:10px; top:150px;  color=#FFA500 height=400px; width=400px;">
+                    <h3 class="card-title" id="user"></h3>
+                   <p>Transaction ID : 1908</p>
+		<p>Authenticated. Transaction Done !!!</p>
+<img src="/CIBA/last.png" alt="PayHere" height=500px; width=400px ; style = "position:absolute; left:150px; top:200px;" >
+
+<div class="swal2-icon swal2-success swal2-animate-success-icon" style="position:absolute; left:255px; top:255px; display: flex;">
+ <div class="swal2-success-circular-line-left" style="background-color: rgb(255, 255, 255);"></div>
+   <span class="swal2-success-line-tip"></span>
+   <span class="swal2-success-line-long"></span>
+   <div class="swal2-success-ring"></div> 
+   <div class="swal2-success-fix" style="background-color: rgb(255, 255, 255);"></div>
+   <div class="swal2-success-circular-line-right" style="background-color: rgb(255, 255, 255);"></div>
+  </div>
+  
                 </div>
-                <div class="offset-xl-1 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="circle-1"></div>
-                    <div class="feature-app-img">
-                        <img src="https://jituchauhan.com/quanto/quanto/images/iphone-img-2.png" alt="App Landing Page Template - Quanto">
-                    </div>
-                </div>
-            </div>
-             <div class="row">
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center mt-4"> 
-              Created for <a href="https://jituchauhan.com/quanto/" target="_blank" class="text-primary">jituchauhan.com</a>
-              </div></div>
-        </div>
-    </div>
+      
+      
+	
+
+
+  </div>
+   <div class="right-half">
+	<div class="window">
+	  <div class="terminal">
+	<h1>Developer Mode </h1>
+	    <p class="log">
+	<span>
+<script>
+const CIBAauthenticationRequest = urlParams.get('CIBAauthRequest'); 
+const CIBAauthenticationResponse = urlParams.get('CIBAauthResponse'); 
+const TokenRequest = urlParams.get('tokenRequest'); 
+const TokenResponse = urlParams.get('tokenResponse'); </script>
+	<p> Location: PayHere Console</br>
+	    State: User Authentication Sucess !</p>
+	<p class="log" id="CIBAauthRequest"> <script> document.getElementById("CIBAauthRequest").innerHTML = ("CIBAAuth Request : " +CIBAauthenticationRequest); </script> </p>
+	<p class="log" id="CIBAauthResponse"> <script> document.getElementById("CIBAauthResponse").innerHTML = ("CIBAAuth Response : " +CIBAauthenticationResponse); </script></p>
+	<p class="log" id="tokenRequest"><script> document.getElementById("tokenRequest").innerHTML= ("Token Request : " + TokenRequest); </script></p>
+	<p class="log" id="tokenResponse"> <script> document.getElementById("tokenResponse").innerHTML= ("Token Response : " +TokenResponse); </script></p>
+      </span>
+	    </p>
+	  </div>
+	</div>
+ </div>
+</section>
 </body>
 </html>
