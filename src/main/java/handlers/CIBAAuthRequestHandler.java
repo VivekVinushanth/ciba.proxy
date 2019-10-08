@@ -65,7 +65,7 @@ public class CIBAAuthRequestHandler implements Handlers {
 
            /*Decoding the web token.*/
 //           paramsarray = request.split("\\.");
-//           String header = new String(Base64.decodeBase64(paramsarray[0]));
+//         String header = new String(Base64.decodeBase64(paramsarray[0]));
 //           String payload = new String(Base64.decodeBase64(paramsarray[1]));
 //           String signature = new String(Base64.decodeBase64(paramsarray[2]));
 
