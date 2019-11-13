@@ -30,7 +30,7 @@ public class DaoFactory {
 
 
    /**
-    *  This returns preferd connectors as the user does.
+    *  This returns preferred connectors as the user does.
     *  */
     public ArtifactStoreConnectors getArtifactStoreConnector(String name) {
 
