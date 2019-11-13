@@ -43,10 +43,10 @@ A POC for demonstration that CIBA can be applicable to real world scenarios.
 14. Token then passes from CIBA proxy server to Consumption device 
 15. Service Provision
 
-### Customized Flow
+### Customized Flow :
 ![customized](https://miro.medium.com/max/2059/1*hOY-wNIirz8NDKFlvI1XBA.png)
 
-## Design
+## Design :
 
 We planned to deploy CIBA Proxy Server as an extension to Identity Server 
 * To withstand scalability  issues due to polling
@@ -58,7 +58,8 @@ We planned to deploy CIBA Proxy Server as an extension to Identity Server
 ![archi](https://miro.medium.com/max/4688/1*EgJ7tBe5sAXPXtjn_ZZqbw.png)
 
 
-## TryOut
+## TryOut :
+
 * Fork the Repository
 * Clone it to your local machine
 * Create Database of your need [MySQL] and update Database name in the configurationFile
