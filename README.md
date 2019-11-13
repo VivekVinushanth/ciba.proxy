@@ -65,3 +65,5 @@ We planned to deploy CIBA Proxy Server as an extension to Identity Server
 * Spec: https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html
 * External Blog : https://blog.usejournal.com/lets-break-up-dear-decouple-ourselves-88159a86aba
 * External Blog : https://medium.com/@vivekc.16/people-you-dont-expect-to-operate-from-area-51-93646a58f485
+* Architectural Approach : https://medium.com/@vivekc.16/she-dwelt-among-the-untrodden-trails-f834b046e128
+* Try out Ciba POC : https://medium.com/@vivekc.16/trying-out-ciba-poc-of-wso2-is-186af645f874
