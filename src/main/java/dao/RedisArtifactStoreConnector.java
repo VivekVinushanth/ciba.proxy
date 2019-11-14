@@ -1,12 +1,38 @@
+/*
+ * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package dao;
 
-import transactionartifacts.*;
+import transactionartifacts.CIBAauthRequest;
+import transactionartifacts.CIBAauthResponse;
+import transactionartifacts.PollingAtrribute;
+import transactionartifacts.TokenRequest;
+import transactionartifacts.TokenResponse;
 
+/**
+ * Artifact store connector for Redis.
+ */
 public class RedisArtifactStoreConnector implements ArtifactStoreConnectors {
 
     private static RedisArtifactStoreConnector redisArtifactStoreConnectorInstance = new RedisArtifactStoreConnector();
 
     public static RedisArtifactStoreConnector getInstance() {
+
         if (redisArtifactStoreConnectorInstance == null) {
 
             synchronized (RedisArtifactStoreConnector.class) {
@@ -22,139 +48,84 @@ public class RedisArtifactStoreConnector implements ArtifactStoreConnectors {
     }
 
     @Override
-    public void addAuthRequest(String auth_req_id, Object authrequest) {
+    public void addAuthRequest(String authReqID, Object authrequest) {
 
     }
 
     @Override
-    public void addAuthResponse(String auth_req_id, Object authresponse) {
+    public void addAuthResponse(String authReqID, Object authresponse) {
 
     }
 
     @Override
-    public void addTokenRequest(String auth_req_id, Object tokenrequest) {
+    public void addTokenRequest(String authReqID, Object tokenrequest) {
 
     }
 
     @Override
-    public void addTokenResponse(String auth_req_id, Object authresponse) {
+    public void addTokenResponse(String authReqID, Object authresponse) {
 
     }
 
     @Override
-    public void addPollingAttribute(String auth_req_id, Object pollingattribute) {
-        
-    }
-
-   /* @Override
-    public void addExpiresTime(String auth_req_id, long timestamp) {
+    public void addPollingAttribute(String authReqID, Object pollingattribute) {
 
     }
 
     @Override
-    public void addLastPollTime(String auth_req_id, long lastpolltime) {
+    public void removeAuthRequest(String authReqID) {
 
     }
 
     @Override
-    public void addIssuedTime(String auth_req_id, long issuedtime) {
+    public void removeAuthResponse(String authReqID) {
 
     }
 
     @Override
-    public void addInterval(String auth_req_id, long interval) {
-
-    }*/
-
-    @Override
-    public void removeAuthRequest(String auth_req_id) {
+    public void removeTokenRequest(String authReqID) {
 
     }
 
     @Override
-    public void removeAuthResponse(String auth_req_id) {
+    public void removeTokenResponse(String authReqID) {
 
     }
 
     @Override
-    public void removeTokenRequest(String auth_req_id) {
+    public void removePollingAttribute(String authReqID) {
 
     }
 
     @Override
-    public void removeTokenResponse(String auth_req_id) {
+    public CIBAauthRequest getAuthRequest(String authReqID) {
 
-    }
-
-    @Override
-    public void removePollingAttribute(String auth_req_id) {
-
-    }
-
-  /*  @Override
-    public void removeExpiresTime(String auth_req_id) {
-
-    }
-
-    @Override
-    public void removeLastPollTime(String auth_req_id) {
-
-    }
-
-    @Override
-    public void removeIssuedTime(String auth_req_id) {
-
-    }
-
-    @Override
-    public void removeInterval(String auth_req_id) {
-
-    }*/
-
-    @Override
-    public CIBAauthRequest getAuthRequest(String auth_req_id) {
         return null;
     }
 
     @Override
-    public CIBAauthResponse getAuthResponse(String auth_req_id) {
+    public CIBAauthResponse getAuthResponse(String authReqID) {
+
         return null;
     }
 
     @Override
-    public TokenRequest getTokenRequest(String auth_req_id) {
+    public TokenRequest getTokenRequest(String authReqID) {
+
         return null;
     }
 
     @Override
-    public TokenResponse getTokenResponse(String auth_req_id) {
+    public TokenResponse getTokenResponse(String authReqID) {
+
         return null;
     }
 
     @Override
-    public PollingAtrribute getPollingAttribute(String auth_req_id) {
+    public PollingAtrribute getPollingAttribute(String authReqID) {
+
         return null;
     }
-
-    /*@Override
-    public long getExpiresTime(String auth_req_id) {
-        return 0;
-    }
-
-    @Override
-    public long getLastPollTime(String auth_req_id) {
-        return 0;
-    }
-
-    @Override
-    public long getIssuedTime(String auth_req_id) {
-        return 0;
-    }
-
-    @Override
-    public long getInterval(String auth_req_id) {
-        return 0;
-    }*/
 
     @Override
     public void registerToAuthRequestObservers(Object authRequestHandler) {
@@ -181,23 +152,4 @@ public class RedisArtifactStoreConnector implements ArtifactStoreConnectors {
 
     }
 
-  /*  @Override
-    public void registerToExpiryTimeObservers(Object expiryHandler) {
-
-    }
-
-    @Override
-    public void registerToLastPollObservers(Object pollHandler) {
-
-    }
-
-    @Override
-    public void registerToIssuedTimeObservers(Object issuedTimeHandler) {
-
-    }
-
-    @Override
-    public void registerToIntervalObservers(Object intervalHandler) {
-
-    }*/
 }

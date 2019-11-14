@@ -26,7 +26,7 @@ import transactionartifacts.TokenRequest;
 import transactionartifacts.TokenResponse;
 
 /**
- * Supports Cache -in memory storage.
+ * Artifact store connector for in-memory.
  */
 public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
 
@@ -55,27 +55,15 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
         return cacheArtifactStoreConnectorInstance;
     }
 
-    /**
-     * Add Authentication request object to authrequest cache.
-     *
-     * @param authReqId   Ciba Authentication request identifier.
-     * @param authrequest Ciba Authentication request.
-     */
+    @Override
     public void addAuthRequest(String authReqId, Object authrequest) {
 
         if (authrequest instanceof CIBAauthRequest) {
             cibaProxyCache.getAuthRequestCache().add(authReqId, authrequest);
-        } else {
-            // do nothing.
         }
     }
 
-    /**
-     * Add Authentication response object to auth response cache.
-     *
-     * @param authReqId    Ciba Authentication request identifier.
-     * @param authresponse Ciba Authentication response.
-     */
+    @Override
     public void addAuthResponse(String authReqId, Object authresponse) {
 
         if (authresponse instanceof CIBAauthResponse) {
@@ -83,12 +71,7 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
         }
     }
 
-    /**
-     * Add Token request object to token request cache.
-     *
-     * @param authReqID    Ciba Authentication request identifier.
-     * @param tokenrequest TokenRequest Object.
-     */
+    @Override
     public void addTokenRequest(String authReqID, Object tokenrequest) {
 
         if (tokenrequest instanceof TokenRequest) {
@@ -96,12 +79,7 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
         }
     }
 
-    /**
-     * Add Authentication response object to token cache.
-     *
-     * @param authReqId     Ciba Authentication request identifier.
-     * @param tokenresponse Token Response.
-     */
+    @Override
     public void addTokenResponse(String authReqId, Object tokenresponse) {
 
         if (tokenresponse instanceof TokenResponse) {
@@ -109,12 +87,6 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
         }
     }
 
-    /**
-     * Add pollingAttributeDO polling attribute cache.
-     *
-     * @param authReqID        Ciba Authentication request identifier.
-     * @param pollingattribute Polling attribute DO.
-     */
     @Override
     public void addPollingAttribute(String authReqID, Object pollingattribute) {
 
@@ -123,118 +95,66 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
         }
     }
 
-    /**
-     * Remove Authentication request object from auth request cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     */
+    @Override
     public void removeAuthRequest(String authReqID) {
 
         cibaProxyCache.getAuthRequestCache().remove(authReqID);
     }
 
-    /**
-     * Remove Authentication response object from auth response cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     */
+    @Override
     public void removeAuthResponse(String authReqID) {
 
         cibaProxyCache.getAuthResponseCache().remove(authReqID);
     }
 
-    /**
-     * Remove token request object from token request cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     */
+    @Override
     public void removeTokenRequest(String authReqID) {
 
         cibaProxyCache.getTokenRequestCache().remove(authReqID);
     }
 
-    /**
-     * Remove Authentication response object from auth response cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     */
+    @Override
     public void removeTokenResponse(String authReqID) {
 
         cibaProxyCache.getTokenResponseCache().remove(authReqID);
     }
 
-    /**
-     * Remove Polling attribute DO from cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     */
     @Override
     public void removePollingAttribute(String authReqID) {
 
         cibaProxyCache.getPollingAtrributeCache().remove(authReqID);
     }
 
-    /**
-     * Get CIBA auth request  from Auth request cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     * @return Ciba Authentication request DO.
-     */
+    @Override
     public CIBAauthRequest getAuthRequest(String authReqID) {
 
         return (CIBAauthRequest) cibaProxyCache.getAuthRequestCache().get(authReqID);
     }
 
-    /**
-     * Get CIBA auth response  from Authresponse cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     * @return Ciba Authentication response.
-     */
+    @Override
     public CIBAauthResponse getAuthResponse(String authReqID) {
 
         return (CIBAauthResponse) cibaProxyCache.getAuthResponseCache().get(authReqID);
     }
 
-    /**
-     * Get Token request  from token request cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     * @return Token Request.
-     */
+    @Override
     public TokenRequest getTokenRequest(String authReqID) {
 
         return (TokenRequest) cibaProxyCache.getTokenRequestCache().get(authReqID);
     }
 
-    /**
-     * Get token response  from token response cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     * @return Token Response.
-     */
+    @Override
     public TokenResponse getTokenResponse(String authReqID) {
 
         return (TokenResponse) cibaProxyCache.getTokenResponseCache().get(authReqID);
     }
 
-    /**
-     * Get token response  from token response cache.
-     *
-     * @param authReqID Ciba Authentication request identifier.
-     * @return Polling attribute DO.
-     */
     @Override
     public PollingAtrribute getPollingAttribute(String authReqID) {
 
         return (PollingAtrribute) cibaProxyCache.getPollingAtrributeCache().get(authReqID);
     }
 
-    /**
-     * Register to authentication request observer list.
-     *
-     * @param authRequestHandler Authentication request handler.
-     */
     @Override
     public void registerToAuthRequestObservers(Object authRequestHandler) {
 
@@ -242,11 +162,6 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
 
     }
 
-    /**
-     * Register to authentication response observer list.
-     *
-     * @param authResponseHandler Authentication response handler.
-     */
     @Override
     public void registerToAuthResponseObservers(Object authResponseHandler) {
 
@@ -254,33 +169,18 @@ public class CacheArtifactStoreConnector implements ArtifactStoreConnectors {
 
     }
 
-    /**
-     * Register to token request observer list.
-     *
-     * @param tokenRequestHandler Token request handler.
-     */
     @Override
     public void registerToTokenRequestObservers(Object tokenRequestHandler) {
 
         cibaProxyCache.getTokenRequestCache().register(tokenRequestHandler);
     }
 
-    /**
-     * Register to token response observer list.
-     *
-     * @param tokenResponseHandler Token response handler.
-     */
     @Override
     public void registerToTokenResponseObservers(Object tokenResponseHandler) {
 
         cibaProxyCache.getTokenResponseCache().register(tokenResponseHandler);
     }
 
-    /**
-     * Register to authentication response observer list.
-     *
-     * @param pollingHandler Polling handler.
-     */
     @Override
     public void registerToPollingAttribute(Object pollingHandler) {
         //No need of validation or implementation

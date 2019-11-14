@@ -28,32 +28,156 @@ import transactionartifacts.TokenResponse;
  * Abstracts artifact store connector.
  */
 public interface ArtifactStoreConnectors {
-      void addAuthResponse(String authReqID, Object authresponse);
-      void addTokenRequest(String authReqID, Object tokenrequest);
-      void addTokenResponse(String authReqID, Object tokenresponse);
-      void addPollingAttribute(String authReqID , Object pollingattribute);
 
+    /**
+     * Add Authentication request object to authrequest cache.
+     *
+     * @param authReqId   Ciba Authentication request identifier.
+     * @param authrequest Ciba Authentication request.
+     */
+    void addAuthRequest(String authReqId, Object authrequest);
 
-      void removeAuthRequest(String authReqID);
-      void removeAuthResponse(String authReqID);
-      void removeTokenRequest(String authReqID);
-      void removeTokenResponse(String authReqID);
-      void removePollingAttribute(String authReqID);
+    /**
+     * Add Authentication response object to auth response cache.
+     *
+     * @param authReqID    Ciba Authentication request identifier.
+     * @param authresponse Ciba Authentication response.
+     */
+    void addAuthResponse(String authReqID, Object authresponse);
 
+    /**
+     * Add Token request object to token request cache.
+     *
+     * @param authReqID    Ciba Authentication request identifier.
+     * @param tokenrequest TokenRequest Object.
+     */
+    void addTokenRequest(String authReqID, Object tokenrequest);
 
-      CIBAauthRequest getAuthRequest(String authReqID);
-      CIBAauthResponse getAuthResponse(String authReqID);
-      TokenRequest getTokenRequest(String authReqID);
-      TokenResponse getTokenResponse(String authReqID);
-      PollingAtrribute getPollingAttribute(String authReqID);
+    /**
+     * Add Authentication response object to token cache.
+     *
+     * @param authReqID     Ciba Authentication request identifier.
+     * @param tokenresponse Token Response.
+     */
+    void addTokenResponse(String authReqID, Object tokenresponse);
 
+    /**
+     * Add pollingAttributeDO polling attribute cache.
+     *
+     * @param authReqID        Ciba Authentication request identifier.
+     * @param pollingattribute Polling attribute DO.
+     */
+    void addPollingAttribute(String authReqID, Object pollingattribute);
 
-      void registerToAuthRequestObservers(Object authRequestHandler);
-      void registerToAuthResponseObservers(Object authResponseHandler);
-      void registerToTokenRequestObservers(Object tokenRequestHandler);
-      void registerToTokenResponseObservers(Object tokenResponseHandler);
-      void registerToPollingAttribute(Object pollingatrribute);
+    /**
+     * Remove Authentication request object from auth request cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     */
+    void removeAuthRequest(String authReqID);
 
+    /**
+     * Remove Authentication response object from auth response cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     */
+    void removeAuthResponse(String authReqID);
 
- }
+    /**
+     * Remove token request object from token request cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     */
+    void removeTokenRequest(String authReqID);
+
+    /**
+     * Remove Authentication response object from auth response cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     */
+    void removeTokenResponse(String authReqID);
+
+    /**
+     * Remove Polling attribute DO from cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     */
+    void removePollingAttribute(String authReqID);
+
+    /**
+     * Get CIBA auth request  from Auth request cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     * @return Ciba Authentication request DO.
+     */
+    CIBAauthRequest getAuthRequest(String authReqID);
+
+    /**
+     * Get CIBA auth response  from Authresponse cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     * @return Ciba Authentication response.
+     */
+    CIBAauthResponse getAuthResponse(String authReqID);
+
+    /**
+     * Get Token request  from token request cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     * @return Token Request.
+     */
+    TokenRequest getTokenRequest(String authReqID);
+
+    /**
+     * Get token response  from token response cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     * @return Token Response.
+     */
+    TokenResponse getTokenResponse(String authReqID);
+
+    /**
+     * Get token response  from token response cache.
+     *
+     * @param authReqID Ciba Authentication request identifier.
+     * @return Polling attribute DO.
+     */
+    PollingAtrribute getPollingAttribute(String authReqID);
+
+    /**
+     * Register to authentication request observer list.
+     *
+     * @param authRequestHandler Authentication request handler.
+     */
+    void registerToAuthRequestObservers(Object authRequestHandler);
+
+    /**
+     * Register to authentication response observer list.
+     *
+     * @param authResponseHandler Authentication response handler.
+     */
+    void registerToAuthResponseObservers(Object authResponseHandler);
+
+    /**
+     * Register to token request observer list.
+     *
+     * @param tokenRequestHandler Token request handler.
+     */
+    void registerToTokenRequestObservers(Object tokenRequestHandler);
+
+    /**
+     * Register to token response observer list.
+     *
+     * @param tokenResponseHandler Token response handler.
+     */
+    void registerToTokenResponseObservers(Object tokenResponseHandler);
+
+    /**
+     * Register to authentication response observer list.
+     *
+     * @param pollingatrribute Polling handler.
+     */
+    void registerToPollingAttribute(Object pollingatrribute);
+
+}
 
