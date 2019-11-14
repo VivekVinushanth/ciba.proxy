@@ -1,14 +1,28 @@
-package handlers;
+/*
+ * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
+package handlers;
 
 import authorizationserver.CIBAProxyServer;
 import com.nimbusds.jwt.SignedJWT;
 import configuration.ConfigurationFile;
 import dao.DaoFactory;
 import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,17 +33,15 @@ import validator.AuthRequestValidator;
 
 import java.util.logging.Logger;
 
-//import org.apache.commons.codec.binary.Base64;
-
 /**
- * This class accepts and handle the CIBA authentication requests.
- * */
+ * Accepts and handle the CIBA authentication requests.
+ */
 @ComponentScan("handlers")
 @Configuration
 public class CIBAAuthRequestHandler implements Handlers {
+
     private static final Logger LOGGER = Logger.getLogger(CIBAProxyServer.class.getName());
     DaoFactory daoFactory = DaoFactory.getInstance();
-
 
     private CIBAAuthRequestHandler() {
 
@@ -38,6 +50,7 @@ public class CIBAAuthRequestHandler implements Handlers {
     private static CIBAAuthRequestHandler cibaAuthRequestHandlerInstance = new CIBAAuthRequestHandler();
 
     public static CIBAAuthRequestHandler getInstance() {
+
         if (cibaAuthRequestHandlerInstance == null) {
 
             synchronized (CIBAAuthRequestHandler.class) {
@@ -51,79 +64,68 @@ public class CIBAAuthRequestHandler implements Handlers {
         }
         return cibaAuthRequestHandlerInstance;
 
-
     }
 
-
-
+    /**
+     * Extract parameters from authentication request.
+     *
+     * @param request Ciba Authenitcation request.
+     * @return Authentication response.
+     */
     public String extractParameters(String request) {
 
-//        String[] paramsarray = new String[3];
-
         CIBAAuthResponseHandler cibaAuthResponseHandler = CIBAAuthResponseHandler.getInstance();
-       try {
+        try {
 
-           /*Decoding the web token.*/
-//           paramsarray = request.split("\\.");
-//         String header = new String(Base64.decodeBase64(paramsarray[0]));
-//           String payload = new String(Base64.decodeBase64(paramsarray[1]));
-//           String signature = new String(Base64.decodeBase64(paramsarray[2]));
+            SignedJWT signedJWT = SignedJWT.parse(request);
+            String payload = signedJWT.getPayload().toString();
+            System.out.println("Payload" + payload);
+            JSONObject jo = signedJWT.getJWTClaimsSet().toJSONObject();
 
-           SignedJWT signedJWT = SignedJWT.parse(request);
-           String payload =signedJWT.getPayload().toString();
-           System.out.println("Payload" + payload);
-           JSONObject jo = signedJWT.getJWTClaimsSet().toJSONObject();
-           // parsing file "JSONExample.json"
-   /*        Object obj = new JSONParser().parse(payload);
+            LOGGER.info("Auth request parameters extracted.");
 
-               // typecasting obj to JSONObject
-               JSONObject jo = (JSONObject) obj;*/
+            // Once properly validated creating the authentication response.
+            if (this.refactorAuthRequest(jo) != null) {
 
-               LOGGER.info("Auth request parameters extracted.");
+                // Initiate code generator.
+                CodeGenerator codeGenerator = CodeGenerator.getInstance();
 
-// TODO: 8/3/19 Need to verify sign here
-           /**
-            * Once properly validated creating the authentication response.
-            Else the error payload will be send from the place of validation.
-            */
-               if (this.refactorAuthRequest(jo) != null) {
+                // Creation of auth_req_id happens here.
+                String authReqId = codeGenerator.getAuthReqId();
 
-                   /**
-                    * creation of auth_req_id happens here.
-                    * */
-                   CodeGenerator codeGenerator = CodeGenerator.getInstance();
-                   String authReqId =  codeGenerator.getAuthReqId();
+                // Store CIBA authentication request to the memory.
+                storeAuthRequest(authReqId, this.refactorAuthRequest(jo));
 
-                    /**
-                     * Store CIBA authentication request to the memory.
-                     * */
-                   storeAuthRequest(authReqId, this.refactorAuthRequest(jo));
+                // Returning authentication response.
+                return cibaAuthResponseHandler.createAuthResponse(authReqId)
+                        .toString();
+            }
 
-//System.out.println(cibaAuthResponseHandler.createAuthResponse(authReqId).toString());
-                   return cibaAuthResponseHandler.createAuthResponse(authReqId).toString(); //returning authentication response
-               }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Improper 'request' parameter.");
 
-       } catch (ArrayIndexOutOfBoundsException e) {
-           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Improper 'request' parameter.");
+        } catch (java.text.ParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to parse JWS.");
+        }
 
-       } catch (java.text.ParseException e) {
-           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to parse JWS.");
-       }
-
-        return "";
+        return null;
 
     }
 
+    /**
+     * Extract parameters from authentication request.
+     *
+     * @param jo Ciba Authentication request.
+     * @return Authentication response.
+     */
     public CIBAauthRequest refactorAuthRequest(JSONObject jo) {
-        //CIBAParameters ciba_parameters = CIBAParameters.getInstance();
 
-
-        /**
-         * Initiating the validation process.
-         * */
+        // Initiating the validation process.
         AuthRequestValidator authRequestValidator = AuthRequestValidator.getInstance();
 
         if (authRequestValidator.validateAuthRequest(jo) != null) {
+
+            // Validate authentication request.
             return authRequestValidator.validateAuthRequest(jo);
         } else {
 
@@ -131,20 +133,30 @@ public class CIBAAuthRequestHandler implements Handlers {
         }
     }
 
-
+    /**
+     * Receive ciba authentication request parameters.
+     *
+     * @param params Ciba Authentication request parameters.
+     * @return Authentication response.
+     */
     public String receive(String params) {
-        LOGGER.info("Auth request handler received the auth request");
+
+        LOGGER.info("Auth request handler received the auth request.");
+
+        // Return extracted parameters.
         return extractParameters(params);
     }
 
-
     /**
-     * Storing authentication request to cachememory.
-     * */
-    public void storeAuthRequest(String auth_req_id, CIBAauthRequest cibAauthRequest) {
+     * Store authentication request to store.
+     *
+     * @param authReqId       Ciba Authentication request identifier.
+     * @param cibAauthRequest Ciba Authentication request.
+     */
+    public void storeAuthRequest(String authReqId, CIBAauthRequest cibAauthRequest) {
 
-      // daoFactory.getArtifactStoreConnector("InMemoryCache").addAuthRequest(auth_req_id, cibAauthRequest);
-        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).addAuthRequest(auth_req_id,cibAauthRequest);
-      LOGGER.info("Authentication request stored in  Authentication Request Database");
+        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE())
+                .addAuthRequest(authReqId, cibAauthRequest);
+        LOGGER.info("Authentication request stored in  Authentication Request Database.");
     }
 }

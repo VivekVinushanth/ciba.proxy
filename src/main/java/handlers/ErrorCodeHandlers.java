@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * This class extends Runtimeexception for customized responses.
  * */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class ErrorCodeHandlers extends RuntimeException {
+public class ErrorCodeHandlers {
 
     private ErrorCodeHandlers() {
 

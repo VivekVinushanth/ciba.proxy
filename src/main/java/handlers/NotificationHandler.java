@@ -1,61 +1,86 @@
+/*
+ * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package handlers;
 
-import ciba.proxy.server.servicelayer.ServerResponseHandler;
 import configuration.ConfigurationFile;
 import dao.ArtifactStoreConnectors;
 import dao.DaoFactory;
-import transactionartifacts.Artifacts;
 import transactionartifacts.PollingAtrribute;
 
+/**
+ * Handles the process of sending client notifications.
+ */
 public class NotificationHandler implements Handlers {
 
- ArtifactStoreConnectors artifactStoreConnectors= DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.
-         getInstance().getSTORE_CONNECTOR_TYPE());
+    ArtifactStoreConnectors artifactStoreConnectors =
+            DaoFactory.getInstance().getArtifactStoreConnector(ConfigurationFile.
+                    getInstance().getSTORE_CONNECTOR_TYPE());
+
     private NotificationHandler() {
 
     }
 
-    private static NotificationHandler NotificationHandlerInstance = new NotificationHandler();
+    private static NotificationHandler notificationHandlerInstance = new NotificationHandler();
 
     public static NotificationHandler getInstance() {
-        if (NotificationHandlerInstance == null) {
+
+        if (notificationHandlerInstance == null) {
 
             synchronized (NotificationHandler.class) {
 
-                if (NotificationHandlerInstance == null) {
+                if (notificationHandlerInstance == null) {
 
                     /* instance will be created at request time */
-                    NotificationHandlerInstance = new NotificationHandler();
+                    notificationHandlerInstance = new NotificationHandler();
                 }
             }
         }
-        return NotificationHandlerInstance;
-
+        return notificationHandlerInstance;
 
     }
 
+    /**
+     * Send notification to client.
+     *
+     * @param authReqId Authentication request identifier.
+     */
+    public void sendNotificationtoClient(String authReqId) {
 
-
-
-
-    public void sendNotificationtoClient(String auth_req_id) {
-
-        if (setNotificationFlag(auth_req_id)){
-            // TODO: 8/31/19 Actually need to send a notification to client end.but setting id fine.
+        if (setNotificationFlag(authReqId)) {
+            // Do nothing for the moment.
         }
     }
 
+    /**
+     * Set the notification flag.
+     *
+     * @param authReqId Authentication request identifier.
+     * @return Boolean if setting process is success.
+     */
+    private Boolean setNotificationFlag(String authReqId) {
 
-    private Boolean setNotificationFlag(String auth_req_id){
-       PollingAtrribute pollingAtrribute1 = artifactStoreConnectors.getPollingAttribute(auth_req_id);
-       artifactStoreConnectors.removePollingAttribute(auth_req_id);
-       pollingAtrribute1.setNotificationIssued(true);
+        PollingAtrribute pollingAtrribute1 = artifactStoreConnectors.getPollingAttribute(authReqId);
+        artifactStoreConnectors.removePollingAttribute(authReqId);
+        pollingAtrribute1.setNotificationIssued(true);
 
-       artifactStoreConnectors.addPollingAttribute(auth_req_id,pollingAtrribute1);
-       return true;
+        artifactStoreConnectors.addPollingAttribute(authReqId, pollingAtrribute1);
+        return true;
     }
-
-
-
 
 }

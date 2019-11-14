@@ -1,7 +1,24 @@
+/*
+ * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package handlers;
 
 import authorizationserver.CIBAProxyServer;
-import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.Payload;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -9,17 +26,15 @@ import validator.TokenRequestValidator;
 
 import java.util.logging.Logger;
 
-
-
 /**
- * This class accepts token requets and initaite validation.
- * Then it proceeds to token response.
- * */
+ * Accepts token request and initiates validation.
+ */
 @ComponentScan("handlers")
 @Configuration
 public class TokenRequestHandler implements Handlers {
 
     private static final Logger LOGGER = Logger.getLogger(CIBAProxyServer.class.getName());
+
     private TokenRequestHandler() {
 
     }
@@ -27,6 +42,7 @@ public class TokenRequestHandler implements Handlers {
     private static TokenRequestHandler tokenRequestHandlerInstance = new TokenRequestHandler();
 
     public static TokenRequestHandler getInstance() {
+
         if (tokenRequestHandlerInstance == null) {
 
             synchronized (TokenRequestHandler.class) {
@@ -40,45 +56,43 @@ public class TokenRequestHandler implements Handlers {
         }
         return tokenRequestHandlerInstance;
 
-
     }
 
-
-
-    public Payload extractParameters(String authreqid , String granttype) {
+    /**
+     * Extract parameters from request and return response after validation.
+     *
+     * @param authReqId Authentication request Identifier.
+     * @param grantType GrantType for token.
+     * @return response payload.
+     */
+    public Payload processTokenRequest(String authReqId, String grantType) {
 
         TokenRequestValidator tokenRequestValidator = TokenRequestValidator.getInstance();
 
-        /**
-         * Validator class taking care of validation of the token request.
-         * */
-        if (tokenRequestValidator.validateTokenRequest(authreqid, granttype) != null) {
+        // Validator class taking care of validation of the token request.
+        if (tokenRequestValidator.validateTokenRequest(authReqId, grantType) != null) {
 
-
-            /**
-             * TokenRequestHandler getting the service from Token_Response_Handler to create response.
-             * */
+            // TokenRequestHandler getting the service from Token_Response_Handler to create response.
             TokenResponseHandler tokenresponsehandler = TokenResponseHandler.getInstance();
-            //LOGGER.info("Token Response created.");
-            return (tokenresponsehandler.createTokenResponse(authreqid));
-
+            return (tokenresponsehandler.createTokenResponse(authReqId));
 
         } else {
-            System.out.println("Error Response to be created.");
             TokenResponseHandler tokenresponsehandler = TokenResponseHandler.getInstance();
-            return (tokenresponsehandler.createTokenErrorResponse(authreqid));
+            return (tokenresponsehandler.createTokenErrorResponse(authReqId));
         }
 
     }
 
+    /**
+     * Receives token request.
+     *
+     * @param authReqId Authentication request Identifier.
+     * @param grantType GrantType for token.
+     * @return response payload.
+     */
+    public Payload receive(String authReqId, String grantType) {
 
-
-
-
-    public Payload receive(String auth_req_id , String grant_type) {
-
-        return extractParameters(auth_req_id, grant_type);
+        return processTokenRequest(authReqId, grantType);
     }
-
 
 }

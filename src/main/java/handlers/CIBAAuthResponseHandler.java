@@ -1,11 +1,29 @@
+/*
+ * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package handlers;
 
 import ciba.proxy.server.servicelayer.ServerRequestHandler;
 import cibaparameters.CIBAParameters;
-import configuration.ConfigurationFile;
-import dao.DaoFactory;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jwt.JWTClaimsSet;
+import configuration.ConfigurationFile;
+import dao.DaoFactory;
 import transactionartifacts.CIBAauthRequest;
 import transactionartifacts.CIBAauthResponse;
 import transactionartifacts.PollingAtrribute;
@@ -14,8 +32,8 @@ import java.time.ZonedDateTime;
 import java.util.logging.Logger;
 
 /**
- * This class handles the CIBA authentication responses.
- * */
+ * Handles the CIBA authentication responses.
+ */
 public class CIBAAuthResponseHandler implements Handlers {
 
     private static final Logger LOGGER = Logger.getLogger(CIBAAuthResponseHandler.class.getName());
@@ -29,6 +47,7 @@ public class CIBAAuthResponseHandler implements Handlers {
     private static CIBAAuthResponseHandler cibaAuthResponseHandlerInstance = new CIBAAuthResponseHandler();
 
     public static CIBAAuthResponseHandler getInstance() {
+
         if (cibaAuthResponseHandlerInstance == null) {
 
             synchronized (CIBAAuthResponseHandler.class) {
@@ -42,88 +61,101 @@ public class CIBAAuthResponseHandler implements Handlers {
         }
         return cibaAuthResponseHandlerInstance;
 
-
     }
-
 
     /**
      * Creating authentication response.
+     *
+     * @param authReqId Ciba Authentication request identifier.
+     * @return Payload of authentication response.
      */
-    public Payload createAuthResponse(String auth_req_id) {
+    public Payload createAuthResponse(String authReqId) {
+
         CIBAauthResponse cibAauthResponse = new CIBAauthResponse();
 
-
-
-        /*creating authentication response for the request*/
+        // Creating authentication response for the request.
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                .claim("auth_req_id", auth_req_id)
+                .claim("auth_req_id", authReqId)
                 .claim("expires_in", cibaparameters.getExpires_in())
                 .claim("interval", cibaparameters.getInterval())
                 .build();
 
-        String responseString = claims.toJSONObject().toString();
-
         Payload responsepayload = new Payload(claims.toJSONObject());
 
-
-        /**
-         * Creating authentication response object and store to memory.
-         * */
-        cibAauthResponse.setAuth_req_id(auth_req_id);
+        // Creating authentication response object and store to memory.
+        cibAauthResponse.setAuth_req_id(authReqId);
         cibAauthResponse.setExpires_in(cibaparameters.getExpires_in());
         cibAauthResponse.setInterval(cibaparameters.getInterval());
-        this.storeAuthResponse(auth_req_id, cibAauthResponse);
+        this.storeAuthResponse(authReqId, cibAauthResponse);
 
         LOGGER.info("CIBA Authentication Response payload created and forwarded");
         return responsepayload;
 
     }
 
+    /**
+     * Storing auth response to store.
+     *
+     * @param authReqId        Ciba Authentication request identifier.
+     * @param cibAauthResponse Ciba Authentication response.
+     */
+    public void storeAuthResponse(String authReqId, CIBAauthResponse cibAauthResponse) {
 
+        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).
+                addAuthResponse(authReqId, cibAauthResponse);
 
-  /**
-   * Storing auth response to cache memory.
-   * */
-   public void storeAuthResponse(String auth_req_id, CIBAauthResponse cibAauthResponse) {
+        LOGGER.info("CIBA Authentication Response stored in Auth Response Store.");
+        System.out
+                .println("Working in perfection" + daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().
+                        getSTORE_CONNECTOR_TYPE()).getAuthResponse(authReqId).getExpires_in());
 
-       daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).
-               addAuthResponse(auth_req_id,cibAauthResponse);
+        // Store polling attributes.
+        storePollingAttribute(authReqId);
 
-      LOGGER.info("CIBA Authentication Response stored in Auth Response Store.");
-      System.out.println("Working in perfection"+daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().
-              getSTORE_CONNECTOR_TYPE()).getAuthResponse(auth_req_id).getExpires_in());
+        // Triggering the server to initiate the flow.
+        triggerServerRequestHandler(authReqId);
 
-      storePollingAttribute(auth_req_id); // store polling attributes first
-      triggerServerRequestHandler(auth_req_id); //then trigggering the server to initiate the flow
+    }
 
-   }
+    /**
+     * Trigger server authorize request handler to fire authorize request.
+     *
+     * @param authReqId Ciba Authentication request identifier.
+     */
+    private void triggerServerRequestHandler(String authReqId) {
 
-   private void triggerServerRequestHandler(String auth_req_id){
-       CIBAauthRequest cibAauthRequest = daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().
-               getSTORE_CONNECTOR_TYPE()).getAuthRequest(auth_req_id);
-       ServerRequestHandler.getInstance().initiateServerCommunication(cibAauthRequest,auth_req_id);
-   }
+        CIBAauthRequest cibAauthRequest = daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().
+                getSTORE_CONNECTOR_TYPE()).getAuthRequest(authReqId);
 
-   private void storePollingAttribute(String auth_req_id){
-       long currenttime = ZonedDateTime.now().toInstant().toEpochMilli();
+        // Initiate Identity server communication.
+        ServerRequestHandler.getInstance().initiateServerCommunication(cibAauthRequest, authReqId);
+    }
 
-       PollingAtrribute pollingAtrribute = new PollingAtrribute();
-       pollingAtrribute.setAuth_req_id(auth_req_id);
-       pollingAtrribute.setExpiresIn(cibaparameters.getExpires_in() * 1000);
-       pollingAtrribute.setIssuedTime(currenttime);
-       pollingAtrribute.setLastPolledTime(currenttime);
-       pollingAtrribute.setPollingInterval(cibaparameters.getInterval() * 1000);
+    /**
+     * Store polling attributes in the store.
+     *
+     * @param authReqId Ciba Authentication request identifier.
+     */
+    private void storePollingAttribute(String authReqId) {
 
-       if(ConfigurationFile.getInstance().getFLOW_MODE().equalsIgnoreCase("ping")){
-           pollingAtrribute.setNotificationIssued(false);
-       }else if(ConfigurationFile.getInstance().getFLOW_MODE().equalsIgnoreCase("poll")){
-           pollingAtrribute.setNotificationIssued(true);
-       }else{
-           //do nothing
-       }
+        long currentTime = ZonedDateTime.now().toInstant().toEpochMilli();
 
+        PollingAtrribute pollingAtrribute = new PollingAtrribute();
+        pollingAtrribute.setAuth_req_id(authReqId);
+        pollingAtrribute.setExpiresIn(cibaparameters.getExpires_in() * 1000);
+        pollingAtrribute.setIssuedTime(currentTime);
+        pollingAtrribute.setLastPolledTime(currentTime);
+        pollingAtrribute.setPollingInterval(cibaparameters.getInterval() * 1000);
 
-       daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).
-               addPollingAttribute(auth_req_id,pollingAtrribute);
-   }
+        if (ConfigurationFile.getInstance().getFLOW_MODE().equalsIgnoreCase("ping")) {
+            pollingAtrribute.setNotificationIssued(false);
+        } else if (ConfigurationFile.getInstance().getFLOW_MODE().equalsIgnoreCase("poll")) {
+            pollingAtrribute.setNotificationIssued(true);
+        } else {
+            //do nothing
+        }
+
+        daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().getSTORE_CONNECTOR_TYPE()).
+                addPollingAttribute(authReqId, pollingAtrribute);
+    }
 }
