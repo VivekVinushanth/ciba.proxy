@@ -1,6 +1,6 @@
 package validator;
 
-import errorfiles.InternalServerError;
+import exceptions.InternalServerErrorException;
 import net.minidev.json.JSONObject;
 import transactionartifacts.TokenResponse;
 
@@ -61,17 +61,17 @@ public class TokenResponseValidator  {
 
                 tokenResponse = null;
                 LOGGER.warning("Invalid Token Parameters.Id_token not found.");
-                throw new InternalServerError("Invalid Token Parameters.Id_token not found.");
+                throw new InternalServerErrorException("Invalid Token Parameters.Id_token not found.");
 
             }  else if (token.get("id_token")==null) {
                 tokenResponse = null;
                 LOGGER.warning("Invalid Token Parameters.Id_token not found.");
-                throw new InternalServerError("Invalid Token Parameters.Id_token not found.");
+                throw new InternalServerErrorException("Invalid Token Parameters.Id_token not found.");
             }else {
                 tokenResponse.setIdToken(String.valueOf(token.get("id_token")));
             }
-        } catch (InternalServerError internalServerError) {
-            internalServerError.getMessage();
+        } catch (InternalServerErrorException internalServerErrorException) {
+            internalServerErrorException.getMessage();
         }
 
 
@@ -83,20 +83,20 @@ public class TokenResponseValidator  {
             if (String.valueOf(token.get("access_token")).isEmpty()) {
                 tokenResponse = null;
                 LOGGER.warning("Invalid Token Parameters.Access_token not found.");
-                throw new InternalServerError("Invalid Token Parameters.");
+                throw new InternalServerErrorException("Invalid Token Parameters.");
 
             } else if (token.get("access_token")==null) {
                 tokenResponse = null;
                 LOGGER.warning("Invalid Token Parameters.Access_token not found.");
-                throw new InternalServerError("Invalid Token Parameters.Access_token not found.");
+                throw new InternalServerErrorException("Invalid Token Parameters.Access_token not found.");
 
             }else {
                 tokenResponse.setAccessToken(String.valueOf(token.get("access_token")));
             }
 
 
-        } catch (InternalServerError internalServerError) {
-            internalServerError.getMessage();
+        } catch (InternalServerErrorException internalServerErrorException) {
+            internalServerErrorException.getMessage();
         }
 
         /*Validation for expires_in
@@ -106,19 +106,19 @@ public class TokenResponseValidator  {
             if (String.valueOf(token.get("expires_in")).isEmpty()) {
                 tokenResponse = null;
                 LOGGER.warning("Invalid Token Parameters.'expires_in' not found.");
-                throw new InternalServerError("Invalid Token Parameters.'expires_in' not found.");
+                throw new InternalServerErrorException("Invalid Token Parameters.'expires_in' not found.");
             } else if (token.get("expires_in")==null) {
                 tokenResponse = null;
                 LOGGER.warning("Invalid Token Parameters.'expires_in' not found.");
-                throw new InternalServerError("Invalid Token Parameters.'expires_in' not found.");
+                throw new InternalServerErrorException("Invalid Token Parameters.'expires_in' not found.");
 
             }else {
                 tokenResponse.setTokenExpirein(Long.parseLong(String.valueOf(token.get("expires_in"))));
             }
 
 
-        } catch (InternalServerError internalServerError) {
-            internalServerError.getMessage();
+        } catch (InternalServerErrorException internalServerErrorException) {
+            internalServerErrorException.getMessage();
         }
 
         /*Validation for token_type
@@ -128,19 +128,19 @@ public class TokenResponseValidator  {
             if (String.valueOf(token.get("token_type")).isEmpty()) {
                 tokenResponse = null;
                 LOGGER.warning("Invalid Token Parameters.'token_type' not found.");
-                throw new InternalServerError("Invalid Token Parameters.'token_type' not found.");
+                throw new InternalServerErrorException("Invalid Token Parameters.'token_type' not found.");
             } else if (token.get("token_type")==null) {
                 tokenResponse = null;
                 LOGGER.warning("Invalid Token Parameters.'token_type' not found.");
-                throw new InternalServerError("Invalid Token Parameters.'token_type' not found.");
+                throw new InternalServerErrorException("Invalid Token Parameters.'token_type' not found.");
 
             }else {
                 tokenResponse.setTokenType(String.valueOf(token.get("token_type")));
             }
 
 
-        } catch (InternalServerError internalServerError) {
-            internalServerError.getMessage();
+        } catch (InternalServerErrorException internalServerErrorException) {
+            internalServerErrorException.getMessage();
         }
 
 

@@ -2,7 +2,7 @@ package handlers;
 
 import ciba.proxy.server.servicelayer.ServerUserRegistrationHandler;
 import dao.DaoFactory;
-import errorfiles.BadRequest;
+import exceptions.BadRequestException;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import transactionartifacts.User;
@@ -67,11 +67,11 @@ public class UserRegisterHandler implements Handlers {
 
                createUserregistrationResponse(userjson,httpHeaders);
             } else {
-                throw new BadRequest("Parameters missing");
+                throw new BadRequestException("Parameters missing");
 
             }
-        } catch (BadRequest badRequest) {
-            badRequest.printStackTrace();
+        } catch (BadRequestException badRequestException) {
+            badRequestException.printStackTrace();
         }
         return "";
     }

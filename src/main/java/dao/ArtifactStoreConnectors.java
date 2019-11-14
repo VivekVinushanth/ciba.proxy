@@ -1,49 +1,59 @@
+/*
+ * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package dao;
 
-import ciba.proxy.server.servicelayer.ServerRequestHandler;
-import handlers.Handlers;
-import transactionartifacts.*;
+import transactionartifacts.CIBAauthRequest;
+import transactionartifacts.CIBAauthResponse;
+import transactionartifacts.PollingAtrribute;
+import transactionartifacts.TokenRequest;
+import transactionartifacts.TokenResponse;
 
+/**
+ * Abstracts artifact store connector.
+ */
 public interface ArtifactStoreConnectors {
-      void addAuthRequest(String auth_req_id, Object authrequest);
-      void addAuthResponse(String auth_req_id, Object authresponse);
-      void addTokenRequest(String auth_req_id, Object tokenrequest);
-      void addTokenResponse(String auth_req_id, Object tokenresponse);
-      void addPollingAttribute(String auth_req_id , Object pollingattribute);
-      /*void addExpiresTime(String auth_req_id, long timestamp);
-      void addLastPollTime(String auth_req_id, long lastpolltime);
-      void addIssuedTime(String auth_req_id, long issuedtime);
-      void addInterval(String auth_req_id, long interval);*/
+      void addAuthResponse(String authReqID, Object authresponse);
+      void addTokenRequest(String authReqID, Object tokenrequest);
+      void addTokenResponse(String authReqID, Object tokenresponse);
+      void addPollingAttribute(String authReqID , Object pollingattribute);
 
-      void removeAuthRequest(String auth_req_id);
-      void removeAuthResponse(String auth_req_id);
-      void removeTokenRequest(String auth_req_id);
-      void removeTokenResponse(String auth_req_id);
-      void removePollingAttribute(String auth_req_id);
-   /*   void removeExpiresTime(String auth_req_id);
-      void removeLastPollTime(String auth_req_id);
-      void removeIssuedTime(String auth_req_id);
-      void removeInterval(String auth_req_id);*/
 
-      CIBAauthRequest getAuthRequest(String auth_req_id);
-      CIBAauthResponse getAuthResponse(String auth_req_id);
-      TokenRequest getTokenRequest(String auth_req_id);
-      TokenResponse getTokenResponse(String auth_req_id);
-      PollingAtrribute getPollingAttribute(String auth_req_id);
-     /* long getExpiresTime(String auth_req_id);
-      long getLastPollTime(String auth_req_id);
-      long  getIssuedTime(String auth_req_id);
-      long  getInterval(String auth_req_id);*/
+      void removeAuthRequest(String authReqID);
+      void removeAuthResponse(String authReqID);
+      void removeTokenRequest(String authReqID);
+      void removeTokenResponse(String authReqID);
+      void removePollingAttribute(String authReqID);
+
+
+      CIBAauthRequest getAuthRequest(String authReqID);
+      CIBAauthResponse getAuthResponse(String authReqID);
+      TokenRequest getTokenRequest(String authReqID);
+      TokenResponse getTokenResponse(String authReqID);
+      PollingAtrribute getPollingAttribute(String authReqID);
+
 
       void registerToAuthRequestObservers(Object authRequestHandler);
       void registerToAuthResponseObservers(Object authResponseHandler);
       void registerToTokenRequestObservers(Object tokenRequestHandler);
       void registerToTokenResponseObservers(Object tokenResponseHandler);
       void registerToPollingAttribute(Object pollingatrribute);
-    /*  void registerToExpiryTimeObservers(Object expiryHandler);
-      void registerToLastPollObservers(Object pollHandler);
-      void registerToIssuedTimeObservers(Object issuedTimeHandler);
-      void registerToIntervalObservers(Object intervalHandler);*/
+
 
  }
 

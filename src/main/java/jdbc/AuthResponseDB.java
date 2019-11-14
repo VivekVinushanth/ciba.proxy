@@ -1,6 +1,6 @@
 package jdbc;
 
-import errorfiles.InternalServerError;
+import exceptions.InternalServerErrorException;
 import handlers.Handlers;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,9 +46,10 @@ public class AuthResponseDB  implements ProxyJdbc{
                 LOGGER.info("CIBA Auth response added to store.");
             }else{
                     try {
-                        throw new InternalServerError("Error Adding Authentication Response");
-                    } catch (InternalServerError internalServerError) {
-                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+                        throw new InternalServerErrorException("Error Adding Authentication Response");
+                    } catch (InternalServerErrorException internalServerErrorException) {
+                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                                .getMessage());
                     }
                 }
 
@@ -61,9 +62,10 @@ public class AuthResponseDB  implements ProxyJdbc{
 
         }else{
             try {
-                throw new InternalServerError("Error deleting Authentication Response");
-            } catch (InternalServerError internalServerError) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+                throw new InternalServerErrorException("Error deleting Authentication Response");
+            } catch (InternalServerErrorException internalServerErrorException) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                        .getMessage());
             }
         }
 

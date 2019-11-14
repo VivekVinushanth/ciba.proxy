@@ -4,10 +4,11 @@ import transactionartifacts.Client;
 
 public class CibaClientStoreJdbcConnector implements ClientStoreConnector {
 
- 
-    private static CibaClientStoreJdbcConnector CibaClientStoreJdbcConnectorInstance = new CibaClientStoreJdbcConnector();
+    private static CibaClientStoreJdbcConnector CibaClientStoreJdbcConnectorInstance =
+            new CibaClientStoreJdbcConnector();
 
     public static CibaClientStoreJdbcConnector getInstance() {
+
         if (CibaClientStoreJdbcConnectorInstance == null) {
 
             synchronized (CibaClientStoreJdbcConnector.class) {
@@ -34,6 +35,7 @@ public class CibaClientStoreJdbcConnector implements ClientStoreConnector {
 
     @Override
     public Client getClient(String clientid) {
+
         return null;
     }
 }

@@ -1,11 +1,9 @@
 package jdbc;
 
-import ciba.proxy.server.servicelayer.ServerRequestHandler;
-import errorfiles.InternalServerError;
+import exceptions.InternalServerErrorException;
 import handlers.Handlers;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import transactionartifacts.CIBAauthRequest;
 import transactionartifacts.PollingAtrribute;
 
 import java.util.ArrayList;
@@ -52,10 +50,11 @@ public class PollingAttributeDB implements ProxyJdbc {
 
 
                 }else {
-                    throw new InternalServerError("Error Adding Polling Attribute to the store");
+                    throw new InternalServerErrorException("Error Adding Polling Attribute to the store");
                 }
-            } catch (InternalServerError internalServerError) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+            } catch (InternalServerErrorException internalServerErrorException) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                        .getMessage());
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -72,9 +71,10 @@ public class PollingAttributeDB implements ProxyJdbc {
         }
         else{
             try {
-                throw new InternalServerError("Error Deleting Polling Attribute");
-            } catch (InternalServerError internalServerError) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+                throw new InternalServerErrorException("Error Deleting Polling Attribute");
+            } catch (InternalServerErrorException internalServerErrorException) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                        .getMessage());
             }
         }
 

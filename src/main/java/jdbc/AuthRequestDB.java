@@ -1,7 +1,6 @@
 package jdbc;
 
-import ciba.proxy.server.servicelayer.ServerRequestHandler;
-import errorfiles.InternalServerError;
+import exceptions.InternalServerErrorException;
 import handlers.Handlers;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,10 +46,11 @@ public class AuthRequestDB implements ProxyJdbc {
                if( DbQuery.getInstance().addAuthRequest(auth_req_id,authrequest)) {
                    LOGGER.info("CIBA Authentication added to store");
                }else {
-                   throw new InternalServerError("Error Adding Authentication Request to the store");
+                   throw new InternalServerErrorException("Error Adding Authentication Request to the store");
                }
-            } catch (InternalServerError internalServerError) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+            } catch (InternalServerErrorException internalServerErrorException) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                        .getMessage());
 
             } catch (Exception e) {
             e.printStackTrace();
@@ -67,9 +67,10 @@ public class AuthRequestDB implements ProxyJdbc {
         }
         else{
             try {
-                throw new InternalServerError("Error Deleting Authentication Request");
-            } catch (InternalServerError internalServerError) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+                throw new InternalServerErrorException("Error Deleting Authentication Request");
+            } catch (InternalServerErrorException internalServerErrorException) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                        .getMessage());
             }
         }
 

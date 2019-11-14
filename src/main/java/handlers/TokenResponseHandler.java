@@ -5,7 +5,7 @@ import com.nimbusds.jose.*;
 
 import configuration.ConfigurationFile;
 import dao.DaoFactory;
-import errorfiles.Forbidden;
+import exceptions.ForbiddenException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import tempErrorCache.TempErrorCache;
 import transactionartifacts.TokenResponse;
@@ -88,9 +88,9 @@ public class TokenResponseHandler implements Handlers {
            } else {
                ErrorCodeHandlers errorCodeHandlers = ErrorCodeHandlers.getInstance();
                try {
-                   throw new Forbidden("Invalid Token Request");
-               } catch (Forbidden forbidden) {
-                   forbidden.printStackTrace();
+                   throw new ForbiddenException("Invalid Token Request");
+               } catch (ForbiddenException forbiddenException) {
+                   forbiddenException.printStackTrace();
                }
 
                return new Payload("Invalid");

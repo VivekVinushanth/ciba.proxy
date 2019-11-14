@@ -23,7 +23,7 @@ import ciba.proxy.server.servicelayer.ServerResponseHandler;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jwt.JWTClaimsSet;
 import configuration.ConfigHandler;
-import errorfiles.InternalServerError;
+import exceptions.InternalServerErrorException;
 import handlers.CIBAAuthRequestHandler;
 import handlers.Handlers;
 import handlers.RegisterHandler;
@@ -104,12 +104,12 @@ public class CIBAProxyServer implements AuthorizationServer {
                 }
             }
 
-            throw new InternalServerError("No Authentication Request Handlers configured to listen.");
+            throw new InternalServerErrorException("No Authentication Request Handlers configured to listen.");
 
-        } catch (InternalServerError internalServerError) {
+        } catch (InternalServerErrorException internalServerErrorException) {
             LOGGER.warning("No Authentication Request Handlers to listen the request.");
             throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+                    HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException.getMessage());
 
         }
 
@@ -136,9 +136,10 @@ public class CIBAProxyServer implements AuthorizationServer {
             }
 
             LOGGER.warning("No Token request handlers added to the system.");
-            throw new InternalServerError("No Token request handlers registered");
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+            throw new InternalServerErrorException("No Token request handlers registered");
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
 
     }
@@ -165,9 +166,10 @@ public class CIBAProxyServer implements AuthorizationServer {
             }
 
             LOGGER.warning("No Client Registration handlers added to the system.");
-            throw new InternalServerError("No Client Registration handlers registered.");
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+            throw new InternalServerErrorException("No Client Registration handlers registered.");
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
 
     }
@@ -192,9 +194,10 @@ public class CIBAProxyServer implements AuthorizationServer {
             }
 
             LOGGER.warning("No User Registration handlers added to the system.");
-            throw new InternalServerError("No User Registration handlers registered.");
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+            throw new InternalServerErrorException("No User Registration handlers registered.");
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
 
     }
@@ -246,11 +249,12 @@ public class CIBAProxyServer implements AuthorizationServer {
 
             } else {
                 LOGGER.warning("No Server Response handlers added to the system.");
-                throw new InternalServerError("No Server event handlers registered.");
+                throw new InternalServerErrorException("No Server event handlers registered.");
 
             }
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
 
         }
     }
@@ -273,11 +277,12 @@ public class CIBAProxyServer implements AuthorizationServer {
                 serverResponseHandler.receivecode(response, identifier);
 
             } else {
-                throw new InternalServerError("No CallBack handlers found.");
+                throw new InternalServerErrorException("No CallBack handlers found.");
             }
-        } catch (InternalServerError internalServerError) {
+        } catch (InternalServerErrorException internalServerErrorException) {
             LOGGER.severe("No CallBack handlers found.");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
     }
 
@@ -299,10 +304,11 @@ public class CIBAProxyServer implements AuthorizationServer {
                 serverResponseHandler.receivetoken(response, identifier);
 
             } else {
-                throw new InternalServerError("No CallBack handlers found.");
+                throw new InternalServerErrorException("No CallBack handlers found.");
             }
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
     }
 
@@ -352,10 +358,11 @@ public class CIBAProxyServer implements AuthorizationServer {
                 return cibaauthrequesthandler.receive(params);
 
             }
-            throw new InternalServerError("No Authentication request handlers found.");
+            throw new InternalServerErrorException("No Authentication request handlers found.");
 
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
 
     }
@@ -375,10 +382,11 @@ public class CIBAProxyServer implements AuthorizationServer {
                 return tokenrequesthandler.receive(authReqid, grantType);
 
             } else {
-                throw new InternalServerError("No Authentication request handlers found.");
+                throw new InternalServerErrorException("No Authentication request handlers found.");
             }
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
     }
 
@@ -398,10 +406,11 @@ public class CIBAProxyServer implements AuthorizationServer {
                 return registerHandler.receive(name, password, mode);
 
             }
-            throw new InternalServerError("No Authentication request handlers found.");
+            throw new InternalServerErrorException("No Authentication request handlers found.");
 
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
 
     }
@@ -422,10 +431,11 @@ public class CIBAProxyServer implements AuthorizationServer {
                 return userRegisterHandler.receive(user, httpHeaders);
 
             }
-            throw new InternalServerError("No Authentication request handlers found.");
+            throw new InternalServerErrorException("No Authentication request handlers found.");
 
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
 
     }

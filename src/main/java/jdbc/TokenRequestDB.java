@@ -1,11 +1,10 @@
 package jdbc;
 
-import errorfiles.InternalServerError;
+import exceptions.InternalServerErrorException;
 import handlers.Handlers;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import transactionartifacts.TokenRequest;
-import transactionartifacts.TokenResponse;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -46,9 +45,10 @@ public class TokenRequestDB implements ProxyJdbc {
                 LOGGER.info("Token Request added to store.");
             }else{
                 try {
-                    throw new InternalServerError("Error Adding Token Request");
-                } catch (InternalServerError internalServerError) {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+                    throw new InternalServerErrorException("Error Adding Token Request");
+                } catch (InternalServerErrorException internalServerErrorException) {
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                            .getMessage());
                 }
             }
 
@@ -61,9 +61,10 @@ public class TokenRequestDB implements ProxyJdbc {
 
         }else{
             try {
-                throw new InternalServerError("Error deleting Token Request");
-            } catch (InternalServerError internalServerError) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+                throw new InternalServerErrorException("Error deleting Token Request");
+            } catch (InternalServerErrorException internalServerErrorException) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                        .getMessage());
             }
         }
 

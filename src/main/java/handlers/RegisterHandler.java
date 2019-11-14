@@ -3,7 +3,7 @@ package handlers;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jwt.JWTClaimsSet;
 import dao.DaoFactory;
-import errorfiles.BadRequest;
+import exceptions.BadRequestException;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -59,9 +59,9 @@ public class RegisterHandler implements Handlers {
     private Payload extractParameters(String appname, String password, String mode) {
         if (!RegistrationValidator.getInstance().validate(appname,password,mode)){
             try {
-                throw new BadRequest("Invalid Parameters");
-            } catch (BadRequest badRequest) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                throw new BadRequestException("Invalid Parameters");
+            } catch (BadRequestException badRequestException) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
         }
         return (this.createRegistrationResponse(appname,password,mode));

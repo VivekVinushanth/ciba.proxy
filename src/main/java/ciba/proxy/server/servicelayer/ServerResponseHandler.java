@@ -1,10 +1,26 @@
+/*
+ * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package ciba.proxy.server.servicelayer;
 
 import cibaparameters.CIBAParameters;
 import configuration.ConfigurationFile;
 import dao.DaoFactory;
-import errorfiles.BadRequest;
-import errorfiles.InternalServerError;
 import handlers.Handlers;
 import handlers.NotificationHandler;
 import net.minidev.json.JSONObject;
@@ -12,12 +28,10 @@ import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
 import transactionartifacts.TokenResponse;
 import util.RestTemplateFactory;
 import validator.TokenResponseValidator;
@@ -25,12 +39,12 @@ import validator.TokenResponseValidator;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * Responsible for making token requests.
+ */
 public class ServerResponseHandler implements Handlers {
-
-
 
     private static final Logger LOGGER = Logger.getLogger(ServerResponseHandler.class.getName());
 
@@ -41,6 +55,7 @@ public class ServerResponseHandler implements Handlers {
     private static ServerResponseHandler serverResponseHandlerInstance = new ServerResponseHandler();
 
     public static ServerResponseHandler getInstance() {
+
         if (serverResponseHandlerInstance == null) {
 
             synchronized (ServerResponseHandler.class) {
@@ -55,88 +70,53 @@ public class ServerResponseHandler implements Handlers {
         return serverResponseHandlerInstance;
     }
 
-
-    
-
-   /* public  void InitiateFakeResponse(String identifier) {
-        //for now create a fake token and send!
-
-
-            //wait(3);
-            TokenResponse tokenResponse = new TokenResponse();
-            tokenResponse.setAccessToken("G5kXH2wHvUra0sHlDy1iTkDJgsgUO1bN");
-            tokenResponse.setIdToken("eyJhbGciOiJSUzI1NiIsImtpZCI6IjE2NzcyNiJ9.eyJpc3MiOiJo"
-                    + "dHRwczovL3NlcnZlci5leGFtcGxlLmNvbSIsInN1YiI6IjI0ODI4OTc2MTAwMSIs"
-                    + "ImF1ZCI6InM2QmhkUmtxdDMiLCJlbWFpbCI6ImphbmVkb2VAZXhhbXBsZS5jb20i"
-                    + "LCJleHAiOjE1Mzc4MTk4MDMsImlhdCI6MTUzNzgxOTUwM30.aVq83mdy72ddIFVJ"
-                    + "LjlNBX-5JHbjmwK-Sn9Mir-blesfYMceIOw6u4GOrO_ZroDnnbJXNKWAg_dxVynv"
-                    +"MHnk3uJc46feaRIL4zfHf6Anbf5_TbgMaVO8iczD16A5gNjSD7yenT5fslrrW-NU"
-                    +"vtmi0s1puoM4EmSaPXCR19vRJyWuStJiRHK5yc3BtBlQ2xwxH1iNP49rGAQe_LH"
-                    +"fW1G74NY5DaPv-V23JXDNEIUTY-jT-NbbtNHAxnhNPyn8kcO2WOoeIwANO9BfLF1"
-                    +"EFWtjGPPMj6kDVrikec47yK86HArGvsIIwk1uExynJIv_tgZGE0eZI7MtVb2UlCw"
-                    +"DQrVlg");
-
-            tokenResponse.setRefreshToken("4bwc0ESC_IAhflf-ACC_vjD_ltc11ne-8gFPfA2Kx16");
-            tokenResponse.setTokenExpirein(3600);
-            tokenResponse.setTokenType("Bearer");
-
-            addtoStore(tokenResponse,identifier);
-
-        }*/
-
+    /**
+     * Get token from Identity server.
+     *
+     * @param code        binding -authorize code.
+     * @param idenitifier mapping ID.
+     */
     public void getToken(String code, String idenitifier) {
+
         try {
             RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
 
-            //headers set
+            // Setting the headers.
             HttpHeaders headers = new HttpHeaders();
-            headers.setBasicAuth(ConfigurationFile.getInstance().getCLIENT_ID(),ConfigurationFile.getInstance().getCLIENT_SECRET());
+            headers.setBasicAuth(ConfigurationFile.getInstance().getCLIENT_ID(),
+                    ConfigurationFile.getInstance().getCLIENT_SECRET());
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-               /* JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                        .claim("grant_type", "authorization_code")
-                        .claim("code", code)
-                        .claim("redirect_uri", CIBAParameters.getInstance().getCallBackURL())
-                        .build();
-
-                String responseString = claims.toJSONObject().toString();
-
-*/
-
+            // Adding the attributes to the body.
             MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
             map.add("grant_type", "authorization_code");
             map.add("code", code);
             map.add("redirect_uri", CIBAParameters.getInstance().getCallBackURL());
             map.add("state", idenitifier);
 
-
-            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+            HttpEntity<MultiValueMap<String, String>> request =
+                    new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
             String token = restTemplate.postForObject("https://localhost:9443/oauth2/token", request, String.class);
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(token);
             receivetoken(json, idenitifier);
 
-
-        } catch (KeyStoreException e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | ParseException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
 
     }
 
-
-/*
-    public void register(){
-        DaoFactory.getInstance().getArtifactStoreConnector("InMemoryCache").registerToAuthRequestObservers(this);
-    }*/
-
+    /**
+     * Validate token and return token response.
+     *
+     * @param token Token
+     * @return TokenResponse
+     */
     public TokenResponse validate(JSONObject token) {
+
         return TokenResponseValidator.getInstance().validateTokens(token);
     }
 
@@ -150,8 +130,14 @@ public class ServerResponseHandler implements Handlers {
 
     }
 
-
+    /**
+     * Receive token and add to store.
+     *
+     * @param token      received token.
+     * @param identifier mapping ID.
+     */
     public void receivetoken(JSONObject token, String identifier) {
+
         if (validate(token) != null) {
 
             addtoStore(validate(token), identifier);
@@ -159,19 +145,27 @@ public class ServerResponseHandler implements Handlers {
         }
     }
 
-
+    /**
+     * Receive authorize code.
+     *
+     * @param codeobject binding -authorize code.
+     * @param identifier mapping ID.
+     */
     public void receivecode(JSONObject codeobject, String identifier) {
+
         String code = codeobject.get("code").toString();
 
         this.getToken(code, identifier);
     }
 
-    /*public void addErrorResponse(JSONObject response, String identifier) {
-        addtoStore(response, identifier);
-    }*/
-
-
+    /**
+     * Notifies the client about auth code reception.
+     *
+     * @param auth_req_id authentication request identifier.
+     */
     private void notify(String auth_req_id) {
-      NotificationHandler.getInstance().sendNotificationtoClient(auth_req_id);
+
+        // Notify the client.
+        NotificationHandler.getInstance().sendNotificationtoClient(auth_req_id);
     }
 }

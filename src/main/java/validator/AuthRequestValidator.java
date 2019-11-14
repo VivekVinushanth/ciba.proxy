@@ -2,7 +2,7 @@ package validator;
 
 import authorizationserver.CIBAProxyServer;
 import configuration.ConfigurationFile;
-import errorfiles.BadRequest;
+import exceptions.BadRequestException;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,11 +51,11 @@ public class AuthRequestValidator {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'aud'");
-                throw new BadRequest("Invalid request : Missing mandatory parameter 'aud'");
+                throw new BadRequestException("Invalid request : Missing mandatory parameter 'aud'");
 
-            } catch (BadRequest badRequest) {
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else {
@@ -68,10 +68,10 @@ public class AuthRequestValidator {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'iss'");
-                throw new BadRequest("Invalid request : Missing mandatory parameter 'iss'");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Missing mandatory parameter 'iss'");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else {
@@ -84,10 +84,10 @@ public class AuthRequestValidator {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'jti'");
-                throw new BadRequest("Invalid request : Missing mandatory parameter 'jti'");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Missing mandatory parameter 'jti'");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else {
@@ -100,20 +100,20 @@ public class AuthRequestValidator {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'exp'");
-                throw new BadRequest("Invalid request : Missing  mandatory parameter 'exp'");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Missing  mandatory parameter 'exp'");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else if ((jo.get("exp")) == null) {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'exp'");
-                throw new BadRequest("Invalid request : Missing  mandatory parameter 'exp'");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Missing  mandatory parameter 'exp'");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else {
@@ -126,20 +126,20 @@ public class AuthRequestValidator {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'iat'");
-                throw new BadRequest("Invalid request : Missing  mandatory parameter 'iat'");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Missing  mandatory parameter 'iat'");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else if ((jo.get("iat")) == null) {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'iat'");
-                throw new BadRequest("Invalid request : Missing  mandatory parameter 'iat'");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Missing  mandatory parameter 'iat'");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else {
@@ -152,20 +152,20 @@ public class AuthRequestValidator {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'nbf'");
-                throw new BadRequest("Invalid request : Missing  mandatory parameter 'nbf'");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Missing  mandatory parameter 'nbf'");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else if ((jo.get("nbf")) == null) {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'nbf'");
-                throw new BadRequest("Invalid request : Missing  mandatory parameter 'nbf'");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Missing  mandatory parameter 'nbf'");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else {
@@ -177,10 +177,10 @@ public class AuthRequestValidator {
             try {
 
                 LOGGER.warning("Invalid request : Missing mandatory parameter 'scope'");
-                throw new BadRequest("Invalid request : Missing  mandatory parameter 'scope'");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Missing  mandatory parameter 'scope'");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else {
@@ -193,19 +193,19 @@ public class AuthRequestValidator {
         if (ConfigurationFile.getInstance().getFLOW_MODE().equalsIgnoreCase("ping")) {
             try {
                 if ((String.valueOf(jo.get("client_notification_token")).isEmpty())) {
-                    throw new BadRequest("Client Notification Token is mandotory for ping");
+                    throw new BadRequestException("Client Notification Token is mandotory for ping");
 
                 } else if ((jo.get("client_notification_token")) == null) {
-                    throw new BadRequest("Client Notification Token is mandotory for ping");
+                    throw new BadRequestException("Client Notification Token is mandotory for ping");
 
                 } else {
                     //cibaparameters.setClient_notification_token(String.valueOf(jo.get("client_notification_token")));
                     cibaAuthRequest.setClient_notification_token(String.valueOf(jo.get("client_notification_token")));
                 }
-            } catch (BadRequest badRequest) {
+            } catch (BadRequestException badRequestException) {
                 LOGGER.warning("Invalid request : Missing Client Notification token'");
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         } else {
@@ -248,10 +248,10 @@ public class AuthRequestValidator {
             try {
 
                 LOGGER.warning("Invalid request : Missing user identity - hints/ login hint / id hint token'");
-                throw new BadRequest("Invalid request : Messed up with hints.Anyone and only one is a must");
-            } catch (BadRequest badRequest) {
+                throw new BadRequestException("Invalid request : Messed up with hints.Anyone and only one is a must");
+            } catch (BadRequestException badRequestException) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, badRequest.getMessage());
+                        HttpStatus.BAD_REQUEST, badRequestException.getMessage());
             }
 
         }

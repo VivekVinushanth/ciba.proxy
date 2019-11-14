@@ -1,7 +1,23 @@
+/*
+ * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package ciba.proxy.server.servicelayer;
 
-import com.sun.net.ssl.HostnameVerifier;
-import com.sun.net.ssl.HttpsURLConnection;
 import handlers.Handlers;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -14,7 +30,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
-public class ServerUserRegistrationHandler implements Handlers  {
+/**
+ * Handles user registration.
+ */
+public class ServerUserRegistrationHandler implements Handlers {
 
     private static final Logger LOGGER = Logger.getLogger(ServerResponseHandler.class.getName());
 
@@ -22,9 +41,11 @@ public class ServerUserRegistrationHandler implements Handlers  {
         // this.run();
     }
 
-    private static ServerUserRegistrationHandler serverUserRegistrationHandlerInstance = new ServerUserRegistrationHandler();
+    private static ServerUserRegistrationHandler serverUserRegistrationHandlerInstance =
+            new ServerUserRegistrationHandler();
 
     public static ServerUserRegistrationHandler getInstance() {
+
         if (serverUserRegistrationHandlerInstance == null) {
 
             synchronized (ServerUserRegistrationHandler.class) {
@@ -39,43 +60,17 @@ public class ServerUserRegistrationHandler implements Handlers  {
         return serverUserRegistrationHandlerInstance;
     }
 
-
     public void receive() {
         //receive token from Identity server
     }
 
+    /**
+     * Get token from Identity server.
+     *
+     * @param headers for registration request.
+     * @param user    User to  be registered.
+     */
     public String save(JSONObject user, HttpHeaders headers) {
-
-        /*try {
-            URL url = new URL("https://localhost:9443/scim2/Users");
-
-            HttpsURLConnectionImpl  con = (HttpsURLConnectionImpl) url.openConnection();
-            con.setHostnameVerifier(TempHostNameVerifier.getInstance());
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json; utf-8");
-            con.setRequestProperty("Accept", "application/json");
-            con.setDoOutput(true);
-            con.setDoInput(true);
-            try(OutputStream os = con.getOutputStream()) {
-                byte[] input = user.toString().getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-            try(BufferedReader br = new BufferedReader(
-                    new InputStreamReader(con.getInputStream(), "utf-8"))) {
-                StringBuilder response = new StringBuilder();
-                String responseLine = null;
-                while ((responseLine = br.readLine()) != null) {
-                    response.append(responseLine.trim());
-                }
-                //System.out.println(response.toString());
-                return response.toString();
-            }
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
         try {
             RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
@@ -85,13 +80,9 @@ public class ServerUserRegistrationHandler implements Handlers  {
             String uri = "https://localhost:9443/scim2/Users";
             return (restTemplate.postForObject(uri, request, String.class));
 
-
-        } catch (KeyStoreException e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
         return "Unstored";
 

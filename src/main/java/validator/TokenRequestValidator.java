@@ -5,8 +5,8 @@ import cibaparameters.CIBAParameters;
 import configuration.ConfigurationFile;
 import dao.DaoFactory;
 import dao.ArtifactStoreConnectors;
-import errorfiles.BadRequest;
-import errorfiles.UnAuthorizedRequest;
+import exceptions.BadRequestException;
+import exceptions.UnAuthorizedRequestException;
 import handlers.TokenResponseHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -58,17 +58,17 @@ public class TokenRequestValidator {
                 tokenRequest = null;
                 LOGGER.info("Invalid auth_req_id");
 
-                throw new UnAuthorizedRequest("Invalid auth_req_id");
+                throw new UnAuthorizedRequestException("Invalid auth_req_id");
 
             } else if (artifactStoreConnectors.getAuthResponse(auth_req_id) == null) {
                 LOGGER.info("Invalid auth_req_id");
 
-                throw new UnAuthorizedRequest("Invalid auth_req_id");
+                throw new UnAuthorizedRequestException("Invalid auth_req_id");
 
             } else if (grant_type.isEmpty()) {
                 tokenRequest = null;
                 LOGGER.info("Improper grant_type");
-                throw new BadRequest("Improper grant_type");
+                throw new BadRequestException("Improper grant_type");
 
             } else {
                 //check whether provided auth_req_id is valid and provided by the system and has relevant auth response
@@ -86,12 +86,12 @@ public class TokenRequestValidator {
                     try {
                         if (!notificationIssued) {
                             LOGGER.info("Improper Flow. Subscribed to Ping but yet Polling");
-                            throw new BadRequest("Improper Flow. Subscribed to Ping but yet Polling");
+                            throw new BadRequestException("Improper Flow. Subscribed to Ping but yet Polling");
 
                         } else if (currenttime > issuedtime + expiryduration + 5) {
                             tokenRequest = null;
                             LOGGER.info("Expired Token");
-                            throw new BadRequest("Expired Token");
+                            throw new BadRequestException("Expired Token");
 
                             //checking for frequency of poll
                         } else if (currenttime - lastpolltime < interval) {
@@ -111,7 +111,7 @@ public class TokenRequestValidator {
                             artifactStoreConnectors.addPollingAttribute(auth_req_id, pollingAtrribute2);
                             //updating the polling frequency -deleting and adding new object with updated values
                             tokenRequest = null;
-                            throw new BadRequest("Slow Down");
+                            throw new BadRequestException("Slow Down");
 
                         } else {
                             if (TempErrorCache.getInstance().getAuthenticationResponse(auth_req_id).equals("Sucess") ||
@@ -140,14 +140,14 @@ public class TokenRequestValidator {
 
                                 } else {
                                     tokenRequest = null;
-                                    throw new BadRequest("authorization pending");
+                                    throw new BadRequestException("authorization pending");
                                 }
 
                             } else {
 
                                 System.out.println("Not authenticated");
                                 return null;
-                                //throw new BadRequest("authorization pending");
+                                //throw new BadRequestException("authorization pending");
 
                                //
                             }
@@ -157,7 +157,7 @@ public class TokenRequestValidator {
                         }
 
 
-                    } catch (BadRequest badrequest) {
+                    } catch (BadRequestException badrequest) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badrequest.getMessage());
                     }
 
@@ -165,10 +165,10 @@ public class TokenRequestValidator {
 
             }
 
-        } catch (UnAuthorizedRequest unAuthorizedRequest){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, unAuthorizedRequest.getMessage());
-        }catch (BadRequest badRequest){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badRequest.getMessage());
+        } catch (UnAuthorizedRequestException unAuthorizedRequestException){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, unAuthorizedRequestException.getMessage());
+        }catch (BadRequestException badRequestException){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badRequestException.getMessage());
         }
         return tokenRequest;
     }

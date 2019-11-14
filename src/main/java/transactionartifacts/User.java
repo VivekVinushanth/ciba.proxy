@@ -1,12 +1,9 @@
 package transactionartifacts;
 
-import cache.ProxyCache;
-import errorfiles.InternalServerError;
-import org.springframework.http.HttpHeaders;
+import exceptions.InternalServerErrorException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class User implements Artifacts {
@@ -55,10 +52,11 @@ public class User implements Artifacts {
             if (claimstore.get(claim) != null) {
                 return claimstore.get(claim);
             }
-            throw new InternalServerError("Unexpected claim request.");
+            throw new InternalServerErrorException("Unexpected claim request.");
 
-        } catch (InternalServerError internalServerError) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerError.getMessage());
+        } catch (InternalServerErrorException internalServerErrorException) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
+                    .getMessage());
         }
     }
 

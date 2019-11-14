@@ -1,8 +1,8 @@
 package dao;
 
+import exceptions.BadRequestException;
 import store.ClientStore;
 import store.UserStore;
-import errorfiles.BadRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import transactionartifacts.User;
@@ -53,14 +53,14 @@ public class CibaUserStoreCacheConnector implements UserStoreConnector {
         public User getUser(String userid) {
             try {
                 if (ClientStore.getInstance().get(userid) == null) {
-                    throw new BadRequest("Unexpected user.");
+                    throw new BadRequestException("Unexpected user.");
 
                 }
                 else{
                     return (User) UserStore.getInstance().get(userid);
                 }
             }
-                catch (BadRequest badrequest) {
+                catch (BadRequestException badrequest) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, badrequest.getMessage());
                 }
 
