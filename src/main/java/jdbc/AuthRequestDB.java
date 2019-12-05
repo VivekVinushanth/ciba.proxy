@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package jdbc;
 
 import exceptions.InternalServerErrorException;
@@ -5,10 +23,15 @@ import handlers.Handlers;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import transactionartifacts.CIBAauthRequest;
+
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * Auth request store for proxy.
+ */
 public class AuthRequestDB implements ProxyJdbc {
+
     private static final Logger LOGGER = Logger.getLogger(AuthRequestDB.class.getName());
 
     private AuthRequestDB() {
@@ -19,7 +42,6 @@ public class AuthRequestDB implements ProxyJdbc {
 
     public static AuthRequestDB getInstance() {
 
-        // TODO: 8/27/19 need to change this to database
         if (authRequestDBInstance == null) {
 
             synchronized (AuthRequestDB.class) {
@@ -33,39 +55,37 @@ public class AuthRequestDB implements ProxyJdbc {
         }
         return authRequestDBInstance;
 
-
     }
 
-    private ArrayList<Handlers> interestedparty = new ArrayList<Handlers> ();
+    private ArrayList<Handlers> interestedparty = new ArrayList<Handlers>();
 
     @Override
-    public void add(String auth_req_id, Object authrequest ) {
+    public void add(String authReqId, Object authrequest) {
+
         if (authrequest instanceof CIBAauthRequest) {
 
             try {
-               if( DbQuery.getInstance().addAuthRequest(auth_req_id,authrequest)) {
-                   LOGGER.info("CIBA Authentication added to store");
-               }else {
-                   throw new InternalServerErrorException("Error Adding Authentication Request to the store");
-               }
+                if (DbFunctions.getInstance().addAuthRequest(authReqId, authrequest)) {
+                    LOGGER.info("CIBA Authentication added to store");
+                } else {
+                    throw new InternalServerErrorException("Error Adding Authentication Request to the store");
+                }
             } catch (InternalServerErrorException internalServerErrorException) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, internalServerErrorException
                         .getMessage());
 
             } catch (Exception e) {
-            e.printStackTrace();
-        }
+                e.printStackTrace();
+            }
         }
     }
 
-
-
     @Override
-    public void remove(String auth_req_id) {
-        if(DbQuery.getInstance().deleteAuthRequest(auth_req_id)){
+    public void remove(String authReqId) {
+
+        if (DbFunctions.getInstance().deleteAuthRequest(authReqId)) {
             LOGGER.info(" Authentication request is been deleted.");
-        }
-        else{
+        } else {
             try {
                 throw new InternalServerErrorException("Error Deleting Authentication Request");
             } catch (InternalServerErrorException internalServerErrorException) {
@@ -77,8 +97,9 @@ public class AuthRequestDB implements ProxyJdbc {
     }
 
     @Override
-    public Object get(String auth_req_id) {
-        return DbQuery.getInstance().getAuthRequest(auth_req_id);
+    public Object get(String authReqId) {
+
+        return DbFunctions.getInstance().getAuthRequest(authReqId);
     }
 
     @Override
@@ -88,12 +109,14 @@ public class AuthRequestDB implements ProxyJdbc {
 
     @Override
     public long size() {
+
         return 0;
-        // TODO: 8/27/19 implement getting size of the store-may be later.
+
     }
 
     @Override
     public void register(Object object) {
+
         interestedparty.add((Handlers) object);
     }
 }

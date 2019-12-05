@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package jdbc;
 
 import exceptions.InternalServerErrorException;
@@ -9,7 +27,11 @@ import transactionartifacts.TokenRequest;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * Data store of Token Request.
+ */
 public class TokenRequestDB implements ProxyJdbc {
+
     private static final Logger LOGGER = Logger.getLogger(TokenRequestDB.class.getName());
 
     private TokenRequestDB() {
@@ -34,16 +56,18 @@ public class TokenRequestDB implements ProxyJdbc {
         }
         return tokenRequestDBInstance;
 
-
     }
-    private ArrayList<Handlers> interestedparty = new ArrayList<Handlers> ();
+
+    private ArrayList<Handlers> interestedparty = new ArrayList<Handlers>();
+
     @Override
     public void add(String auth_req_id, Object tokenRequest) {
-        if(tokenRequest instanceof TokenRequest) {
 
-            if (DbQuery.getInstance().addTokenRequest(auth_req_id,tokenRequest)){
+        if (tokenRequest instanceof TokenRequest) {
+
+            if (DbFunctions.getInstance().addTokenRequest(auth_req_id, tokenRequest)) {
                 LOGGER.info("Token Request added to store.");
-            }else{
+            } else {
                 try {
                     throw new InternalServerErrorException("Error Adding Token Request");
                 } catch (InternalServerErrorException internalServerErrorException) {
@@ -57,9 +81,10 @@ public class TokenRequestDB implements ProxyJdbc {
 
     @Override
     public void remove(String auth_req_id) {
-        if (DbQuery.getInstance().deleteTokenRequest(auth_req_id)){
 
-        }else{
+        if (DbFunctions.getInstance().deleteTokenRequest(auth_req_id)) {
+
+        } else {
             try {
                 throw new InternalServerErrorException("Error deleting Token Request");
             } catch (InternalServerErrorException internalServerErrorException) {
@@ -70,11 +95,10 @@ public class TokenRequestDB implements ProxyJdbc {
 
     }
 
-
-
     @Override
     public Object get(String auth_req_id) {
-        return DbQuery.getInstance().getTokenRequest(auth_req_id);
+
+        return DbFunctions.getInstance().getTokenRequest(auth_req_id);
 
     }
 
@@ -85,11 +109,13 @@ public class TokenRequestDB implements ProxyJdbc {
 
     @Override
     public long size() {
+
         return 0;
     }
 
     @Override
     public void register(Object object) {
+
         interestedparty.add((Handlers) object);
     }
 }

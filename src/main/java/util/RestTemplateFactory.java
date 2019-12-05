@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -25,7 +25,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -33,19 +32,18 @@ import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 
 /**
- *
- *
- *
- * */
-
+ * Rest Template factory.
+ */
 public class RestTemplateFactory {
 
     private RestTemplateFactory() {
+
     }
 
     private static RestTemplateFactory restTemplateFactoryInstance = new RestTemplateFactory();
 
     public static RestTemplateFactory getInstance() {
+
         if (restTemplateFactoryInstance == null) {
 
             synchronized (RestTemplateFactory.class) {
@@ -60,9 +58,15 @@ public class RestTemplateFactory {
         return restTemplateFactoryInstance;
     }
 
-
-
+    /**
+     * get Rest Template factory.
+     *
+     * @throws KeyStoreException
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
     public RestTemplate getRestTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+
         TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 
         SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()

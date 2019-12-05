@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -83,8 +83,8 @@ public class CIBAAuthResponseHandler implements Handlers {
         Payload responsepayload = new Payload(claims.toJSONObject());
 
         // Creating authentication response object and store to memory.
-        cibAauthResponse.setAuth_req_id(authReqId);
-        cibAauthResponse.setExpires_in(cibaparameters.getExpires_in());
+        cibAauthResponse.setAuthReqId(authReqId);
+        cibAauthResponse.setExpiresIn(cibaparameters.getExpires_in());
         cibAauthResponse.setInterval(cibaparameters.getInterval());
         this.storeAuthResponse(authReqId, cibAauthResponse);
 
@@ -107,7 +107,7 @@ public class CIBAAuthResponseHandler implements Handlers {
         LOGGER.info("CIBA Authentication Response stored in Auth Response Store.");
         System.out
                 .println("Working in perfection" + daoFactory.getArtifactStoreConnector(ConfigurationFile.getInstance().
-                        getSTORE_CONNECTOR_TYPE()).getAuthResponse(authReqId).getExpires_in());
+                        getSTORE_CONNECTOR_TYPE()).getAuthResponse(authReqId).getExpiresIn());
 
         // Store polling attributes.
         storePollingAttribute(authReqId);
